@@ -16,6 +16,9 @@ web-build/
 *.key
 *.mobileprovision
 
+#graphql
+schema.graphql
+
 # Metro
 .metro-health-check*
 
