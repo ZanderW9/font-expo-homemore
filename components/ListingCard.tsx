@@ -16,7 +16,6 @@ import {
   Platform,
 } from "react-native";
 
-import FavoriteCardOfBottomSheet from "./FavoriteCardOfBottomSheet";
 import FavoriteCardsContainer from "./FavoriteCardsContainer";
 import { Text, View } from "./Themed";
 import {
@@ -105,6 +104,8 @@ const styles = StyleSheet.create({
   bottomSheetContent: {
     backgroundColor: "white",
     paddingBottom: 25,
+    paddingTop: 10,
+    borderRadius: 10,
   },
   BottomSheetTitle: {
     fontSize: 18,
@@ -159,6 +160,10 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   const [createFavoriteFolder, setCreateFavoriteFolder] = useState(false);
   const [favoriteFolderName, setFavoriteFolderName] = useState("");
 
+  const toggleBottomSheetVisibility = (isVisible: boolean) => {
+    setFavoriteBottomSheet(isVisible);
+  };
+
   const toggleCheckboxHandler = () => {
     setFavoriteBottomSheet(!favoriteBottomSheet);
     setChecked(!checked);
@@ -181,6 +186,9 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const createFavoriteFolderHandler = async () => {
+    if (favoriteFolderName === "") {
+      return;
+    }
     const response = await addFavoriteFolderRequest(favoriteFolderName);
     if (response.ok) {
       setCreateFavoriteFolder(false);
@@ -304,8 +312,8 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           <View style={styles.bottomSheetContent}>
             <Text style={styles.BottomSheetTitle}>Add to Wishlist</Text>
             <FavoriteCardsContainer
-              FavoriteCardComponent={FavoriteCardOfBottomSheet}
               listingId={data._id}
+              toggleBottomSheetVisibility={toggleBottomSheetVisibility}
             />
             <Button
               size="lg"

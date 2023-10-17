@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 
-import FavoriteCard from "../../components/FavoriteCard";
 import FavoriteCardContainer from "../../components/FavoriteCardsContainer";
 import { View } from "../../components/Themed";
 
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
 function TabWishlistScreen() {
   return (
     <View style={styles.container}>
-      <FavoriteCardContainer FavoriteCardComponent={FavoriteCard} />
+      <FavoriteCardContainer />
     </View>
   );
 }

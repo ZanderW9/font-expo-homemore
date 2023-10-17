@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -10,72 +10,84 @@ import {
   Vibration,
 } from "react-native";
 
-import { removeFavoriteFolderRequest } from "../config/requests";
+import {
+  removeFavoriteFolderRequest,
+  addFavoriteToFolderRequest,
+} from "../config/requests";
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
     flex: 1,
-    marginVertical: 10,
-    marginHorizontal: 20,
-    borderRadius: 10,
+    width: "100%",
   },
   cardContainer: {
+    height: 200,
+    padding: 10,
     backgroundColor: "white",
-    borderRadius: 10,
     overflow: "hidden",
-    width: "80%",
-    height: "100%",
   },
   iconContainer: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
     borderRadius: 10,
     borderColor: "gray",
     borderWidth: 1,
     borderStyle: "dashed",
   },
   iconBackground: {
-    backgroundColor: "white",
-    padding: 40,
-    borderRadius: 10,
+    height: 160,
   },
   icon: {
     fontSize: 70,
     color: "gray",
+    position: "absolute",
+    marginTop: 35,
+    marginLeft: -35,
   },
   title: {
     fontSize: 13,
     color: "black",
     fontWeight: "400",
-    marginBottom: 1,
-    marginTop: 1,
-    marginRight: 2,
-    marginLeft: 2,
     textAlign: "left",
-    padding: 8,
+    paddingTop: 8,
   },
   deleteIcon: {
     fontSize: 28,
-    color: "gray",
+    color: "red",
     position: "absolute",
     top: 0,
     right: 0,
+    zIndex: 1,
+  },
+  mask: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 10,
+    position: "absolute",
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 28,
     zIndex: 1,
   },
 });
 
 type FavoriteCardProps = {
   data: string;
+  listingId: string;
+  favoriteData: any;
+  toggleBottomSheetVisibility: (value: boolean) => void;
 };
 
-const FavoriteCard: React.FunctionComponent<FavoriteCardProps> = ({ data }) => {
+const FavoriteCard: React.FunctionComponent<FavoriteCardProps> = ({
+  data,
+  listingId,
+  toggleBottomSheetVisibility,
+}) => {
+  const pathname = usePathname();
   const [isDeleteButtonVisible, setIsDeleteButtonVisible] = useState(false);
 
   useEffect(() => {
-    // Load cached data for this card
     const loadCachedData = async () => {
       try {
         const cachedData = await AsyncStorage.getItem(`favoriteCard:${data}`);
@@ -90,12 +102,25 @@ const FavoriteCard: React.FunctionComponent<FavoriteCardProps> = ({ data }) => {
     loadCachedData();
   }, [data]);
 
-  const pressHandler = () => {
+  const pressHandler = async () => {
     // router.push("/detail/" + data._id);
     if (isDeleteButtonVisible) {
       setIsDeleteButtonVisible(false);
+      AsyncStorage.setItem(
+        `favoriteCard:${data}`,
+        JSON.stringify({ isDeleteButtonVisible: false }),
+      );
     } else {
-      router.push("/wishlist/" + data);
+      if (pathname === "/wishlist") {
+        router.push(`/wishlist/${data}`);
+      } else if (pathname === "/") {
+        toggleBottomSheetVisibility(false);
+        const body = {
+          listingId,
+          folderName: data,
+        };
+        await addFavoriteToFolderRequest(body);
+      }
     }
   };
 
@@ -122,7 +147,7 @@ const FavoriteCard: React.FunctionComponent<FavoriteCardProps> = ({ data }) => {
     >
       <View style={styles.cardContainer}>
         {isDeleteButtonVisible ? (
-          <View style={styles.iconContainer}>
+          <View style={{ ...styles.iconContainer, borderColor: "red" }}>
             <Ionicons
               name="md-close-outline"
               style={styles.deleteIcon}
@@ -139,7 +164,6 @@ const FavoriteCard: React.FunctionComponent<FavoriteCardProps> = ({ data }) => {
             </View>
           </View>
         )}
-
         <Text style={styles.title}>{data}</Text>
       </View>
     </TouchableOpacity>

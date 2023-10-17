@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 
+import FavoriteCard from "./FavoriteCard";
 import {
   getFavoriteFolderRequest,
   addFavoriteFolderRequest,
@@ -8,9 +10,8 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
     flex: 1,
-    marginHorizontal: 5,
+    width: "100%",
   },
   row: {
     flexDirection: "row",
@@ -24,19 +25,43 @@ const styles = StyleSheet.create({
 });
 
 interface FavoriteCardsContainerProps {
-  FavoriteCardComponent: any;
   listingId?: string;
+  toggleBottomSheetVisibility?: (value: boolean) => void;
 }
 
 const FavoriteCardsContainer: React.FunctionComponent<
   FavoriteCardsContainerProps
-> = ({ FavoriteCardComponent, listingId }) => {
+> = ({ listingId, toggleBottomSheetVisibility }) => {
   const [favoriteFolder, setFavoriteFolder] = useState([]);
+
+  useEffect(() => {
+    const loadFavoriteFolderFromStorage = async () => {
+      try {
+        const cachedData = await AsyncStorage.getItem("favoriteFolderData");
+        if (cachedData) {
+          const parsedData = JSON.parse(cachedData);
+          setFavoriteFolder(parsedData);
+        }
+      } catch (error) {
+        console.error("Error loading cached data: " + error);
+      }
+    };
+
+    loadFavoriteFolderFromStorage();
+  }, []);
 
   useEffect(() => {
     const getFavoriteFolder = async () => {
       const response = await getFavoriteFolderRequest();
       setFavoriteFolder(response.data);
+      try {
+        await AsyncStorage.setItem(
+          "favoriteFolderData",
+          JSON.stringify(response.data),
+        );
+      } catch (error) {
+        console.error("Error saving data to AsyncStorage: " + error);
+      }
     };
     getFavoriteFolder();
   }, [favoriteFolder]);
@@ -46,6 +71,14 @@ const FavoriteCardsContainer: React.FunctionComponent<
       const createDefaultFolder = async () => {
         const response = await addFavoriteFolderRequest("Default");
         setFavoriteFolder(response.data);
+        try {
+          await AsyncStorage.setItem(
+            "favoriteFolderData",
+            JSON.stringify([response.data]),
+          );
+        } catch (error) {
+          console.error("Error saving data to AsyncStorage: " + error);
+        }
       };
       createDefaultFolder();
     }
@@ -58,7 +91,12 @@ const FavoriteCardsContainer: React.FunctionComponent<
           {favoriteFolder && favoriteFolder.length > 0
             ? favoriteFolder.map((item, index) => (
                 <View key={index} style={styles.card}>
-                  <FavoriteCardComponent data={item} listingId={listingId} />
+                  <FavoriteCard
+                    data={item}
+                    listingId={listingId}
+                    favoriteData={favoriteFolder}
+                    toggleBottomSheetVisibility={toggleBottomSheetVisibility}
+                  />
                 </View>
               ))
             : null}
