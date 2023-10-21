@@ -1,3 +1,4 @@
+import { gql, useMutation } from "@apollo/client";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router } from "expo-router";
@@ -8,59 +9,47 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 import { Text, View } from "../components/Themed";
 import { storeToken, getToken } from "../config/TokenManager";
-import { loginRequest } from "../config/requests";
 import Colors from "../constants/Colors";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingHorizontal: 50,
-    paddingVertical: 20,
-  },
-  title: {
-    fontSize: 15,
-    color: Colors.light.tint,
-    marginTop: 20,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  validEmailIcon: {
-    // color: "green",
-    color: "black",
-  },
-  invalidEmailIcon: {
-    // color: "red",
-    color: "black",
-  },
-});
+const signInMutation = gql`
+  # Increments a back-end counter and gets its resulting value
+  mutation SignIn($email: String!, $password: String!) {
+    SignIn(email: $email, password: $password) {
+      token
+    }
+  }
+`;
 
 function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);
+  const [signInFunction, { data, loading, error }] = useMutation(
+    signInMutation,
+    { errorPolicy: "all" },
+  );
 
+  if (error) {
+    error.graphQLErrors.map(({ message }) => {
+      console.log("message: ", message);
+      showMessage({
+        type: "danger",
+        message,
+      });
+    });
+  }
+
+  if (!loading && data) {
+    storeToken(data.SignIn.token);
+    router.replace("/profile");
+  }
   const SignInHandler = async () => {
-    const body = {
-      email,
-      password,
-    };
-    const response = await loginRequest(body);
-    if (response.ok) {
-      const token = response.data.token;
-      await storeToken(token);
-      router.replace("/profile");
-    } else {
-      alert("Please check your email and password.");
-    }
+    signInFunction({ variables: { email, password } });
   };
 
   const gotoSignupHandler = () => {
@@ -153,5 +142,33 @@ function LoginScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 50,
+    paddingVertical: 20,
+  },
+  title: {
+    fontSize: 15,
+    color: Colors.light.tint,
+    marginTop: 20,
+  },
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: "80%",
+  },
+  validEmailIcon: {
+    // color: "green",
+    color: "black",
+  },
+  invalidEmailIcon: {
+    // color: "red",
+    color: "black",
+  },
+});
 
 export default LoginScreen;

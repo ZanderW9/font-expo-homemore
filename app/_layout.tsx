@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { BACKEND_URL } from "@env";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -8,7 +9,8 @@ import {
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { useColorScheme, Platform } from "react-native";
+import FlashMessage from "react-native-flash-message";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,7 +50,7 @@ export default function RootLayout() {
 }
 
 const client = new ApolloClient({
-  uri: "localhost:4000/graphql",
+  uri: `${BACKEND_URL}/graphql`,
   cache: new InMemoryCache(),
 });
 
@@ -62,6 +64,11 @@ function RootLayoutNav() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         </Stack>
+        <FlashMessage
+          position="top"
+          floating
+          statusBarHeight={Platform.OS === "ios" ? null : 35}
+        />
       </ThemeProvider>
     </ApolloProvider>
   );
