@@ -37,7 +37,6 @@ function LoginScreen() {
   useEffect(() => {
     if (error) {
       error.graphQLErrors.map(({ message }) => {
-        console.log("message: ", message);
         showMessage({
           type: "danger",
           message,

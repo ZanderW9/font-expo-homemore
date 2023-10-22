@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 
-import FavoriteCardContainer from "../../components/FavoriteCardsContainer";
 import { View } from "../../components/Themed";
+import FavoriteCardContainer from "../../components/wishlist/FavoriteCardsContainer";
 
 const styles = StyleSheet.create({
   container: {

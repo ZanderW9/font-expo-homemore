@@ -1,5 +1,4 @@
 import MasonryList from "@react-native-seoul/masonry-list";
-import { usePathname } from "expo-router";
 import React, { useState, useRef, useEffect } from "react";
 import { StyleSheet } from "react-native";
 
@@ -13,8 +12,6 @@ const styles = StyleSheet.create({
 });
 
 function ListingCardsContainer() {
-  const pathname = usePathname();
-  console.log(pathname);
   const [allData, setAllData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);

@@ -16,8 +16,8 @@ import {
   Platform,
 } from "react-native";
 
-import FavoriteCardsContainer from "./FavoriteCardsContainer";
 import { Text, View } from "./Themed";
+import FavoriteCardsContainer from "./wishlist/FavoriteCardsContainer";
 import {
   addFavoriteFolderRequest,
   addFavoriteToFolderRequest,

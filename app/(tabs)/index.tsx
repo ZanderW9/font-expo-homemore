@@ -1,10 +1,9 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 
-import AddListingButton from "../../components/AddListingButton";
 import ListingCardsContainer from "../../components/ListingCardsContainer";
-import MySearchBar from "../../components/MySearchBar";
 import { View } from "../../components/Themed";
+import MySearchBar from "../../components/home/MySearchBar";
 
 const styles = StyleSheet.create({
   container: {
@@ -28,7 +27,6 @@ function TabOneScreen() {
     <View style={styles.container}>
       <MySearchBar />
       <ListingCardsContainer />
-      <AddListingButton />
     </View>
   );
 }

@@ -13,7 +13,7 @@ import {
 import {
   removeFavoriteFolderRequest,
   addFavoriteToFolderRequest,
-} from "../config/requests";
+} from "../../config/requests";
 
 const styles = StyleSheet.create({
   container: {
