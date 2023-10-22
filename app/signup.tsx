@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { Text, View } from "../components/Themed";
-import { storeToken } from "../config/TokenManager";
+import { storeUserToken } from "../config/TokenManager";
 import {
   registerRequest,
   sendVerificationEmailRequest,
@@ -131,7 +131,7 @@ function LoginScreen() {
     const response = await registerRequest(body);
     if (response.ok) {
       const token = response.data.token;
-      await storeToken(token);
+      await storeUserToken(token);
       router.push("/signin");
     } else {
       alert("Please check your email and password.");

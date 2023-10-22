@@ -1,4 +1,10 @@
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import { BACKEND_URL } from "@env";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -11,6 +17,8 @@ import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme, Platform } from "react-native";
 import FlashMessage from "react-native-flash-message";
+
+import { getUserToken } from "../config/TokenManager";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,9 +56,22 @@ export default function RootLayout() {
 
   return <RootLayoutNav />;
 }
+const httpLink = new HttpLink({ uri: `${BACKEND_URL}/graphql` });
+
+const authLink = setContext(async (_, { headers }) => {
+  // Get the authentication token from local storage if it exists
+  const token = await getUserToken();
+  // Return the headers to the context so HTTP link can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
 
 const client = new ApolloClient({
-  uri: `${BACKEND_URL}/graphql`,
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 

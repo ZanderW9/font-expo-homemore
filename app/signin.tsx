@@ -12,7 +12,7 @@ import {
 import { showMessage } from "react-native-flash-message";
 
 import { Text, View } from "../components/Themed";
-import { storeToken, getToken } from "../config/TokenManager";
+import { storeUserToken, getUserToken } from "../config/TokenManager";
 import Colors from "../constants/Colors";
 
 const signInMutation = gql`
@@ -34,18 +34,20 @@ function LoginScreen() {
     { errorPolicy: "all" },
   );
 
-  if (error) {
-    error.graphQLErrors.map(({ message }) => {
-      console.log("message: ", message);
-      showMessage({
-        type: "danger",
-        message,
+  useEffect(() => {
+    if (error) {
+      error.graphQLErrors.map(({ message }) => {
+        console.log("message: ", message);
+        showMessage({
+          type: "danger",
+          message,
+        });
       });
-    });
-  }
+    }
+  }, [error]);
 
   if (!loading && data) {
-    storeToken(data.SignIn.token);
+    storeUserToken(data.SignIn.token);
     router.replace("/profile");
   }
   const SignInHandler = async () => {
@@ -69,7 +71,7 @@ function LoginScreen() {
   };
 
   const autoLogin = async () => {
-    const token = await getToken();
+    const token = await getUserToken();
     if (token) {
       router.replace("/profile");
     }

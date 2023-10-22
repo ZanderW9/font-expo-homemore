@@ -86,7 +86,6 @@ const FavoriteCard: React.FunctionComponent<FavoriteCardProps> = ({
 }) => {
   const pathname = usePathname();
   const [isDeleteButtonVisible, setIsDeleteButtonVisible] = useState(false);
-
   useEffect(() => {
     const loadCachedData = async () => {
       try {

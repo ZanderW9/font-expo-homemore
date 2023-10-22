@@ -1,18 +1,20 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // 存储 token
-export const storeToken = async (token: string) => {
+export const storeUserToken = async (token: string) => {
   try {
     await AsyncStorage.setItem("userToken", token);
+    console.log("store token: ", token);
   } catch (error) {
     console.error("Error storing token: ", error);
   }
 };
 
 // 获取 token
-export const getToken = async () => {
+export const getUserToken = async () => {
   try {
     const token = await AsyncStorage.getItem("userToken");
+    console.log("get token: ", token);
     return token;
   } catch (error) {
     console.error("Error getting token: ", error);
@@ -20,9 +22,9 @@ export const getToken = async () => {
 };
 
 // 清除 token
-export const clearToken = async () => {
+export const clearUserToken = async () => {
   try {
-    await AsyncStorage.removeItem("userToken");
+    await AsyncStorage.clear();
   } catch (error) {
     console.error("Error clearing token: ", error);
   }

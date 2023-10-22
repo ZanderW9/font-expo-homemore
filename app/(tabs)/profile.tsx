@@ -10,14 +10,14 @@ import {
 } from "react-native";
 
 import { Text, View } from "../../components/Themed";
-import { clearToken, getToken } from "../../config/TokenManager";
+import { clearUserToken, getUserToken } from "../../config/TokenManager";
 
 function TabProfileScreen() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const token = await getToken();
+      const token = await getUserToken();
       if (token) {
         setIsLoggedIn(true);
       } else {
@@ -37,7 +37,7 @@ function TabProfileScreen() {
   };
 
   const logOutHandler = async () => {
-    await clearToken();
+    await clearUserToken();
     setIsLoggedIn(false);
     router.replace("/profile");
   };
