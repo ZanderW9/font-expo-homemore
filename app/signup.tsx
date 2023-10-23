@@ -1,92 +1,96 @@
+import { gql, useMutation } from "@apollo/client";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 import { Text, View } from "../components/Themed";
 import { storeUserToken } from "../config/TokenManager";
-import {
-  registerRequest,
-  sendVerificationEmailRequest,
-  userExistRequest,
-} from "../config/requests";
 import Colors from "../constants/Colors";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingHorizontal: 50,
-    paddingVertical: 20,
-  },
-  title: {
-    fontSize: 15,
-    color: Colors.light.tint,
-    marginTop: 20,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  validEmailIcon: {
-    // color: "green",
-    color: "black",
-  },
-  invalidEmailIcon: {
-    // color: "red",
-    color: "black",
-  },
-  verfication: {
-    fontSize: 12,
-    marginTop: -20,
-    marginBottom: 20,
-    textAlign: "right",
-  },
-});
+const signUpMutation = gql`
+  mutation (
+    $userName: String!
+    $email: String!
+    $password: String!
+    $veriCode: String!
+  ) {
+    SignUp(
+      userName: $userName
+      email: $email
+      password: $password
+      veriCode: $veriCode
+    ) {
+      token
+    }
+  }
+`;
+
+const sendVeriCodeMutation = gql`
+  mutation SendVeriCode($email: String!) {
+    SendVeriCode(email: $email)
+  }
+`;
 
 function LoginScreen() {
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [userCode, setUserCode] = useState("");
+  const [veriCode, setVeriCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [countdown, setCountdown] = useState(0);
 
+  const [signUpFunction, { data, loading, error }] = useMutation(
+    signUpMutation,
+    { errorPolicy: "all" },
+  );
+
+  const [
+    sendVeriCodeFunction,
+    { VeriCodeData, VeriCodeLoading, VeriCodeError },
+  ] = useMutation(sendVeriCodeMutation, { errorPolicy: "all" });
+
+  useEffect(() => {
+    if (error) {
+      error.graphQLErrors.map(() => {
+        showMessage({
+          type: "danger",
+          message: "User already exists.",
+        });
+      });
+    }
+  }, [error]);
+
   const restoreSendButton = () => {
     setCountdown(0);
     setIsButtonDisabled(false);
   };
 
-  const verficationHandler = async () => {
+  const sendCodeHandler = async () => {
     try {
-      const userExist = await userExistRequest(email);
-      if (!userExist.ok) {
-        alert("User already exists.");
-      } else {
-        setIsButtonDisabled(true);
-        const verification = await sendVerificationEmailRequest(email);
-        setVerificationCode(verification.data.verificationCode);
-        setTimeout(() => {
-          setIsButtonDisabled(false);
-        }, 60000);
-        startCountDown();
-      }
+      setIsButtonDisabled(true);
+      sendVeriCodeFunction({ variables: { email } });
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 60000);
+      startCountDown();
     } catch {
       setIsButtonDisabled(false);
-      alert("Please check your email.");
+      showMessage({
+        type: "danger",
+        message: "Please check your email.",
+      });
     }
   };
 
@@ -107,35 +111,33 @@ function LoginScreen() {
   };
 
   const SignUpHandler = async () => {
-    if (!userName || !email || !password || !confirmPassword || !userCode) {
-      alert("Please fill in all fields.");
+    if (!userName || !email || !password || !confirmPassword || !veriCode) {
+      showMessage({
+        type: "danger",
+        message: "Please fill in all fields.",
+      });
       return;
     }
     if (!isValidEmail) {
-      alert("Please check your email.");
+      showMessage({
+        type: "danger",
+        message: "Please enter a valid email.",
+      });
       return;
     }
     if (!passwordsMatch) {
-      alert("Passwords do not match.");
+      showMessage({
+        type: "danger",
+        message: "Passwords do not match.",
+      });
       return;
     }
-    if (verificationCode !== userCode) {
-      alert("Please check your verification code.");
-      return;
+
+    if (!loading && data) {
+      storeUserToken(data.SignUp.token);
+      router.replace("/profile");
     }
-    const body = {
-      email,
-      userName,
-      password,
-    };
-    const response = await registerRequest(body);
-    if (response.ok) {
-      const token = response.data.token;
-      await storeUserToken(token);
-      router.push("/signin");
-    } else {
-      alert("Please check your email and password.");
-    }
+    signUpFunction({ variables: { userName, email, password, veriCode } });
   };
 
   const gotoSigninHandler = () => {
@@ -240,11 +242,11 @@ function LoginScreen() {
                   name={countdown ? "lock-closed-outline" : "send-outline"}
                   size={24}
                   color="black"
-                  onPress={verficationHandler}
+                  onPress={sendCodeHandler}
                   disabled={isButtonDisabled}
                 />
               }
-              onChangeText={(text) => setUserCode(text)}
+              onChangeText={(text) => setVeriCode(text)}
             />
             {countdown > 0 && (
               <Text
@@ -265,5 +267,39 @@ function LoginScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 50,
+    paddingVertical: 20,
+  },
+  title: {
+    fontSize: 15,
+    color: Colors.light.tint,
+    marginTop: 20,
+  },
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: "80%",
+  },
+  validEmailIcon: {
+    // color: "green",
+    color: "black",
+  },
+  invalidEmailIcon: {
+    // color: "red",
+    color: "black",
+  },
+  verfication: {
+    fontSize: 12,
+    marginTop: -20,
+    marginBottom: 20,
+    textAlign: "right",
+  },
+});
 
 export default LoginScreen;
