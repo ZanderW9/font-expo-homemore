@@ -23,6 +23,203 @@ import {
   addFavoriteToFolderRequest,
 } from "../config/requests";
 
+type CardsComponentsProps = {
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    images: any[];
+    price: number;
+    address: {
+      state: string;
+      city: string;
+      street: string;
+    };
+  };
+};
+
+const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
+  data,
+}) => {
+  const [checked, setChecked] = useState(false);
+  const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
+  const [createFavoriteFolder, setCreateFavoriteFolder] = useState(false);
+  const [favoriteFolderName, setFavoriteFolderName] = useState("");
+
+  const toggleBottomSheetVisibility = (isVisible: boolean) => {
+    setFavoriteBottomSheet(isVisible);
+  };
+
+  const toggleCheckboxHandler = () => {
+    setFavoriteBottomSheet(!favoriteBottomSheet);
+    setChecked(!checked);
+  };
+
+  const pressHandler = () => {
+    // router.push("/detail/" + data._id);
+    router.push("/detail");
+  };
+
+  const addFavoriteFolderHandler = () => {
+    setFavoriteBottomSheet(false);
+    setCreateFavoriteFolder(true);
+  };
+
+  const backDropHandler = () => {
+    setFavoriteBottomSheet(false);
+    setCreateFavoriteFolder(false);
+    setChecked(false);
+  };
+
+  const createFavoriteFolderHandler = async () => {
+    if (favoriteFolderName === "") {
+      return;
+    }
+    const response = await addFavoriteFolderRequest(favoriteFolderName);
+    if (response.ok) {
+      setCreateFavoriteFolder(false);
+      setFavoriteBottomSheet(false);
+      const body = {
+        listingId: data.id,
+        folderName: favoriteFolderName,
+      };
+      addFavoriteToFolderRequest(body);
+    }
+  };
+
+  const goBackHome = () => {
+    setFavoriteBottomSheet(false);
+    setCreateFavoriteFolder(false);
+  };
+
+  const goBack = () => {
+    setCreateFavoriteFolder(false);
+    setFavoriteBottomSheet(true);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Pressable onPress={pressHandler}>
+        <Card containerStyle={styles.cardContainer}>
+          <Image
+            style={styles.image}
+            containerStyle={styles.item}
+            source={{ uri: data.images[0] }}
+          />
+          <Card.Title style={styles.price}>${data.price}</Card.Title>
+          <View style={styles.titleAndIconContainer}>
+            <Ionicons
+              name="location"
+              size={13}
+              color="black"
+              style={styles.icon}
+            />
+            <Card.Title style={styles.address}>
+              {data.address.city + ", " + data.address.state}
+            </Card.Title>
+          </View>
+          <Card.Title style={styles.title} numberOfLines={2}>
+            {data.title}
+          </Card.Title>
+          <Text style={styles.description} numberOfLines={3}>
+            {data.description}
+          </Text>
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              checked={checked}
+              checkedIcon="heart"
+              uncheckedIcon="heart-o"
+              onPress={toggleCheckboxHandler}
+              containerStyle={styles.checkbox}
+              checkedColor="rgb(236, 76, 96)"
+            />
+          </View>
+        </Card>
+      </Pressable>
+      {createFavoriteFolder ? (
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.bottomSheetContent}
+        >
+          <BottomSheet
+            modalProps={{
+              animationType: "slide",
+              transparent: true,
+              statusBarTranslucent: false,
+            }}
+            isVisible={createFavoriteFolder}
+            onBackdropPress={backDropHandler}
+          >
+            <Ionicons
+              name="chevron-back"
+              size={24}
+              color="black"
+              style={styles.backButton}
+              onPress={goBack}
+            />
+            <View style={styles.bottomSheetContent}>
+              <Text style={styles.BottomSheetTitle}>Create a wish list</Text>
+              <Input
+                placeholder="Name"
+                onChangeText={(text) => setFavoriteFolderName(text)}
+              />
+              <Button
+                size="lg"
+                radius="sm"
+                type="solid"
+                containerStyle={{
+                  width: 150,
+                  alignSelf: "center",
+                }}
+                onPress={createFavoriteFolderHandler}
+              >
+                Create
+              </Button>
+            </View>
+          </BottomSheet>
+        </KeyboardAvoidingView>
+      ) : (
+        <BottomSheet
+          modalProps={{
+            animationType: "slide",
+            transparent: true,
+            statusBarTranslucent: false,
+          }}
+          isVisible={favoriteBottomSheet}
+          onBackdropPress={backDropHandler}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color="black"
+            style={styles.backButton}
+            onPress={goBackHome}
+          />
+          <View style={styles.bottomSheetContent}>
+            <Text style={styles.BottomSheetTitle}>Add to Wishlist</Text>
+            <FavoriteCardsContainer
+              listingId={data.id}
+              toggleBottomSheetVisibility={toggleBottomSheetVisibility}
+            />
+            <Button
+              size="lg"
+              radius="sm"
+              type="solid"
+              containerStyle={{
+                width: 250,
+                alignSelf: "center",
+              }}
+              onPress={addFavoriteFolderHandler}
+            >
+              Create New Wish List
+            </Button>
+          </View>
+        </BottomSheet>
+      )}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -121,217 +318,5 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
 });
-
-type CardsComponentsProps = {
-  data: {
-    _id: string;
-    title: string;
-    description: string;
-    owner: string;
-    address: {
-      state: string;
-      city: string;
-      street: string;
-    };
-    price: number;
-    metadata: {
-      rooms: any[];
-      bathrooms: number;
-      propertyType: string;
-      amenities: any[];
-      images: any[];
-    };
-    bathrooms: number;
-    propertyType: string;
-    amenities: any[];
-    images: any[];
-    reviews: any[];
-    availability: any[];
-    published: boolean;
-    postedOn: Date;
-  };
-};
-
-const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
-  data,
-}) => {
-  const [checked, setChecked] = useState(false);
-  const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
-  const [createFavoriteFolder, setCreateFavoriteFolder] = useState(false);
-  const [favoriteFolderName, setFavoriteFolderName] = useState("");
-
-  const toggleBottomSheetVisibility = (isVisible: boolean) => {
-    setFavoriteBottomSheet(isVisible);
-  };
-
-  const toggleCheckboxHandler = () => {
-    setFavoriteBottomSheet(!favoriteBottomSheet);
-    setChecked(!checked);
-  };
-
-  const pressHandler = () => {
-    // router.push("/detail/" + data._id);
-    router.push("/detail");
-  };
-
-  const addFavoriteFolderHandler = () => {
-    setFavoriteBottomSheet(false);
-    setCreateFavoriteFolder(true);
-  };
-
-  const backDropHandler = () => {
-    setFavoriteBottomSheet(false);
-    setCreateFavoriteFolder(false);
-    setChecked(false);
-  };
-
-  const createFavoriteFolderHandler = async () => {
-    if (favoriteFolderName === "") {
-      return;
-    }
-    const response = await addFavoriteFolderRequest(favoriteFolderName);
-    if (response.ok) {
-      setCreateFavoriteFolder(false);
-      setFavoriteBottomSheet(false);
-      const body = {
-        listingId: data._id,
-        folderName: favoriteFolderName,
-      };
-      addFavoriteToFolderRequest(body);
-    }
-  };
-
-  const goBackHome = () => {
-    setFavoriteBottomSheet(false);
-    setCreateFavoriteFolder(false);
-  };
-
-  const goBack = () => {
-    setCreateFavoriteFolder(false);
-    setFavoriteBottomSheet(true);
-  };
-
-  return (
-    <View style={styles.container}>
-      <Pressable onPress={pressHandler}>
-        <Card containerStyle={styles.cardContainer}>
-          <Image
-            style={styles.image}
-            containerStyle={styles.item}
-            source={{ uri: data.metadata.images[0] }}
-          />
-          <Card.Title style={styles.price}>${data.price}</Card.Title>
-          <View style={styles.titleAndIconContainer}>
-            <Ionicons
-              name="location"
-              size={13}
-              color="black"
-              style={styles.icon}
-            />
-            <Card.Title style={styles.address}>
-              {data.address.city + ", " + data.address.state}
-            </Card.Title>
-          </View>
-          <Card.Title style={styles.title} numberOfLines={2}>
-            {data.title}
-          </Card.Title>
-          <Text style={styles.description} numberOfLines={3}>
-            {data.description}
-          </Text>
-          <View style={styles.checkboxContainer}>
-            <CheckBox
-              checked={checked}
-              checkedIcon="heart"
-              uncheckedIcon="heart-o"
-              onPress={toggleCheckboxHandler}
-              containerStyle={styles.checkbox}
-              checkedColor="rgb(236, 76, 96)"
-            />
-          </View>
-        </Card>
-      </Pressable>
-      {createFavoriteFolder ? (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.bottomSheetContent}
-        >
-          <BottomSheet
-            modalProps={{
-              animationType: "slide",
-              transparent: true,
-              statusBarTranslucent: false,
-            }}
-            isVisible={createFavoriteFolder}
-            onBackdropPress={backDropHandler}
-          >
-            <Ionicons
-              name="chevron-back"
-              size={24}
-              color="black"
-              style={styles.backButton}
-              onPress={goBack}
-            />
-            <View style={styles.bottomSheetContent}>
-              <Text style={styles.BottomSheetTitle}>Create a wish list</Text>
-              <Input
-                placeholder="Name"
-                onChangeText={(text) => setFavoriteFolderName(text)}
-              />
-              <Button
-                size="lg"
-                radius="sm"
-                type="solid"
-                containerStyle={{
-                  width: 150,
-                  alignSelf: "center",
-                }}
-                onPress={createFavoriteFolderHandler}
-              >
-                Create
-              </Button>
-            </View>
-          </BottomSheet>
-        </KeyboardAvoidingView>
-      ) : (
-        <BottomSheet
-          modalProps={{
-            animationType: "slide",
-            transparent: true,
-            statusBarTranslucent: false,
-          }}
-          isVisible={favoriteBottomSheet}
-          onBackdropPress={backDropHandler}
-        >
-          <Ionicons
-            name="chevron-back"
-            size={24}
-            color="black"
-            style={styles.backButton}
-            onPress={goBackHome}
-          />
-          <View style={styles.bottomSheetContent}>
-            <Text style={styles.BottomSheetTitle}>Add to Wishlist</Text>
-            <FavoriteCardsContainer
-              listingId={data._id}
-              toggleBottomSheetVisibility={toggleBottomSheetVisibility}
-            />
-            <Button
-              size="lg"
-              radius="sm"
-              type="solid"
-              containerStyle={{
-                width: 250,
-                alignSelf: "center",
-              }}
-              onPress={addFavoriteFolderHandler}
-            >
-              Create New Wish List
-            </Button>
-          </View>
-        </BottomSheet>
-      )}
-    </View>
-  );
-};
 
 export default ListingCard;

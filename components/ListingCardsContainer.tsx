@@ -1,101 +1,75 @@
+import { gql, useQuery } from "@apollo/client";
 import MasonryList from "@react-native-seoul/masonry-list";
-import React, { useState, useRef, useEffect } from "react";
+import { debounce } from "lodash";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
 import ListingCard from "./ListingCard";
-import { allListPubRequest } from "../config/requests";
+
+const allListingsQuery = gql`
+  query Query($after: String, $first: Int, $sortOrder: SortOrder) {
+    allListings(after: $after, first: $first, sortOrder: $sortOrder) {
+      id
+      cursor
+      title
+      description
+      images
+      price
+      address
+    }
+  }
+`;
+
+function ListingCardsContainer() {
+  const { loading, data, refetch, fetchMore } = useQuery(allListingsQuery, {
+    variables: { first: 10, after: null, sortOrder: "desc" },
+    errorPolicy: "all",
+  });
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  const fetchMoreNew = debounce(() => {
+    if (
+      !isFetchingMore &&
+      data &&
+      data.allListings[data.allListings.length - 1].cursor
+    ) {
+      setIsFetchingMore(true);
+
+      fetchMore({
+        variables: {
+          first: 10,
+          after:
+            data.allListings[data.allListings.length - 1].cursor.toString(),
+          sortOrder: "desc",
+        },
+      }).then(() => {
+        setIsFetchingMore(false);
+      });
+    }
+  }, 30);
+
+  const handleRefresh = () => {
+    refetch();
+  };
+
+  return (
+    <MasonryList
+      style={styles.container}
+      data={data ? data.allListings : []}
+      numColumns={2}
+      renderItem={({ item }) => <ListingCard data={item} />}
+      onEndReached={fetchMoreNew}
+      refreshing={loading}
+      onRefresh={handleRefresh}
+      onEndReachedThreshold={0.0001}
+    />
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 });
-
-function ListingCardsContainer() {
-  const [allData, setAllData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMoreData, setHasMoreData] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const currentPageRef = useRef(currentPage);
-  const allDataRef = useRef(allData);
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    try {
-      const response = await allListPubRequest(1);
-      if (response.ok) {
-        const newData = response.data.listings;
-        if (newData.length === 0) {
-          setHasMoreData(false);
-        } else {
-          setCurrentPage(1);
-          setAllData(newData);
-        }
-      } else {
-        console.log("Error loading data");
-      }
-    } catch {
-      console.log("Error loading data");
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-
-  const loadMoreData = async () => {
-    if (loadingMore || !hasMoreData) {
-      return;
-    }
-    setLoadingMore(true);
-    try {
-      const response = await allListPubRequest(currentPageRef.current + 1);
-      if (response.ok) {
-        const newData = response.data.listings;
-        if (newData.length === 0) {
-          setHasMoreData(false);
-        } else {
-          setCurrentPage(currentPageRef.current + 1);
-          const currentData = allDataRef.current;
-          setAllData([...currentData, ...newData]);
-        }
-      } else {
-        console.log("Error loading data");
-      }
-    } catch {
-      console.log("Error loading data");
-    } finally {
-      setLoadingMore(false);
-    }
-  };
-
-  useEffect(() => {
-    loadMoreData();
-  }, []);
-
-  useEffect(() => {
-    currentPageRef.current = currentPage;
-  }, [currentPage]);
-
-  useEffect(() => {
-    allDataRef.current = allData;
-  }, [allData]);
-
-  const endReachedHandler = () => {
-    loadMoreData();
-  };
-
-  return (
-    <MasonryList
-      style={styles.container}
-      data={allData}
-      numColumns={2}
-      renderItem={({ item }) => <ListingCard data={item} />}
-      onEndReached={endReachedHandler}
-      onEndReachedThreshold={0.1}
-      refreshing={isRefreshing}
-      onRefresh={handleRefresh}
-    />
-  );
-}
 
 export default ListingCardsContainer;
