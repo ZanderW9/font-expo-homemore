@@ -1,27 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  Card,
-  Image,
-  CheckBox,
-  BottomSheet,
-  Button,
-  Input,
-} from "@rneui/themed";
+import { Card, Image, CheckBox } from "@rneui/themed";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 
 import { Text, View } from "./Themed";
-import FavoriteCardsContainer from "./wishlist/FavoriteCardsContainer";
-import {
-  addFavoriteFolderRequest,
-  addFavoriteToFolderRequest,
-} from "../config/requests";
+// import FavoriteCardsContainer from "./wishlist/FavoriteCardsContainer";
+// import {
+//   addFavoriteFolderRequest,
+//   addFavoriteToFolderRequest,
+// } from "../config/requests";
 
 type CardsComponentsProps = {
   data: {
@@ -43,60 +31,23 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 }) => {
   const [checked, setChecked] = useState(false);
   const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
-  const [createFavoriteFolder, setCreateFavoriteFolder] = useState(false);
-  const [favoriteFolderName, setFavoriteFolderName] = useState("");
+  // const [createFavoriteFolder, setCreateFavoriteFolder] = useState(false);
+  // const [favoriteFolderName, setFavoriteFolderName] = useState("");
 
-  const toggleBottomSheetVisibility = (isVisible: boolean) => {
-    setFavoriteBottomSheet(isVisible);
-  };
+  // const toggleBottomSheetVisibility = (isVisible: boolean) => {
+  //   setFavoriteBottomSheet(isVisible);
+  // };
 
   const toggleCheckboxHandler = () => {
     setFavoriteBottomSheet(!favoriteBottomSheet);
     setChecked(!checked);
+    router.push({ pathname: "/addwishlist", params: { listingId: data.id } });
   };
 
   const pressHandler = () => {
     // router.push("/detail/" + data._id);
-    router.push("/detail");
+    router.push(`/detail/${data.id}`);
   };
-
-  const addFavoriteFolderHandler = () => {
-    setFavoriteBottomSheet(false);
-    setCreateFavoriteFolder(true);
-  };
-
-  const backDropHandler = () => {
-    setFavoriteBottomSheet(false);
-    setCreateFavoriteFolder(false);
-    setChecked(false);
-  };
-
-  const createFavoriteFolderHandler = async () => {
-    if (favoriteFolderName === "") {
-      return;
-    }
-    const response = await addFavoriteFolderRequest(favoriteFolderName);
-    if (response.ok) {
-      setCreateFavoriteFolder(false);
-      setFavoriteBottomSheet(false);
-      const body = {
-        listingId: data.id,
-        folderName: favoriteFolderName,
-      };
-      addFavoriteToFolderRequest(body);
-    }
-  };
-
-  const goBackHome = () => {
-    setFavoriteBottomSheet(false);
-    setCreateFavoriteFolder(false);
-  };
-
-  const goBack = () => {
-    setCreateFavoriteFolder(false);
-    setFavoriteBottomSheet(true);
-  };
-
   return (
     <View style={styles.container}>
       <Pressable onPress={pressHandler}>
@@ -136,7 +87,49 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           </View>
         </Card>
       </Pressable>
-      {createFavoriteFolder ? (
+    </View>
+  );
+};
+
+// const addFavoriteFolderHandler = () => {
+//   setFavoriteBottomSheet(false);
+//   setCreateFavoriteFolder(true);
+// };
+
+// const backDropHandler = () => {
+//   setFavoriteBottomSheet(false);
+//   setCreateFavoriteFolder(false);
+//   setChecked(false);
+// };
+
+// const createFavoriteFolderHandler = async () => {
+//   if (favoriteFolderName === "") {
+//     return;
+//   }
+//   const response = await addFavoriteFolderRequest(favoriteFolderName);
+//   if (response.ok) {
+//     setCreateFavoriteFolder(false);
+//     setFavoriteBottomSheet(false);
+//     const body = {
+//       listingId: data.id,
+//       folderName: favoriteFolderName,
+//     };
+//     addFavoriteToFolderRequest(body);
+//   }
+// };
+
+// const goBackHome = () => {
+//   setFavoriteBottomSheet(false);
+//   setCreateFavoriteFolder(false);
+// };
+
+// const goBack = () => {
+//   setCreateFavoriteFolder(false);
+//   setFavoriteBottomSheet(true);
+// };
+
+{
+  /* {createFavoriteFolder ? (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.bottomSheetContent}
@@ -215,10 +208,8 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
             </Button>
           </View>
         </BottomSheet>
-      )}
-    </View>
-  );
-};
+      )} */
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -298,25 +289,25 @@ const styles = StyleSheet.create({
     margin: 0,
     backgroundColor: "transparent",
   },
-  bottomSheetContent: {
-    backgroundColor: "white",
-    paddingBottom: 25,
-    paddingTop: 10,
-    borderRadius: 10,
-  },
-  BottomSheetTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 10,
-    marginTop: 10,
-    textAlign: "center",
-  },
-  backButton: {
-    position: "absolute",
-    top: 5,
-    left: 5,
-    zIndex: 1,
-  },
+  // bottomSheetContent: {
+  //   backgroundColor: "white",
+  //   paddingBottom: 25,
+  //   paddingTop: 10,
+  //   borderRadius: 10,
+  // },
+  // BottomSheetTitle: {
+  //   fontSize: 18,
+  //   fontWeight: "700",
+  //   marginBottom: 10,
+  //   marginTop: 10,
+  //   textAlign: "center",
+  // },
+  // backButton: {
+  //   position: "absolute",
+  //   top: 5,
+  //   left: 5,
+  //   zIndex: 1,
+  // },
 });
 
 export default ListingCard;

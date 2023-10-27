@@ -1,8 +1,12 @@
+import { gql, useQuery } from "@apollo/client";
+import { useLocalSearchParams, Stack } from "expo-router";
 import { StyleSheet } from "react-native";
 
 import { Text, View } from "../components/Themed";
 
-function detailScreen() {
+function AddwishlistScreen() {
+  const { listing } = useLocalSearchParams();
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -21,9 +25,9 @@ function detailScreen() {
   });
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>this is detail screen</Text>
+      <Text style={styles.title}>This is addwishlist page for {listing}</Text>
     </View>
   );
 }
 
-export default detailScreen;
+export default AddwishlistScreen;
