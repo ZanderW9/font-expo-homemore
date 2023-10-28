@@ -28,6 +28,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Explore",
+          headerTitleAlign: "center",
           headerTitleStyle: {
             color: Colors[colorScheme ?? "light"].contrastText,
           },
@@ -54,6 +55,7 @@ export default function TabLayout() {
         name="wishlist"
         options={{
           title: "Wishlist",
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
         }}
       />

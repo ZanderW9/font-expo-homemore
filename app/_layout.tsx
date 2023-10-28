@@ -79,8 +79,6 @@ const client = new ApolloClient({
           allListings: {
             keyArgs: false,
             merge(existing = [], incoming) {
-              console.log("existing: ", existing);
-              console.log("incoming: ", incoming);
               return [...existing, ...incoming];
             },
           },
@@ -101,7 +99,11 @@ function RootLayoutNav() {
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen
             name="addwishlist"
-            options={{ presentation: "modal" }}
+            options={{
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+              headerShown: false,
+            }}
           />
         </Stack>
         <FlashMessage

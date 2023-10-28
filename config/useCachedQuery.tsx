@@ -7,8 +7,15 @@ const useCachedQuery = (
   path: string,
   variables: object = {},
 ) => {
-  const [data, setData] = useState(null);
-  const { data: networkData, error, loading } = useQuery(query, { variables });
+  const [data, setData] = useState<any>(null);
+  const {
+    data: networkData,
+    error,
+    loading,
+    refetch,
+  } = useQuery(query, { variables });
+
+  refetch();
 
   useEffect(() => {
     // Get data from AsyncStorage using the path parameter
@@ -23,7 +30,7 @@ const useCachedQuery = (
         AsyncStorage.removeItem(path);
       }
     });
-  }, [path]);
+  }, []);
 
   useEffect(() => {
     if (networkData && !error) {
@@ -31,7 +38,7 @@ const useCachedQuery = (
       setData(networkData);
       AsyncStorage.setItem(path, JSON.stringify(networkData));
     }
-  }, [networkData, error, path]);
+  }, [networkData, error]);
 
   return { data, error, loading };
 };

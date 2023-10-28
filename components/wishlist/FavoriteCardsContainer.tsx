@@ -16,16 +16,14 @@ const favoriteByUserQuery = gql`
 `;
 
 const FavoriteCardsContainer: React.FunctionComponent = () => {
-  const { data, loading } = useCachedQuery(favoriteByUserQuery, usePathname());
-  if (!loading && data) {
-    console.log("data: ", data);
-  }
+  const { data } = useCachedQuery(favoriteByUserQuery, usePathname(), {});
 
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.row}>
           {data &&
+            data.myFavorites &&
             data.myFavorites.map((item, index) => (
               <View key={index} style={styles.card}>
                 <Text> {item.name}</Text>

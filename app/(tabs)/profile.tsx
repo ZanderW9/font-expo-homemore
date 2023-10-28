@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { ListItem } from "@rneui/themed";
 import { router } from "expo-router";
 import React, { useState, useEffect } from "react";
 import {
@@ -6,10 +6,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableHighlight,
 } from "react-native";
 
-import { Text, View } from "../../components/Themed";
+import { View } from "../../components/Themed";
 import { clearUserToken, getUserToken } from "../../config/TokenManager";
 
 function TabProfileScreen() {
@@ -60,53 +59,53 @@ function TabProfileScreen() {
           <View style={styles.container}>
             {!isLoggedIn && (
               <>
-                <TouchableHighlight onPress={signUpHandler}>
-                  <View style={styles.buttonWrapper}>
-                    <Text style={styles.title}>Sign Up</Text>
-                    <Ionicons name="chevron-forward" size={24} color="black" />
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight onPress={signInHandler}>
-                  <View style={styles.buttonWrapper}>
-                    <Text style={styles.title}>Sign In</Text>
-                    <Ionicons name="chevron-forward" size={24} color="black" />
-                  </View>
-                </TouchableHighlight>
+                <ListItem onPress={signUpHandler}>
+                  <ListItem.Content>
+                    <ListItem.Title>Sign Up</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
+                <ListItem onPress={signInHandler}>
+                  <ListItem.Content>
+                    <ListItem.Title>Sign In</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
               </>
             )}
 
             {isLoggedIn && (
               <View style={styles.container}>
-                <TouchableHighlight onPress={createListingHandler}>
-                  <View style={styles.buttonWrapper}>
-                    <Text style={styles.title}>Create Listing</Text>
-                    <Ionicons name="chevron-forward" size={24} color="black" />
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight onPress={createListingHandler}>
-                  <View style={styles.buttonWrapper}>
-                    <Text style={styles.title}>Manage Listing</Text>
-                    <Ionicons name="chevron-forward" size={24} color="black" />
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight onPress={createListingHandler}>
-                  <View style={styles.buttonWrapper}>
-                    <Text style={styles.title}>Manage Booking</Text>
-                    <Ionicons name="chevron-forward" size={24} color="black" />
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight onPress={changePasswordHandler}>
-                  <View style={styles.buttonWrapper}>
-                    <Text style={styles.title}>Change Password</Text>
-                    <Ionicons name="chevron-forward" size={24} color="black" />
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight onPress={logOutHandler}>
-                  <View style={styles.buttonWrapper}>
-                    <Text style={styles.title}>Log Out</Text>
-                    <Ionicons name="chevron-forward" size={24} color="black" />
-                  </View>
-                </TouchableHighlight>
+                <ListItem onPress={createListingHandler}>
+                  <ListItem.Content>
+                    <ListItem.Title>Create Listing</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
+                <ListItem onPress={createListingHandler}>
+                  <ListItem.Content>
+                    <ListItem.Title>Manage Listing</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
+                <ListItem onPress={createListingHandler}>
+                  <ListItem.Content>
+                    <ListItem.Title>Manage Booking</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
+                <ListItem onPress={changePasswordHandler}>
+                  <ListItem.Content>
+                    <ListItem.Title>Change Password</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
+                <ListItem onPress={logOutHandler}>
+                  <ListItem.Content>
+                    <ListItem.Title>Log Out</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
               </View>
             )}
           </View>
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 0,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   title: {
     fontSize: 18,

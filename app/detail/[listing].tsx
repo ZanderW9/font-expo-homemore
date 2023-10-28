@@ -1,10 +1,9 @@
-import { gql, useQuery } from "@apollo/client";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { StyleSheet } from "react-native";
 
 import { Text, View } from "../../components/Themed";
 
-function detailScreen() {
+function ListingDetailScreen() {
   const { listing } = useLocalSearchParams();
 
   const styles = StyleSheet.create({
@@ -25,10 +24,15 @@ function detailScreen() {
   });
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: listing }} />
+      <Stack.Screen
+        options={{
+          title: listing,
+          animation: "slide_from_right",
+        }}
+      />
       <Text style={styles.title}>This is detail page for {listing}</Text>
     </View>
   );
 }
 
-export default detailScreen;
+export default ListingDetailScreen;

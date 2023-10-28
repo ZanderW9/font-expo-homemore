@@ -59,7 +59,7 @@ function ListingCardsContainer() {
       onEndReached={fetchMoreNew}
       refreshing={loading}
       onRefresh={handleRefresh}
-      onEndReachedThreshold={0.0001}
+      onEndReachedThreshold={0.2}
     />
   );
 }
