@@ -5,11 +5,6 @@ import React, { useState } from "react";
 import { StyleSheet, Pressable } from "react-native";
 
 import { Text, View } from "./Themed";
-// import FavoriteCardsContainer from "./wishlist/FavoriteCardsContainer";
-// import {
-//   addFavoriteFolderRequest,
-//   addFavoriteToFolderRequest,
-// } from "../config/requests";
 
 type CardsComponentsProps = {
   data: {
@@ -31,12 +26,6 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 }) => {
   const [checked, setChecked] = useState(false);
   const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
-  // const [createFavoriteFolder, setCreateFavoriteFolder] = useState(false);
-  // const [favoriteFolderName, setFavoriteFolderName] = useState("");
-
-  // const toggleBottomSheetVisibility = (isVisible: boolean) => {
-  //   setFavoriteBottomSheet(isVisible);
-  // };
 
   const toggleCheckboxHandler = () => {
     setFavoriteBottomSheet(!favoriteBottomSheet);
@@ -45,7 +34,6 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const pressHandler = () => {
-    // router.push("/detail/" + data._id);
     router.push(`/detail/${data.id}`);
   };
   return (
@@ -90,126 +78,6 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
     </View>
   );
 };
-
-// const addFavoriteFolderHandler = () => {
-//   setFavoriteBottomSheet(false);
-//   setCreateFavoriteFolder(true);
-// };
-
-// const backDropHandler = () => {
-//   setFavoriteBottomSheet(false);
-//   setCreateFavoriteFolder(false);
-//   setChecked(false);
-// };
-
-// const createFavoriteFolderHandler = async () => {
-//   if (favoriteFolderName === "") {
-//     return;
-//   }
-//   const response = await addFavoriteFolderRequest(favoriteFolderName);
-//   if (response.ok) {
-//     setCreateFavoriteFolder(false);
-//     setFavoriteBottomSheet(false);
-//     const body = {
-//       listingId: data.id,
-//       folderName: favoriteFolderName,
-//     };
-//     addFavoriteToFolderRequest(body);
-//   }
-// };
-
-// const goBackHome = () => {
-//   setFavoriteBottomSheet(false);
-//   setCreateFavoriteFolder(false);
-// };
-
-// const goBack = () => {
-//   setCreateFavoriteFolder(false);
-//   setFavoriteBottomSheet(true);
-// };
-
-{
-  /* {createFavoriteFolder ? (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.bottomSheetContent}
-        >
-          <BottomSheet
-            modalProps={{
-              animationType: "slide",
-              transparent: true,
-              statusBarTranslucent: false,
-            }}
-            isVisible={createFavoriteFolder}
-            onBackdropPress={backDropHandler}
-          >
-            <Ionicons
-              name="chevron-back"
-              size={24}
-              color="black"
-              style={styles.backButton}
-              onPress={goBack}
-            />
-            <View style={styles.bottomSheetContent}>
-              <Text style={styles.BottomSheetTitle}>Create a wish list</Text>
-              <Input
-                placeholder="Name"
-                onChangeText={(text) => setFavoriteFolderName(text)}
-              />
-              <Button
-                size="lg"
-                radius="sm"
-                type="solid"
-                containerStyle={{
-                  width: 150,
-                  alignSelf: "center",
-                }}
-                onPress={createFavoriteFolderHandler}
-              >
-                Create
-              </Button>
-            </View>
-          </BottomSheet>
-        </KeyboardAvoidingView>
-      ) : (
-        <BottomSheet
-          modalProps={{
-            animationType: "slide",
-            transparent: true,
-            statusBarTranslucent: false,
-          }}
-          isVisible={favoriteBottomSheet}
-          onBackdropPress={backDropHandler}
-        >
-          <Ionicons
-            name="chevron-back"
-            size={24}
-            color="black"
-            style={styles.backButton}
-            onPress={goBackHome}
-          />
-          <View style={styles.bottomSheetContent}>
-            <Text style={styles.BottomSheetTitle}>Add to Wishlist</Text>
-            <FavoriteCardsContainer
-              listingId={data.id}
-              toggleBottomSheetVisibility={toggleBottomSheetVisibility}
-            />
-            <Button
-              size="lg"
-              radius="sm"
-              type="solid"
-              containerStyle={{
-                width: 250,
-                alignSelf: "center",
-              }}
-              onPress={addFavoriteFolderHandler}
-            >
-              Create New Wish List
-            </Button>
-          </View>
-        </BottomSheet>
-      )} */
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -289,25 +157,6 @@ const styles = StyleSheet.create({
     margin: 0,
     backgroundColor: "transparent",
   },
-  // bottomSheetContent: {
-  //   backgroundColor: "white",
-  //   paddingBottom: 25,
-  //   paddingTop: 10,
-  //   borderRadius: 10,
-  // },
-  // BottomSheetTitle: {
-  //   fontSize: 18,
-  //   fontWeight: "700",
-  //   marginBottom: 10,
-  //   marginTop: 10,
-  //   textAlign: "center",
-  // },
-  // backButton: {
-  //   position: "absolute",
-  //   top: 5,
-  //   left: 5,
-  //   zIndex: 1,
-  // },
 });
 
 export default ListingCard;

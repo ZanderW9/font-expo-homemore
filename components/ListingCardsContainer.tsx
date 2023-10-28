@@ -10,7 +10,6 @@ const allListingsQuery = gql`
   query Query($after: String, $first: Int, $sortOrder: SortOrder) {
     allListings(after: $after, first: $first, sortOrder: $sortOrder) {
       id
-      cursor
       title
       description
       images
@@ -25,21 +24,20 @@ function ListingCardsContainer() {
     variables: { first: 10, after: null, sortOrder: "desc" },
     errorPolicy: "all",
   });
+
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   const fetchMoreNew = debounce(() => {
     if (
       !isFetchingMore &&
       data &&
-      data.allListings[data.allListings.length - 1].cursor
+      data.allListings[data.allListings.length - 1].id
     ) {
       setIsFetchingMore(true);
-
       fetchMore({
         variables: {
           first: 10,
-          after:
-            data.allListings[data.allListings.length - 1].cursor.toString(),
+          after: data.allListings[data.allListings.length - 1].id.toString(),
           sortOrder: "desc",
         },
       }).then(() => {
