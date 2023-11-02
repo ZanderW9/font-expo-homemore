@@ -5,6 +5,7 @@ module.exports = function (api) {
     plugins: [
       // Required for expo-router
       "expo-router/babel",
+      "react-native-reanimated/plugin",
       [
         "module:react-native-dotenv",
         {
@@ -14,6 +15,20 @@ module.exports = function (api) {
           allowlist: null,
           safe: false,
           allowUndefined: true,
+        },
+      ],
+      [
+        'module-resolver',
+        {
+          root: ['./'],
+          alias: {
+            "@components": "./components",
+            "@constants": "./constants",
+            "@app": "./app",
+            "@assets": "./assets",
+            "@test": "./test",
+            "@config": "./config",
+          },
         },
       ],
     ],

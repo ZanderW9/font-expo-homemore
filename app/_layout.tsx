@@ -5,6 +5,7 @@ import {
   HttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { getUserToken } from "@config/TokenManager";
 import { BACKEND_URL } from "@env";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -17,8 +18,6 @@ import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme, Platform } from "react-native";
 import FlashMessage from "react-native-flash-message";
-
-import { getUserToken } from "../config/TokenManager";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -35,7 +34,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
 

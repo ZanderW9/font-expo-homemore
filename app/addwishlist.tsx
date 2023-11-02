@@ -1,9 +1,8 @@
+import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "@rneui/themed";
 import { useLocalSearchParams, router } from "expo-router";
 import { StyleSheet, SafeAreaView, Pressable } from "react-native";
-
-import { Text, View } from "../components/Themed";
 
 function AddwishlistScreen() {
   const { listing } = useLocalSearchParams();

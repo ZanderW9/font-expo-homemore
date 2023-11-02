@@ -1,4 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
+import { Text, View } from "@components/Themed";
+import { storeUserToken } from "@config/TokenManager";
+import Colors from "@constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router } from "expo-router";
@@ -10,10 +13,6 @@ import {
   ScrollView,
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
-
-import { Text, View } from "../components/Themed";
-import { storeUserToken } from "../config/TokenManager";
-import Colors from "../constants/Colors";
 
 const signUpMutation = gql`
   mutation (
@@ -60,6 +59,8 @@ function LoginScreen() {
     sendVeriCodeFunction,
     { VeriCodeData, VeriCodeLoading, VeriCodeError },
   ] = useMutation(sendVeriCodeMutation, { errorPolicy: "all" });
+
+  console.log(VeriCodeData, VeriCodeLoading, VeriCodeError);
 
   useEffect(() => {
     if (error) {

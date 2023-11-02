@@ -1,4 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
+import { Text, View } from "@components/Themed";
+import { storeUserToken, getUserToken } from "@config/TokenManager";
+import Colors from "@constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router } from "expo-router";
@@ -10,10 +13,6 @@ import {
   ScrollView,
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
-
-import { Text, View } from "../components/Themed";
-import { storeUserToken, getUserToken } from "../config/TokenManager";
-import Colors from "../constants/Colors";
 
 const signInMutation = gql`
   # Increments a back-end counter and gets its resulting value

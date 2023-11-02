@@ -1,10 +1,9 @@
 import { gql } from "@apollo/client";
+import { Text } from "@components/Themed";
+import useCachedQuery from "@config/useCachedQuery";
 import { usePathname } from "expo-router";
 import React from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
-
-import useCachedQuery from "../../config/useCachedQuery";
-import { Text } from "../Themed";
 
 const favoriteByUserQuery = gql`
   # Increments a back-end counter and gets its resulting value

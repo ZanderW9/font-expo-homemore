@@ -1,3 +1,7 @@
+import {
+  removeFavoriteFolderRequest,
+  addFavoriteToFolderRequest,
+} from "@config/requests";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, usePathname } from "expo-router";
@@ -9,11 +13,6 @@ import {
   TouchableOpacity,
   Vibration,
 } from "react-native";
-
-import {
-  removeFavoriteFolderRequest,
-  addFavoriteToFolderRequest,
-} from "../../config/requests";
 
 const styles = StyleSheet.create({
   container: {

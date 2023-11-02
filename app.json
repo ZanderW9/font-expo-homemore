@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "foothold-app",
+    "slug": "foothold-slug",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "frontend",
+    "scheme": "foothold-scheme",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",

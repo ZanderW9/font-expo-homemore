@@ -1,3 +1,6 @@
+import { View } from "@components/Themed";
+import { changePasswordRequest } from "@config/requests";
+import Colors from "@constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router } from "expo-router";
@@ -8,10 +11,6 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-
-import { View } from "../components/Themed";
-import { changePasswordRequest } from "../config/requests";
-import Colors from "../constants/Colors";
 
 const styles = StyleSheet.create({
   container: {

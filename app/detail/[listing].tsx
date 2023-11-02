@@ -1,7 +1,6 @@
+import { Text, View } from "@components/Themed";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { StyleSheet } from "react-native";
-
-import { Text, View } from "../../components/Themed";
 
 function ListingDetailScreen() {
   const { listing } = useLocalSearchParams();

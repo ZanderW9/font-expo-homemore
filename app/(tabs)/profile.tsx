@@ -1,3 +1,5 @@
+import { View } from "@components/Themed";
+import { clearUserToken, getUserToken } from "@config/TokenManager";
 import { ListItem } from "@rneui/themed";
 import { router } from "expo-router";
 import React, { useState, useEffect } from "react";
@@ -7,9 +9,6 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-
-import { View } from "../../components/Themed";
-import { clearUserToken, getUserToken } from "../../config/TokenManager";
 
 function TabProfileScreen() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

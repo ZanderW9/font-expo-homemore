@@ -1,11 +1,10 @@
 import { gql } from "@apollo/client";
+import { Text, View } from "@components/Themed";
+import useCachedQuery from "@config/useCachedQuery";
 import { ListItem, Button } from "@rneui/themed";
 import { usePathname, router } from "expo-router";
 import React from "react";
 import { StyleSheet, FlatList } from "react-native";
-
-import { Text, View } from "../../components/Themed";
-import useCachedQuery from "../../config/useCachedQuery";
 
 const myChatsQuery = gql`
   query Query {

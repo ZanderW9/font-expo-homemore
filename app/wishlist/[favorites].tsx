@@ -1,12 +1,11 @@
+import ListingCard from "@components/ListingCard";
+import { View } from "@components/Themed";
+import { getFavoriteDetailsOfFolderRequest } from "@config/requests";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { useLocalSearchParams, Stack } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
-
-import ListingCard from "../../components/ListingCard";
-import { View } from "../../components/Themed";
-import { getFavoriteDetailsOfFolderRequest } from "../../config/requests";
 
 const styles = StyleSheet.create({
   container: {

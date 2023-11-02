@@ -1,9 +1,8 @@
+import Colors from "@constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Pressable, useColorScheme } from "react-native";
-
-import Colors from "../../constants/Colors";
+import { useColorScheme } from "react-native";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -15,7 +14,7 @@ function TabBarIcon(props: {
   return <Ionicons size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
-export default function TabLayout() {
+export default function () {
   const colorScheme = useColorScheme();
 
   return (
@@ -25,29 +24,11 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(index)"
         options={{
           title: "Explore",
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: Colors[colorScheme ?? "light"].contrastText,
-          },
-          headerStyle: {
-            backgroundColor: Colors[colorScheme ?? "light"].mainColor,
-          },
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <Pressable>
-              {({ pressed }) => (
-                <Ionicons
-                  name="person-circle-outline"
-                  size={25}
-                  color={Colors[colorScheme ?? "light"].text}
-                  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                />
-              )}
-            </Pressable>
-          ),
+          headerShown: false,
         }}
       />
 
@@ -64,6 +45,7 @@ export default function TabLayout() {
         name="inbox"
         options={{
           title: "Inbox",
+          headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="chatbox-ellipses" color={color} />
           ),
@@ -74,6 +56,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: "Profile",
+          headerTitleAlign: "center",
           tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
         }}
       />

@@ -1,10 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
+import ListingCard from "@components/ListingCard";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { debounce } from "lodash";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
-
-import ListingCard from "./ListingCard";
 
 const allListingsQuery = gql`
   query Query($after: String, $first: Int, $sortOrder: SortOrder) {
