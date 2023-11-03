@@ -13,6 +13,7 @@ const allListingsQuery = gql`
       description
       images
       price
+      favorited
       address
     }
   }

@@ -109,6 +109,7 @@ function RootLayoutNav() {
               presentation: "transparentModal",
               animation: "slide_from_bottom",
               headerShown: false,
+              animationDuration: 100,
             }}
           />
         </Stack>

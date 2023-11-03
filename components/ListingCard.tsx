@@ -12,6 +12,7 @@ type CardsComponentsProps = {
     description: string;
     images: any[];
     price: number;
+    favorited: boolean;
     address: {
       state: string;
       city: string;
@@ -23,12 +24,9 @@ type CardsComponentsProps = {
 const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
-  const [checked, setChecked] = useState(false);
   const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
-
   const toggleCheckboxHandler = () => {
     setFavoriteBottomSheet(!favoriteBottomSheet);
-    setChecked(!checked);
     router.push({ pathname: "/addwishlist", params: { listingId: data.id } });
   };
 
@@ -64,7 +62,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           </Text>
           <View style={styles.checkboxContainer}>
             <CheckBox
-              checked={checked}
+              checked={data.favorited}
               checkedIcon="heart"
               uncheckedIcon="heart-o"
               onPress={toggleCheckboxHandler}
