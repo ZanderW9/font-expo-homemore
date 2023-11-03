@@ -4,6 +4,7 @@
  */
 
 import Colors from "@constants/Colors";
+import React from "react";
 import {
   Text as DefaultText,
   useColorScheme,
@@ -18,7 +19,8 @@ type ThemeProps = {
 
 export type TextProps = ThemeProps & DefaultText["props"];
 export type ViewProps = ThemeProps & DefaultView["props"];
-export type SafeAreaViewProps = ThemeProps & DefaultSafeAreaView["props"];
+export type SafeAreaViewProps = ThemeProps &
+  React.ComponentProps<typeof DefaultSafeAreaView>;
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
