@@ -2,7 +2,7 @@ import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Card, Image, CheckBox } from "@rneui/themed";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Pressable } from "react-native";
 
 type CardsComponentsProps = {
@@ -24,9 +24,9 @@ type CardsComponentsProps = {
 const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
-  const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
+  // const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
   const toggleCheckboxHandler = () => {
-    setFavoriteBottomSheet(!favoriteBottomSheet);
+    // setFavoriteBottomSheet(!favoriteBottomSheet);
     router.push({ pathname: "/addwishlist", params: { listingId: data.id } });
   };
 
