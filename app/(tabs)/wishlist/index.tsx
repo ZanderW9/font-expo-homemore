@@ -1,7 +1,7 @@
 import { View } from "@components/Themed";
 import FavoriteCardContainer from "@components/wishlist/FavoriteCardsContainer";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 
@@ -34,7 +34,7 @@ function TabWishlistScreen() {
               name="create-outline"
               size={24}
               onPress={() => {
-                console.log("pressed");
+                router.push("/createwishlist");
               }}
             />
           ),

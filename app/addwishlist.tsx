@@ -50,6 +50,8 @@ function AddwishlistScreen() {
   const [foldersToCreate, setFoldersToCreate] = useState<string[]>([]);
   const [foldersToDelete, setFoldersToDelete] = useState<string[]>([]);
 
+  const [favorite, setFavorite] = useState<boolean>(false);
+
   useEffect(() => {
     if (data?.myFavorites) {
       setFavoriteIds(
@@ -60,17 +62,46 @@ function AddwishlistScreen() {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (foldersToCreate.length + favoriteIds.length >= foldersToDelete.length) {
+      setFavorite(true);
+    } else if (
+      foldersToCreate.length + favoriteIds.length <
+      foldersToDelete.length
+    ) {
+      setFavorite(false);
+    }
+  }, [foldersToCreate, foldersToDelete, favoriteIds]);
+
   const [addOrMoveListingToFavoriteFunction] = useMutation(
     addOrMoveListingToFavoriteMutation,
-    { errorPolicy: "all" },
+    {
+      update(cache) {
+        cache.modify({
+          id: cache.identify({ __typename: "Listing", id: listingId }),
+          fields: {
+            favorited() {
+              return favorite;
+            },
+          },
+        });
+      },
+      errorPolicy: "all",
+    },
   );
 
   const checkHandler = (id: string) => {
-    if (favoriteIds.includes(id)) {
+    if (favoriteIds.includes(id) && !foldersToDelete.includes(id)) {
       setFoldersToDelete([...foldersToDelete, id]);
       setFavoriteIds(favoriteIds.filter((item) => item !== id));
-    } else {
+    } else if (!favoriteIds.includes(id) && !foldersToCreate.includes(id)) {
       setFoldersToCreate([...foldersToCreate, id]);
+      setFavoriteIds([...favoriteIds, id]);
+    } else if (favoriteIds.includes(id) && foldersToDelete.includes(id)) {
+      setFoldersToDelete(foldersToDelete.filter((item) => item !== id));
+      setFavoriteIds([...favoriteIds, id]);
+    } else if (!favoriteIds.includes(id) && foldersToCreate.includes(id)) {
+      setFoldersToCreate(foldersToCreate.filter((item) => item !== id));
       setFavoriteIds([...favoriteIds, id]);
     }
   };
