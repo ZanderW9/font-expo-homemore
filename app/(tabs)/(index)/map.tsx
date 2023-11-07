@@ -1,5 +1,5 @@
-import ListingCardsContainer from "@components/ListingCardsContainer";
 import { View } from "@components/Themed";
+import MyMapView from "@components/map/MapView";
 import { Ionicons } from "@expo/vector-icons";
 import { FAB } from "@rneui/themed";
 import { router } from "expo-router";
@@ -28,27 +28,37 @@ const styles = StyleSheet.create({
   },
 });
 
-function TabExploreScreen() {
+function ExploreMapScreen() {
   return (
     <View style={styles.container}>
-      <ListingCardsContainer />
+      <MyMapView
+        provider="google"
+        googleMapsApiKey="AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
+      />
       <FAB
         size="small"
-        title="Map"
+        title="Search this area"
         style={{ position: "absolute", bottom: 20 }}
         icon={
           <Ionicons
-            name="ios-map-outline"
+            name="search-outline"
             size={24}
             color="white"
             style={{ paddingLeft: 7 }}
           />
         }
-        onPress={() => router.push("/explore/map")}
         color="rgba(0,0,0,0.4)"
+      />
+      <FAB
+        size="small"
+        title=""
+        style={{ position: "absolute", bottom: 20, left: 10 }}
+        icon={<Ionicons name="close" size={21} color="white" />}
+        color="rgba(0,0,0,0.4)"
+        onPress={() => router.push("/")}
       />
     </View>
   );
 }
 
-export default TabExploreScreen;
+export default ExploreMapScreen;

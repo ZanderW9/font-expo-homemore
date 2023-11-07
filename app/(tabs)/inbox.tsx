@@ -29,7 +29,6 @@ const myChatsQuery = gql`
 
 export default function TabInboxScreen() {
   const { data } = useCachedQuery(myChatsQuery, usePathname());
-
   return (
     <View style={styles.container}>
       <FlatList

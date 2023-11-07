@@ -22,9 +22,10 @@ export default function () {
       }}
     >
       <Tabs.Screen
-        name="explore"
+        name="(index)"
         options={{
           headerShadowVisible: false,
+          title: "Explore",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerTitleAlign: "center",
           headerTitle: () => (

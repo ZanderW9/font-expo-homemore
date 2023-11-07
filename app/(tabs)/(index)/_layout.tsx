@@ -13,7 +13,6 @@ export default function () {
         name="map"
         options={{
           headerShown: false,
-          presentation: "containedModal",
           animation: "slide_from_bottom",
         }}
       />
