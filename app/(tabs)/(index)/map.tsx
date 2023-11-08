@@ -1,5 +1,5 @@
 import { View } from "@components/Themed";
-import MyMapView from "@components/map/MapView";
+import MapScreen from "@components/map/MapView";
 import { Ionicons } from "@expo/vector-icons";
 import { FAB } from "@rneui/themed";
 import { router } from "expo-router";
@@ -31,10 +31,7 @@ const styles = StyleSheet.create({
 function ExploreMapScreen() {
   return (
     <View style={styles.container}>
-      <MyMapView
-        provider="google"
-        googleMapsApiKey="AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
-      />
+      <MapScreen />
       <FAB
         size="small"
         title="Search this area"

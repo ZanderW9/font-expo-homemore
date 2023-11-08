@@ -6,6 +6,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getUserToken } from "@config/TokenManager";
+import useUserLocation from "@config/hooks/useUserLocation";
 import { BACKEND_URL } from "@env";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -89,6 +90,7 @@ const client = new ApolloClient({
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  useUserLocation();
 
   return (
     <ApolloProvider client={client}>
