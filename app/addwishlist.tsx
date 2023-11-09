@@ -132,7 +132,10 @@ function AddwishlistScreen() {
         </Pressable>
       </View>
       <SafeAreaView style={styles.safeContainer}>
-        <ScrollView style={{ flex: 1, width: "100%" }}>
+        <ScrollView
+          style={{ flex: 1, width: "100%" }}
+          showsVerticalScrollIndicator={false}
+        >
           {data?.myFavorites?.map((favorite: any) => (
             <ListItem
               key={favorite.id}

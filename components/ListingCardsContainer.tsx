@@ -60,6 +60,7 @@ function ListingCardsContainer() {
       refreshing={loading}
       onRefresh={handleRefresh}
       onEndReachedThreshold={0.2}
+      showsVerticalScrollIndicator={false}
     />
   );
 }

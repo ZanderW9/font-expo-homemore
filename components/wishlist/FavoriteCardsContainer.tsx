@@ -47,7 +47,7 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <ListItem.Accordion
           content={
             <>

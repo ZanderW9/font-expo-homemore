@@ -57,7 +57,10 @@ function CreatewishlistScreen() {
         <Text style={styles.modalTitle}>Create</Text>
       </View>
       <SafeAreaView style={styles.safeContainer}>
-        <ScrollView style={{ flex: 1, width: "100%", padding: 10 }}>
+        <ScrollView
+          style={{ flex: 1, width: "100%", padding: 10 }}
+          showsVerticalScrollIndicator={false}
+        >
           <Input
             placeholder="*Name"
             onChangeText={(text) => {

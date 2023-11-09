@@ -41,7 +41,7 @@ function TabProfileScreen() {
   };
 
   const createListingHandler = async () => {
-    router.push("/create");
+    router.push("/createlisting");
   };
 
   const changePasswordHandler = async () => {
@@ -54,7 +54,7 @@ function TabProfileScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 30}
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.container}>
             {!isLoggedIn && (
               <>
