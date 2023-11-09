@@ -1,5 +1,6 @@
 import { View } from "@components/Themed";
 import MapScreen from "@components/map/MapView";
+import { useASGet } from "@config/hooks/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { FAB } from "@rneui/themed";
 import { router } from "expo-router";
@@ -12,26 +13,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  map: {
-    width: "100%",
-    height: "100%",
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
 });
 
 function ExploreMapScreen() {
+  const { storedValue: initialLocation } = useASGet("userLocation");
+
   return (
     <View style={styles.container}>
-      <MapScreen />
+      {initialLocation && (
+        <MapScreen
+          center={{
+            lat: initialLocation.coords.latitude,
+            lng: initialLocation.coords.longitude,
+          }}
+        />
+      )}
       <FAB
         size="small"
         title="Search this area"
