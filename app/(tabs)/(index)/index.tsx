@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#f5f5f5",
   },
   map: {
     width: "100%",

@@ -42,24 +42,26 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
             containerStyle={styles.item}
             source={{ uri: data.images[0] }}
           />
-          <Card.Title style={styles.price}>${data.price}</Card.Title>
-          <View style={styles.titleAndIconContainer}>
-            <Ionicons
-              name="location"
-              size={13}
-              color="black"
-              style={styles.icon}
-            />
-            <Card.Title style={styles.address}>
-              {data.address.city + ", " + data.address.state}
+          <View style={styles.cardContent}>
+            <Card.Title style={styles.price}>${data.price}</Card.Title>
+            <View style={styles.titleAndIconContainer}>
+              <Ionicons
+                name="location"
+                size={13}
+                color="black"
+                style={styles.icon}
+              />
+              <Card.Title style={styles.address}>
+                {data.address.city + ", " + data.address.state}
+              </Card.Title>
+            </View>
+            <Card.Title style={styles.title} numberOfLines={2}>
+              {data.title}
             </Card.Title>
+            <Text style={styles.description} numberOfLines={3}>
+              {data.description}
+            </Text>
           </View>
-          <Card.Title style={styles.title} numberOfLines={2}>
-            {data.title}
-          </Card.Title>
-          <Text style={styles.description} numberOfLines={3}>
-            {data.description}
-          </Text>
           <View style={styles.checkboxContainer}>
             <CheckBox
               checked={data.favorited}
@@ -79,13 +81,27 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 3,
+    borderRadius: 9,
+    borderWidth: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   cardContainer: {
     width: "100%",
     flex: 1,
     margin: 0,
-    padding: 0.5,
-    borderRadius: 10,
+    padding: 0,
+    borderRadius: 8,
+    borderWidth: 0,
+  },
+  cardContent: {
+    paddingHorizontal: 8,
+    marginBottom: 8,
+    borderRadius: 8,
+    borderWidth: 0,
   },
   item: {
     aspectRatio: 1,
@@ -111,10 +127,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "black",
     fontWeight: "400",
-    marginBottom: 1,
-    marginTop: 1,
-    marginRight: 2,
-    marginLeft: 2,
+    marginBottom: 3,
+    marginTop: 4,
     textAlign: "left",
   },
   title: {
@@ -132,7 +146,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     resizeMode: "cover",
-    borderRadius: 10,
+    borderRadius: 7,
   },
   description: {
     fontSize: 12,

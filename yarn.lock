@@ -5715,17 +5715,17 @@ expo-head@0.0.16:
   dependencies:
     react-helmet-async "^1.3.0"
 
-expo-image-loader@~4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/expo-image-loader/-/expo-image-loader-4.4.0.tgz#35909516311aa60fa4bf35aa6eb7624d7f7f788d"
-  integrity sha512-dq88tiRB8aB1U+O/oJI7IY4VU9Nu2iDjEwR8QDfLtD4xWd5lNGoyic5Vh7911E1qNJFqNMSVIVzOD5l1SQ3A6g==
+expo-image-loader@~4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/expo-image-loader/-/expo-image-loader-4.3.0.tgz#d897b4d4f1838faa8291c36f00b99c2b36a6ac5c"
+  integrity sha512-2kqJIO+oYM8J3GbvTUHLqTSpt1dLpOn/X0eB4U4RTuzz/faj8l/TyQELsMBLlGAkweNUuG9LqznbaBz+WuSFEw==
 
-expo-image-picker@^14.5.0:
-  version "14.5.0"
-  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-14.5.0.tgz#fdc14c74ad338a6a630f8fc5c81e642d6bea343c"
-  integrity sha512-9icvfQuWMdNKufFqu+FxenKcfybz9ior+XYQCIl/q5+mpHPo2tKq8I30vu2BjsOJ0Cfo7V4vMeN7a9F/3ooUfQ==
+expo-image-picker@~14.3.2:
+  version "14.3.2"
+  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-14.3.2.tgz#5ae2f36fe518a10c8fe82e5ff2ee735c14817cfc"
+  integrity sha512-xr/YeQMIYheXecWP033F2SPwpBlBR5xVCx7YSfSCTH8Y9pw7Z886agqKGbS9QBVGlzJ5qecJktZ6ASSzeslDVg==
   dependencies:
-    expo-image-loader "~4.4.0"
+    expo-image-loader "~4.3.0"
 
 expo-keep-awake@~12.3.0:
   version "12.3.0"
@@ -5821,10 +5821,10 @@ expo-system-ui@~2.4.0:
     "@react-native/normalize-color" "^2.0.0"
     debug "^4.3.2"
 
-expo-web-browser@^12.5.0:
-  version "12.5.0"
-  resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-12.5.0.tgz#69949c50ef0ef8d2889435ed9e595206cfbcf68b"
-  integrity sha512-3uDzP19DqcEicLOB4ZH6pGWzxlCQ8mLHSmWMmfXEBhZjooUkHUrysbzkNvQQa24ijy3uoUybX4jW0xPss594kA==
+expo-web-browser@~12.3.2:
+  version "12.3.2"
+  resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-12.3.2.tgz#45ac727a5d8462d7faa403ea2fa1db160ed8e4b5"
+  integrity sha512-ohBf+vnRnGzlTleY8EQ2XQU0vRdRwqMJtKkzM9MZRPDOK5QyJYPJjpk6ixGhxdeoUG2Ogj0InvhhgX9NUn4jkg==
   dependencies:
     compare-urls "^2.0.0"
     url "^0.11.0"
@@ -10024,10 +10024,10 @@ react-native-flash-message@^0.4.2:
     prop-types "^15.8.1"
     react-native-iphone-screen-helper "^2.0.2"
 
-react-native-gesture-handler@^2.13.4:
-  version "2.13.4"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.13.4.tgz#6a99384330278c4488bcfc7f1814be3e0d7401fd"
-  integrity sha512-smpYOVbvWABpq2H+lmDnfOLCTH934aUPO1w2/pQXvm1j+M/vmGQmvgRDJOpXcks17HLtNNKXD6tcODf3aPqDfA==
+react-native-gesture-handler@~2.12.0:
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.12.1.tgz#f11a99fb95169810c6886fad5efa01a17fd81660"
+  integrity sha512-deqh36bw82CFUV9EC4tTo2PP1i9HfCOORGS3Zmv71UYhEZEHkzZv18IZNPB+2Awzj45vLIidZxGYGFxHlDSQ5A==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"
