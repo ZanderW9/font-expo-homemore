@@ -1,7 +1,9 @@
 import { View } from "@components/Themed";
 import { useGetLocalItem } from "@config/hooks/storage";
+import { Ionicons } from "@expo/vector-icons";
 import { ListItem, Input, ButtonGroup, Button } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
+import { Stack } from "expo-router";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -12,6 +14,7 @@ import {
   StyleSheet,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+DropDownPicker.setListMode("SCROLLVIEW");
 
 const UploadImageScreen = () => {
   const { storedValue: initialLocation } = useGetLocalItem("userLocation");
@@ -36,7 +39,12 @@ const UploadImageScreen = () => {
     { label: "China", value: "cn" },
   ]);
 
-  console.log(
+  const [guestNum, setGuestNum] = useState(0);
+  const [bedroomNum, setBedroomNum] = useState(0);
+  const [bedNum, setBedNum] = useState(0);
+  const [bathroomNum, setBathroomNum] = useState(0);
+
+  console.log({
     title,
     description,
     price,
@@ -46,9 +54,15 @@ const UploadImageScreen = () => {
     citySuburb,
     stateProvince,
     postCode,
-  );
+  });
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [placeType, setPlaceType] = useState(0);
+  const [guestHave, setGuestHave] = useState(0);
+
+  const [deviceType, setDeviceType] = useState([]);
+  const [standoutType, setStandoutType] = useState([]);
+  const [safetyDeviceType, setSafetyDeviceType] = useState([]);
+  const [guestType, setGuestType] = useState([]);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -62,8 +76,6 @@ const UploadImageScreen = () => {
     if (!result.canceled) {
       const newImages = [];
       result.assets.map((asset) => {
-        console.log(asset.uri);
-        // setImages([...images, asset.uri]);
         newImages.push(asset.uri);
       });
       setImages([...images, ...newImages]);
@@ -80,6 +92,7 @@ const UploadImageScreen = () => {
       description: "",
       price: 0,
       country: "",
+      unit: "",
       streetAddress: "",
       citySuburb: "",
       stateProvince: "",
@@ -90,7 +103,16 @@ const UploadImageScreen = () => {
   const onSubmit = (data) => console.log(data);
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      scrollEnabled={!open}
+    >
+      <Stack.Screen
+        options={{
+          title: "Create",
+        }}
+      />
       <View style={styles.imagesContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {images.map((image, index) => (
@@ -209,10 +231,15 @@ const UploadImageScreen = () => {
             setOpen={setOpen}
             setValue={setCountry}
             setItems={setSelectedCountry}
+            dropDownContainerStyle={{
+              borderWidth: 1,
+              borderColor: "#c4c4c4",
+            }}
             containerStyle={{
               width: "94.5%",
               justifyContent: "center",
               alignSelf: "center",
+              borderWidth: 0,
             }}
             style={styles.pickerContainer}
             textStyle={{
@@ -312,7 +339,7 @@ const UploadImageScreen = () => {
           content={
             <>
               <ListItem.Content>
-                <ListItem.Title>More Information</ListItem.Title>
+                <ListItem.Title>Place Information</ListItem.Title>
               </ListItem.Content>
             </>
           }
@@ -338,10 +365,10 @@ const UploadImageScreen = () => {
               "Tent",
               "Tiny house",
             ]}
-            selectedIndex={selectedIndex}
+            selectedIndex={placeType}
             vertical
             onPress={(value) => {
-              setSelectedIndex(value);
+              setPlaceType(value);
             }}
             buttonContainerStyle={styles.buttonContainerStyle}
             buttonStyle={styles.buttonStyle}
@@ -351,10 +378,10 @@ const UploadImageScreen = () => {
           <Text style={styles.title}>What type of place will guests have?</Text>
           <ButtonGroup
             buttons={["An entire place", "A room"]}
-            selectedIndex={selectedIndex}
+            selectedIndex={guestHave}
             vertical
             onPress={(value) => {
-              setSelectedIndex(value);
+              setGuestHave(value);
             }}
             buttonContainerStyle={styles.buttonContainerStyle}
             buttonStyle={styles.buttonStyle}
@@ -362,6 +389,222 @@ const UploadImageScreen = () => {
             textStyle={{ fontSize: 13 }}
           />
           <Text style={styles.title}>Room information</Text>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.title}>Guests</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="remove-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (guestNum > 0) setGuestNum(guestNum - 1);
+                }}
+              />
+              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+                {guestNum}
+              </Text>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="add-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (guestNum < 9) setGuestNum(guestNum + 1);
+                }}
+              />
+            </View>
+          </View>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.title}>Bedrooms</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="remove-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (bedroomNum > 0) setBedroomNum(bedroomNum - 1);
+                }}
+              />
+              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+                {bedroomNum}
+              </Text>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="add-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (bedroomNum < 9) setBedroomNum(bedroomNum + 1);
+                }}
+              />
+            </View>
+          </View>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.title}>Bed</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="remove-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (bedNum > 0) setBedNum(bedNum - 1);
+                }}
+              />
+              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+                {bedNum}
+              </Text>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="add-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (bedNum < 9) setBedNum(bedNum + 1);
+                }}
+              />
+            </View>
+          </View>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.title}>Bathrooms</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="remove-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (bathroomNum > 0) setBathroomNum(bathroomNum - 1);
+                }}
+              />
+              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+                {bathroomNum}
+              </Text>
+              <Ionicons
+                style={{ marginRight: 10, marginTop: 10, marginLeft: 10 }}
+                name="add-circle-outline"
+                size={24}
+                color="gray"
+                onPress={() => {
+                  if (bathroomNum < 9) setBathroomNum(bathroomNum + 1);
+                }}
+              />
+            </View>
+          </View>
+        </ListItem.Accordion>
+      </View>
+      <View style={styles.contentWrapper}>
+        <ListItem.Accordion
+          content={
+            <>
+              <ListItem.Content>
+                <ListItem.Title>More Information</ListItem.Title>
+              </ListItem.Content>
+            </>
+          }
+          containerStyle={{ borderRadius: 15 }}
+          isExpanded={expanded.includes(3)}
+          onPress={() => {
+            if (expanded.includes(3)) {
+              setExpanded(expanded.filter((item) => item !== 3));
+            } else {
+              setExpanded([3]);
+            }
+          }}
+        >
+          <Text style={styles.title}>
+            Tell guests what your place has to offer{" "}
+          </Text>
+          <ButtonGroup
+            buttons={[
+              "Wi-Fi",
+              "TV",
+              "Kitchen",
+              "Washer",
+              "Free parking on premises",
+              "Paid parking on premises",
+              "Air conditioning",
+              "Dedicated workspace",
+            ]}
+            selectMultiple
+            selectedIndexes={deviceType}
+            vertical
+            onPress={(value) => {
+              setDeviceType(value);
+            }}
+            buttonContainerStyle={styles.buttonContainerStyle}
+            buttonStyle={styles.buttonStyle}
+            containerStyle={styles.houseTypeContainer}
+            textStyle={{ fontSize: 13 }}
+          />
+          <Text style={styles.title}>Do you have any standout amenities? </Text>
+          <ButtonGroup
+            buttons={[
+              "near the bus station",
+              "near the metro station",
+              "near the train station",
+              "Park access",
+            ]}
+            selectMultiple
+            selectedIndexes={standoutType}
+            vertical
+            onPress={(value) => {
+              setStandoutType(value);
+            }}
+            buttonContainerStyle={styles.buttonContainerStyle}
+            buttonStyle={styles.buttonStyle}
+            containerStyle={styles.houseTypeContainer}
+            textStyle={{ fontSize: 13 }}
+          />
+          <Text style={styles.title}>
+            Do you have any of these safety items?{" "}
+          </Text>
+          <ButtonGroup
+            buttons={[
+              "Smoke alarm",
+              "First aid kit",
+              "Fire extinguisher",
+              "Carbon monoxide alarm",
+            ]}
+            selectMultiple
+            selectedIndexes={safetyDeviceType}
+            vertical
+            onPress={(value) => {
+              setSafetyDeviceType(value);
+            }}
+            buttonContainerStyle={styles.buttonContainerStyle}
+            buttonStyle={styles.buttonStyle}
+            containerStyle={styles.houseTypeContainer}
+            textStyle={{ fontSize: 13 }}
+          />
+          <Text style={styles.title}>Acceptable guests? </Text>
+          <ButtonGroup
+            buttons={["Couple", "Male", "Female", "Family", "All"]}
+            selectMultiple
+            selectedIndexes={guestType}
+            vertical
+            onPress={(value) => {
+              setGuestType(value);
+            }}
+            buttonContainerStyle={styles.buttonContainerStyle}
+            buttonStyle={styles.buttonStyle}
+            containerStyle={styles.houseTypeContainer}
+            textStyle={{ fontSize: 13 }}
+          />
         </ListItem.Accordion>
       </View>
       <Button
@@ -443,7 +686,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0,0,0,0.15)",
     borderRadius: 6,
     margin: 5,
-    width: "30%",
+    width: "47%",
     height: 50,
   },
   buttonStyle: {
