@@ -65,7 +65,6 @@ function RootLayoutNav() {
   const authLink = setContext(async (_, { headers }) => {
     // Get the authentication token from local storage if it exists
     const token = await getLocalItem("userToken");
-    console.log(token);
     // Return the headers to the context so HTTP link can read them
     return {
       headers: {
@@ -75,6 +74,17 @@ function RootLayoutNav() {
     };
   });
 
+  function offsetFromCursor(merged, incoming, readField) {
+    const mergedIds = merged.map((item) => readField("id", item));
+    for (let i = incoming.length - 1; i >= 0; --i) {
+      const item = incoming[i];
+      if (mergedIds.includes(readField("id", item))) {
+        return i + 1;
+      }
+    }
+    return 0;
+  }
+
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache({
@@ -83,8 +93,12 @@ function RootLayoutNav() {
           fields: {
             allListings: {
               keyArgs: false,
-              merge(existing = [], incoming) {
-                return [...existing, ...incoming];
+              merge(existing, incoming, { args, readField }) {
+                const merged = existing ? existing.slice(0) : [];
+                const offset = offsetFromCursor(merged, incoming, readField);
+                if (offset >= incoming.length) return merged;
+                const newmerged = [...merged, ...incoming.slice(offset)];
+                return newmerged;
               },
             },
           },
@@ -92,6 +106,7 @@ function RootLayoutNav() {
       },
     }),
   });
+
   const colorScheme = useColorScheme();
   useUserLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);

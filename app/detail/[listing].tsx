@@ -26,7 +26,7 @@ function ListingDetailScreen() {
       <Stack.Screen
         options={{
           title: listing,
-          animation: "slide_from_right",
+          animation: "simple_push",
         }}
       />
       <Text style={styles.title}>This is detail page for {listing}</Text>

@@ -146,7 +146,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     resizeMode: "cover",
-    borderRadius: 7,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
   },
   description: {
     fontSize: 12,
