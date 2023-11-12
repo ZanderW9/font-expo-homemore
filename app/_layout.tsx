@@ -102,9 +102,11 @@ const client = new ApolloClient({
           },
         },
       },
-    }),
-  });
+    },
+  }),
+});
 
+function RootLayoutNav() {
   const colorScheme = useColorScheme();
   useUserLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);

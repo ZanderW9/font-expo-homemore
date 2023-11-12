@@ -699,7 +699,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   pickerContainer: {
-    // width: "94.5%",
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.2)",
     borderRadius: 5,
