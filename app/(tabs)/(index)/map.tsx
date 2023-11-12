@@ -1,6 +1,6 @@
 import { View } from "@components/Themed";
 import MapScreen from "@components/map/MapView";
-import { useASGet } from "@config/hooks/storage";
+import { useGetLocalItem } from "@config/hooks/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { FAB } from "@rneui/themed";
 import { router } from "expo-router";
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 });
 
 function ExploreMapScreen() {
-  const { storedValue: initialLocation } = useASGet("userLocation");
+  const { storedValue: initialLocation } = useGetLocalItem("userLocation");
 
   return (
     <View style={styles.container}>

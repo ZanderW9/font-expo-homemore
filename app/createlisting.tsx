@@ -1,5 +1,5 @@
 import { View } from "@components/Themed";
-import { useASGet } from "@config/hooks/storage";
+import { useGetLocalItem } from "@config/hooks/storage";
 import { ListItem, Input, ButtonGroup } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 const UploadImageScreen = () => {
-  const { storedValue: initialLocation } = useASGet("userLocation");
+  const { storedValue: initialLocation } = useGetLocalItem("userLocation");
   console.log(initialLocation);
 
   const [images, setImages] = useState([]);
