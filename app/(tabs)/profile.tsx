@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View } from "@components/Themed";
 import { clearLocalItems, getLocalItem } from "@config/storageManager";
@@ -12,6 +13,7 @@ import {
 } from "react-native";
 
 function TabProfileScreen() {
+  const client = useApolloClient();
   const { setIsLoggedIn, isLoggedIn } = useContext(GlobalContext);
 
   useEffect(() => {
@@ -38,6 +40,7 @@ function TabProfileScreen() {
   const logOutHandler = async () => {
     await clearLocalItems();
     setIsLoggedIn(false);
+    client.resetStore();
     router.replace("/profile");
   };
 

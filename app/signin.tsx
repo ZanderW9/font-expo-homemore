@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useApolloClient } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { Text, View } from "@components/Themed";
 import { storeLocalItem, getLocalItem } from "@config/storageManager";
@@ -25,6 +25,7 @@ const signInMutation = gql`
 `;
 
 function LoginScreen() {
+  const client = useApolloClient();
   const { setIsLoggedIn } = useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,6 +50,7 @@ function LoginScreen() {
   if (!loading && data) {
     storeLocalItem("userToken", data.SignIn.token);
     setIsLoggedIn(true);
+    client.resetStore();
     router.replace("/profile");
   }
   const SignInHandler = async () => {
@@ -75,6 +77,7 @@ function LoginScreen() {
     const token = await getLocalItem("userToken");
     if (token) {
       setIsLoggedIn(true);
+      client.resetStore();
       router.replace("/profile");
     }
   };

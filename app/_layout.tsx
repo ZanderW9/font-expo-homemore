@@ -59,47 +59,45 @@ export default function RootLayout() {
 
 export const GlobalContext = createContext();
 
-function RootLayoutNav() {
-  const httpLink = new HttpLink({ uri: `${BACKEND_URL}/graphql` });
+const httpLink = new HttpLink({ uri: `${BACKEND_URL}/graphql` });
 
-  const authLink = setContext(async (_, { headers }) => {
-    // Get the authentication token from local storage if it exists
-    const token = await getLocalItem("userToken");
-    // Return the headers to the context so HTTP link can read them
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-      },
-    };
-  });
+const authLink = setContext(async (_, { headers }) => {
+  // Get the authentication token from local storage if it exists
+  const token = await getLocalItem("userToken");
+  // Return the headers to the context so HTTP link can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
 
-  function offsetFromCursor(merged, incoming, readField) {
-    const mergedIds = merged.map((item) => readField("id", item));
-    for (let i = incoming.length - 1; i >= 0; --i) {
-      const item = incoming[i];
-      if (mergedIds.includes(readField("id", item))) {
-        return i + 1;
-      }
+function offsetFromCursor(merged, incoming, readField) {
+  const mergedIds = merged.map((item) => readField("id", item));
+  for (let i = incoming.length - 1; i >= 0; --i) {
+    const item = incoming[i];
+    if (mergedIds.includes(readField("id", item))) {
+      return i + 1;
     }
-    return 0;
   }
+  return 0;
+}
 
-  const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            allListings: {
-              keyArgs: false,
-              merge(existing, incoming, { args, readField }) {
-                const merged = existing ? existing.slice(0) : [];
-                const offset = offsetFromCursor(merged, incoming, readField);
-                if (offset >= incoming.length) return merged;
-                const newmerged = [...merged, ...incoming.slice(offset)];
-                return newmerged;
-              },
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          allListings: {
+            keyArgs: false,
+            merge(existing, incoming, { args, readField }) {
+              const merged = existing ? existing.slice(0) : [];
+              const offset = offsetFromCursor(merged, incoming, readField);
+              if (offset >= incoming.length) return merged;
+              const newmerged = [...merged, ...incoming.slice(offset)];
+              return newmerged;
             },
           },
         },
@@ -111,8 +109,8 @@ function RootLayoutNav() {
   useUserLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
-    <GlobalContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-      <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
+      <GlobalContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
@@ -151,7 +149,7 @@ function RootLayoutNav() {
             statusBarHeight={Platform.OS === "ios" ? null : 35}
           />
         </ThemeProvider>
-      </ApolloProvider>
-    </GlobalContext.Provider>
+      </GlobalContext.Provider>
+    </ApolloProvider>
   );
 }
