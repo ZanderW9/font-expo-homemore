@@ -1,11 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
+import { GlobalContext } from "@app/_layout";
 import { Text, View } from "@components/Themed";
-import { storeUserToken } from "@config/TokenManager";
+import { storeLocalItem } from "@config/storageManager";
 import Colors from "@constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router } from "expo-router";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -39,6 +40,7 @@ const sendVeriCodeMutation = gql`
 `;
 
 function LoginScreen() {
+  const { setIsLoggedIn } = useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -135,7 +137,8 @@ function LoginScreen() {
     }
 
     if (!loading && data) {
-      storeUserToken(data.SignUp.token);
+      storeLocalItem("userToken", data.SignUp.token);
+      setIsLoggedIn(true);
       router.replace("/profile");
     }
     signUpFunction({ variables: { userName, email, password, veriCode } });

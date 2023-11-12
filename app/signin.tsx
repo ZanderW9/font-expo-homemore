@@ -1,11 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
+import { GlobalContext } from "@app/_layout";
 import { Text, View } from "@components/Themed";
-import { storeUserToken, getUserToken } from "@config/TokenManager";
+import { storeLocalItem, getLocalItem } from "@config/storageManager";
 import Colors from "@constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -24,6 +25,7 @@ const signInMutation = gql`
 `;
 
 function LoginScreen() {
+  const { setIsLoggedIn } = useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +47,8 @@ function LoginScreen() {
   }, [error]);
 
   if (!loading && data) {
-    storeUserToken(data.SignIn.token);
+    storeLocalItem("userToken", data.SignIn.token);
+    setIsLoggedIn(true);
     router.replace("/profile");
   }
   const SignInHandler = async () => {
@@ -69,8 +72,9 @@ function LoginScreen() {
   };
 
   const autoLogin = async () => {
-    const token = await getUserToken();
+    const token = await getLocalItem("userToken");
     if (token) {
+      setIsLoggedIn(true);
       router.replace("/profile");
     }
   };

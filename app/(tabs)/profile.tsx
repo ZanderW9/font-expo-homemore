@@ -1,8 +1,9 @@
+import { GlobalContext } from "@app/_layout";
 import { View } from "@components/Themed";
-import { clearUserToken, getUserToken } from "@config/TokenManager";
+import { clearLocalItems, getLocalItem } from "@config/storageManager";
 import { ListItem } from "@rneui/themed";
 import { router } from "expo-router";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -11,11 +12,11 @@ import {
 } from "react-native";
 
 function TabProfileScreen() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { setIsLoggedIn, isLoggedIn } = useContext(GlobalContext);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const token = await getUserToken();
+      const token = await getLocalItem("userToken");
       if (token) {
         setIsLoggedIn(true);
       } else {
@@ -35,7 +36,7 @@ function TabProfileScreen() {
   };
 
   const logOutHandler = async () => {
-    await clearUserToken();
+    await clearLocalItems();
     setIsLoggedIn(false);
     router.replace("/profile");
   };
