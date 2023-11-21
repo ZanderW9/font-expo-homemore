@@ -1,10 +1,13 @@
+import { gql, useMutation } from "@apollo/client";
 import { View } from "@components/Themed";
-import { useGetLocalItem } from "@config/hooks/storage";
+// import { useGetLocalItem } from "@config/hooks/storage";
+import { signImageUrl, deleteImageFromS3 } from "@config/requests";
+import { uploadImage } from "@config/s3";
 import { Ionicons } from "@expo/vector-icons";
-import { ListItem, Input, ButtonGroup, Button } from "@rneui/themed";
+import { ListItem, Input, ButtonGroup, Button, Dialog } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
-import { Stack } from "expo-router";
-import React, { useState } from "react";
+import { Stack, router } from "expo-router";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   ScrollView,
@@ -12,20 +15,63 @@ import {
   Image,
   Text,
   StyleSheet,
+  BackHandler,
 } from "react-native";
+import { CalendarList } from "react-native-calendars";
 import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
 
-const UploadImageScreen = () => {
-  const { storedValue: initialLocation } = useGetLocalItem("userLocation");
-  console.log(initialLocation);
+const createListingMutation = gql`
+  mutation Mutation(
+    $title: String
+    $description: String
+    $images: [String]
+    $price: Int
+    $address: Json
+    $published: Boolean
+    $finished: Boolean
+    $placeType: String
+    $rentType: String
+    $roomDetails: Json
+    $amenities: Json
+    $guestType: Json
+    $availability: [String]
+  ) {
+    createListing(
+      title: $title
+      description: $description
+      images: $images
+      price: $price
+      address: $address
+      published: $published
+      finished: $finished
+      placeType: $placeType
+      rentType: $rentType
+      roomDetails: $roomDetails
+      amenities: $amenities
+      guestType: $guestType
+      availability: $availability
+    ) {
+      title
+    }
+  }
+`;
 
-  const [images, setImages] = useState([]);
+const UploadImageScreen = () => {
+  // const { storedValue: initialLocation } = useGetLocalItem("userLocation");
+  // console.log(initialLocation);
+  const [formComplete, setFormComplete] = useState(false);
+  const [haveContent, setHaveContent] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showSaveDraftDialog, setShowSaveDraftDialog] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [createListingFunction] = useMutation(createListingMutation);
+
+  const [s3Images, setS3Images] = useState([]);
   const [expanded, setExpanded] = React.useState([0]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  // const [selectedCountry, setSelectedCountry] = useState();
   const [unit, setUnit] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [citySuburb, setCitySuburb] = useState("");
@@ -33,8 +79,8 @@ const UploadImageScreen = () => {
   const [postCode, setPostCode] = useState("");
 
   const [open, setOpen] = useState(false);
-  const [country, setCountry] = useState("au");
-  const [selectedCountry, setSelectedCountry] = useState([
+  const [selectedCountry, setSelectedCountry] = useState("au");
+  const [country, setCountry] = useState([
     { label: "Australia", value: "au" },
     { label: "China", value: "cn" },
   ]);
@@ -44,49 +90,172 @@ const UploadImageScreen = () => {
   const [bedNum, setBedNum] = useState(0);
   const [bathroomNum, setBathroomNum] = useState(0);
 
-  console.log({
-    title,
-    description,
-    price,
-    selectedCountry,
-    unit,
-    streetAddress,
-    citySuburb,
-    stateProvince,
-    postCode,
-  });
+  const roomDetails = {
+    Guests: guestNum,
+    Bedrooms: bedroomNum,
+    Bed: bedNum,
+    Bathrooms: bathroomNum,
+  };
 
-  const [placeType, setPlaceType] = useState(0);
-  const [guestHave, setGuestHave] = useState(0);
+  const [placeType, setPlaceType] = useState(null);
+  const [rentType, setRentType] = useState(null);
+
+  const placeTypeDict = {
+    0: "House",
+    1: "Apartment",
+    2: "Barn",
+    3: "Cabin",
+    4: "Camper/RV",
+    5: "Farm",
+    6: "Tent",
+    7: "TinyHouse",
+  };
+
+  const rentTypeDict = {
+    0: "entirePlace",
+    1: "ARoom",
+  };
+
+  const amenitiesDict = {
+    0: "Wi-Fi",
+    1: "TV",
+    2: "Kitchen",
+    3: "Washer",
+    4: "FreeParking",
+    5: "PaidParking",
+    6: "AirConditioning",
+    7: "Workspace",
+    8: "NearBusStation",
+    9: "NearMetroStation",
+    10: "NearTrainStation",
+    11: "ParkAccess",
+    12: "SmokeAlarm",
+    13: "FirstAidKit",
+    14: "FireExtinguisher",
+    15: "CarbonMonoxideAlarm",
+  };
+
+  const guestTypeDict = {
+    0: "Couple",
+    1: "Male",
+    2: "Female",
+    3: "Family",
+    4: "All",
+  };
+
+  const amenitiesList1 = [
+    "Wi-Fi",
+    "TV",
+    "Kitchen",
+    "Washer",
+    "Free parking",
+    "Paid parking",
+    "Air conditioning",
+    "Dedicated workspace",
+  ];
+
+  const amenitiesList2 = [
+    "Near the bus station",
+    "Near the metro station",
+    "Near the train station",
+    "Park access",
+  ];
+
+  const amenitiesList3 = [
+    "Smoke alarm",
+    "First aid kit",
+    "Fire extinguisher",
+    "Carbon monoxide alarm",
+  ];
 
   const [deviceType, setDeviceType] = useState([]);
   const [standoutType, setStandoutType] = useState([]);
   const [safetyDeviceType, setSafetyDeviceType] = useState([]);
   const [guestType, setGuestType] = useState([]);
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      // allowsEditing: true,
-      // aspect: [1, 1],
-      quality: 1,
-      allowsMultipleSelection: true,
-    });
+  const [selectedDates, setSelectedDates] = useState([]);
+  const today = new Date().toISOString().split("T")[0];
 
-    if (!result.canceled) {
-      const newImages = [];
-      result.assets.map((asset) => {
-        newImages.push(asset.uri);
-      });
-      setImages([...images, ...newImages]);
+  const toggleStartingEndingDays = (day) => {
+    if (day.dateString < today) {
+      // 今天之前的日期不进行处理
+      return;
+    }
+
+    if (selectedDates.length === 1 && selectedDates[0] === day.dateString) {
+      // 点击同一天两次，该天既是startingDay也是endingDay
+      setSelectedDates([day.dateString]);
+    } else if (selectedDates.length === 0) {
+      setSelectedDates([day.dateString]);
+    } else if (selectedDates.length === 1) {
+      const firstSelectedDate = selectedDates[0];
+      const secondSelectedDate = day.dateString;
+
+      if (firstSelectedDate > secondSelectedDate) {
+        setSelectedDates([secondSelectedDate]);
+      } else {
+        const datesBetween = getDatesBetween(
+          firstSelectedDate,
+          secondSelectedDate,
+        );
+        setSelectedDates([
+          firstSelectedDate,
+          ...datesBetween,
+          secondSelectedDate,
+        ]);
+      }
+    } else {
+      setSelectedDates([day.dateString]);
     }
   };
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const getDatesBetween = (startDate, endDate) => {
+    const dates = [];
+    const currentDate = new Date(startDate);
+    const end = new Date(endDate);
+
+    while (currentDate <= end) {
+      dates.push(currentDate.toISOString().split("T")[0]);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates.slice(1, -1);
+  };
+
+  const pickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        allowsMultipleSelection: true,
+      });
+
+      if (!result.canceled) {
+        const newS3Images: string[] = [];
+
+        // Use Promise.all to wait for all asynchronous operations to complete
+        await Promise.all(
+          result.assets.map(async (asset) => {
+            const fileName = asset.uri.split("/").pop();
+            const fileType = fileName?.split(".").pop();
+            const res = await signImageUrl(fileName, fileType);
+            if (res.ok) {
+              const { data } = res;
+              const { signedUrl, objectUrl } = data;
+              newS3Images.push(objectUrl);
+              // 通过 signedUrl 上传图片
+              await uploadImage(signedUrl, fileType, asset);
+            }
+          }),
+        );
+        setS3Images([...s3Images, ...newS3Images]);
+      }
+    } catch (error) {
+      console.log("Error picking image:", error);
+    }
+  };
+
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       title: "",
       description: "",
@@ -97,10 +266,161 @@ const UploadImageScreen = () => {
       citySuburb: "",
       stateProvince: "",
       postCode: "",
+      rentType: "",
+      placeType: "",
     },
   });
 
-  const onSubmit = (data) => console.log(data);
+  const deleteImage = (index: number) => {
+    setShowDeleteDialog(true);
+    setDeleteIndex(index);
+  };
+
+  const confirmDelete = () => {
+    deleteImageFromS3(s3Images[deleteIndex].split("/").pop());
+    const updatedS3Images = [...s3Images];
+    updatedS3Images.splice(deleteIndex, 1);
+    setS3Images(updatedS3Images);
+    setShowDeleteDialog(false);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteDialog(false);
+  };
+
+  const saveHandler = () => {
+    createListingFunction({
+      variables: {
+        title,
+        description,
+        images: s3Images,
+        price,
+        address: {
+          country: selectedCountry,
+          unit,
+          street: streetAddress,
+          city: citySuburb,
+          state: stateProvince,
+          postCode,
+        },
+        published: false,
+        finished: false,
+        placeType: placeTypeDict[placeType],
+        rentType: rentTypeDict[rentType],
+        roomDetails,
+        amenities: [
+          ...deviceType.map((index) => amenitiesDict[index]),
+          ...standoutType.map(
+            (index) => amenitiesDict[index + amenitiesList1.length],
+          ),
+          ...safetyDeviceType.map(
+            (index) =>
+              amenitiesDict[
+                index + amenitiesList1.length + amenitiesList2.length
+              ],
+          ),
+        ],
+        guestType: guestType.map((index) => guestTypeDict[index]),
+        availability: selectedDates,
+      },
+    });
+    router.back();
+  };
+
+  const publishHandler = () => {
+    createListingFunction({
+      variables: {
+        title,
+        description,
+        images: s3Images,
+        price,
+        address: {
+          country: selectedCountry,
+          unit,
+          street: streetAddress,
+          city: citySuburb,
+          state: stateProvince,
+          postCode,
+        },
+        published: true,
+        finished: true,
+        placeType: placeTypeDict[placeType],
+        rentType: rentTypeDict[rentType],
+        roomDetails,
+        amenities: [
+          ...deviceType.map((index) => amenitiesDict[index]),
+          ...standoutType.map(
+            (index) => amenitiesDict[index + amenitiesList1.length],
+          ),
+          ...safetyDeviceType.map(
+            (index) =>
+              amenitiesDict[
+                index + amenitiesList1.length + amenitiesList2.length
+              ],
+          ),
+        ],
+        guestType: guestType.map((index) => guestTypeDict[index]),
+        availability: selectedDates,
+      },
+    });
+    router.back();
+  };
+
+  const handleFormChange = () => {
+    const isFormComplete =
+      s3Images.length > 0 &&
+      title !== "" &&
+      description !== "" &&
+      price > 0 &&
+      selectedCountry !== "" &&
+      streetAddress !== "" &&
+      citySuburb !== "" &&
+      stateProvince !== "" &&
+      postCode !== "" &&
+      guestNum > 0 &&
+      bedroomNum > 0 &&
+      bedNum > 0 &&
+      bathroomNum > 0 &&
+      selectedDates.length > 0;
+    setFormComplete(isFormComplete);
+    const haveContent =
+      title !== "" ||
+      description !== "" ||
+      price > 0 ||
+      selectedCountry !== "" ||
+      streetAddress !== "" ||
+      citySuburb !== "" ||
+      stateProvince !== "" ||
+      postCode !== "" ||
+      guestNum > 0 ||
+      bedroomNum > 0 ||
+      bedNum > 0 ||
+      bathroomNum > 0 ||
+      selectedDates.length > 0;
+    setHaveContent(haveContent);
+  };
+
+  const handleExit = () => {
+    if (haveContent) {
+      setShowSaveDraftDialog(true);
+    } else {
+      router.back();
+    }
+  };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        handleExit();
+        return true; // Prevent default behavior (exit the app)
+      },
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, [haveContent]);
 
   return (
     <ScrollView
@@ -111,12 +431,25 @@ const UploadImageScreen = () => {
       <Stack.Screen
         options={{
           title: "Create",
+          headerLeft: () => (
+            <Ionicons
+              name="arrow-back-outline"
+              size={24}
+              color="black"
+              style={{ marginRight: 30 }}
+              onPress={handleExit}
+            />
+          ),
         }}
       />
       <View style={styles.imagesContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {images.map((image, index) => (
-            <TouchableOpacity key={index} style={styles.imageContainer}>
+          {s3Images.map((image, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.imageContainer}
+              onPress={() => deleteImage(index)}
+            >
               <Image source={{ uri: image }} style={styles.image} />
             </TouchableOpacity>
           ))}
@@ -125,6 +458,32 @@ const UploadImageScreen = () => {
           </TouchableOpacity>
         </ScrollView>
       </View>
+
+      {/* 删除确认弹窗 */}
+      <Dialog
+        isVisible={showDeleteDialog}
+        onBackdropPress={cancelDelete}
+        overlayStyle={{ borderRadius: 10 }}
+      >
+        <Text>Are you sure you want to delete this image?</Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}
+        >
+          <Dialog.Button title="Cancel" onPress={cancelDelete} />
+          <Dialog.Button
+            title="Delete"
+            titleStyle={{ color: "red" }}
+            onPress={confirmDelete}
+          />
+        </View>
+      </Dialog>
+
       <View style={styles.contentWrapper}>
         <ListItem.Accordion
           content={
@@ -154,13 +513,12 @@ const UploadImageScreen = () => {
                 inputContainerStyle={styles.inputContainer}
                 onChangeText={(text) => {
                   setTitle(text);
+                  handleFormChange();
                 }}
               />
             )}
             name="title"
-            rules={{ required: true }}
           />
-          {errors.title && <Text>This is required.</Text>}
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -178,16 +536,17 @@ const UploadImageScreen = () => {
                 numberOfLines={4}
                 onChangeText={(text) => {
                   setDescription(text);
+                  handleFormChange();
                 }}
               />
             )}
             name="description"
-            rules={{ required: true }}
           />
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
+                placeholder="$0"
                 label="Add a price / day"
                 labelStyle={{ color: "gray" }}
                 containerStyle={styles.inputWrapper}
@@ -196,11 +555,11 @@ const UploadImageScreen = () => {
                 onChangeText={(text) => {
                   text = text.replace(/[^0-9]/g, "");
                   setPrice(parseInt(text));
+                  handleFormChange();
                 }}
               />
             )}
             name="price"
-            rules={{ required: true }}
           />
         </ListItem.Accordion>
       </View>
@@ -226,11 +585,11 @@ const UploadImageScreen = () => {
         >
           <DropDownPicker
             open={open}
-            value={country}
-            items={selectedCountry}
+            value={selectedCountry}
+            items={country}
             setOpen={setOpen}
-            setValue={setCountry}
-            setItems={setSelectedCountry}
+            setValue={setSelectedCountry}
+            setItems={setCountry}
             dropDownContainerStyle={{
               borderWidth: 1,
               borderColor: "#c4c4c4",
@@ -240,13 +599,14 @@ const UploadImageScreen = () => {
               justifyContent: "center",
               alignSelf: "center",
               borderWidth: 0,
+              margin: 15,
             }}
             style={styles.pickerContainer}
             textStyle={{
               fontSize: 16,
             }}
             onSelectItem={(item) => {
-              console.log(item);
+              setSelectedCountry(item.value);
             }}
           />
           <Controller
@@ -264,7 +624,6 @@ const UploadImageScreen = () => {
               />
             )}
             name="unit"
-            rules={{ required: true }}
           />
           <Controller
             control={control}
@@ -276,11 +635,11 @@ const UploadImageScreen = () => {
                 inputContainerStyle={styles.inputContainer}
                 onChangeText={(text) => {
                   setStreetAddress(text);
+                  handleFormChange();
                 }}
               />
             )}
             name="streetAddress"
-            rules={{ required: true }}
           />
           <Controller
             control={control}
@@ -292,11 +651,11 @@ const UploadImageScreen = () => {
                 inputContainerStyle={styles.inputContainer}
                 onChangeText={(text) => {
                   setCitySuburb(text);
+                  handleFormChange();
                 }}
               />
             )}
             name="citySuburb"
-            rules={{ required: true }}
           />
           <Controller
             control={control}
@@ -308,11 +667,11 @@ const UploadImageScreen = () => {
                 inputContainerStyle={styles.inputContainer}
                 onChangeText={(text) => {
                   setStateProvince(text);
+                  handleFormChange();
                 }}
               />
             )}
             name="stateProvince"
-            rules={{ required: true }}
           />
           <Controller
             control={control}
@@ -325,11 +684,11 @@ const UploadImageScreen = () => {
                 inputContainerStyle={styles.inputContainer}
                 onChangeText={(text) => {
                   setPostCode(text);
+                  handleFormChange();
                 }}
               />
             )}
             name="postCode"
-            rules={{ required: true }}
           />
         </ListItem.Accordion>
       </View>
@@ -378,10 +737,10 @@ const UploadImageScreen = () => {
           <Text style={styles.title}>What type of place will guests have?</Text>
           <ButtonGroup
             buttons={["An entire place", "A room"]}
-            selectedIndex={guestHave}
+            selectedIndex={rentType}
             vertical
             onPress={(value) => {
-              setGuestHave(value);
+              setRentType(value);
             }}
             buttonContainerStyle={styles.buttonContainerStyle}
             buttonStyle={styles.buttonStyle}
@@ -404,7 +763,14 @@ const UploadImageScreen = () => {
                   if (guestNum > 0) setGuestNum(guestNum - 1);
                 }}
               />
-              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginTop: 10,
+                  width: 20,
+                  textAlign: "center",
+                }}
+              >
                 {guestNum}
               </Text>
               <Ionicons
@@ -413,7 +779,7 @@ const UploadImageScreen = () => {
                 size={24}
                 color="gray"
                 onPress={() => {
-                  if (guestNum < 9) setGuestNum(guestNum + 1);
+                  if (guestNum < 29) setGuestNum(guestNum + 1);
                 }}
               />
             </View>
@@ -433,7 +799,14 @@ const UploadImageScreen = () => {
                   if (bedroomNum > 0) setBedroomNum(bedroomNum - 1);
                 }}
               />
-              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginTop: 10,
+                  width: 20,
+                  textAlign: "center",
+                }}
+              >
                 {bedroomNum}
               </Text>
               <Ionicons
@@ -442,7 +815,7 @@ const UploadImageScreen = () => {
                 size={24}
                 color="gray"
                 onPress={() => {
-                  if (bedroomNum < 9) setBedroomNum(bedroomNum + 1);
+                  if (bedroomNum < 29) setBedroomNum(bedroomNum + 1);
                 }}
               />
             </View>
@@ -462,7 +835,14 @@ const UploadImageScreen = () => {
                   if (bedNum > 0) setBedNum(bedNum - 1);
                 }}
               />
-              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginTop: 10,
+                  width: 20,
+                  textAlign: "center",
+                }}
+              >
                 {bedNum}
               </Text>
               <Ionicons
@@ -471,7 +851,7 @@ const UploadImageScreen = () => {
                 size={24}
                 color="gray"
                 onPress={() => {
-                  if (bedNum < 9) setBedNum(bedNum + 1);
+                  if (bedNum < 29) setBedNum(bedNum + 1);
                 }}
               />
             </View>
@@ -491,7 +871,14 @@ const UploadImageScreen = () => {
                   if (bathroomNum > 0) setBathroomNum(bathroomNum - 1);
                 }}
               />
-              <Text style={{ fontSize: 16, marginTop: 10, width: 10 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginTop: 10,
+                  width: 20,
+                  textAlign: "center",
+                }}
+              >
                 {bathroomNum}
               </Text>
               <Ionicons
@@ -500,7 +887,7 @@ const UploadImageScreen = () => {
                 size={24}
                 color="gray"
                 onPress={() => {
-                  if (bathroomNum < 9) setBathroomNum(bathroomNum + 1);
+                  if (bathroomNum < 29) setBathroomNum(bathroomNum + 1);
                 }}
               />
             </View>
@@ -530,16 +917,7 @@ const UploadImageScreen = () => {
             Tell guests what your place has to offer{" "}
           </Text>
           <ButtonGroup
-            buttons={[
-              "Wi-Fi",
-              "TV",
-              "Kitchen",
-              "Washer",
-              "Free parking on premises",
-              "Paid parking on premises",
-              "Air conditioning",
-              "Dedicated workspace",
-            ]}
+            buttons={amenitiesList1}
             selectMultiple
             selectedIndexes={deviceType}
             vertical
@@ -553,12 +931,7 @@ const UploadImageScreen = () => {
           />
           <Text style={styles.title}>Do you have any standout amenities? </Text>
           <ButtonGroup
-            buttons={[
-              "near the bus station",
-              "near the metro station",
-              "near the train station",
-              "Park access",
-            ]}
+            buttons={amenitiesList2}
             selectMultiple
             selectedIndexes={standoutType}
             vertical
@@ -574,12 +947,7 @@ const UploadImageScreen = () => {
             Do you have any of these safety items?{" "}
           </Text>
           <ButtonGroup
-            buttons={[
-              "Smoke alarm",
-              "First aid kit",
-              "Fire extinguisher",
-              "Carbon monoxide alarm",
-            ]}
+            buttons={amenitiesList3}
             selectMultiple
             selectedIndexes={safetyDeviceType}
             vertical
@@ -607,19 +975,110 @@ const UploadImageScreen = () => {
           />
         </ListItem.Accordion>
       </View>
-      <Button
-        title="Submit"
-        size="lg"
-        radius="sm"
-        type="solid"
-        containerStyle={{
-          margin: 30,
-          marginBottom: 100,
-          width: 200,
-          alignSelf: "center",
+      <View style={styles.contentWrapper}>
+        <ListItem.Accordion
+          content={
+            <>
+              <ListItem.Content>
+                <ListItem.Title>Available Date</ListItem.Title>
+              </ListItem.Content>
+            </>
+          }
+          containerStyle={{ borderRadius: 15 }}
+          isExpanded={expanded.includes(4)}
+          onPress={() => {
+            if (expanded.includes(4)) {
+              setExpanded(expanded.filter((item) => item !== 4));
+            } else {
+              setExpanded([4]);
+            }
+          }}
+        >
+          <CalendarList
+            minDate={today}
+            horizontal
+            pastScrollRange={0}
+            futureScrollRange={12}
+            scrollEnabled
+            markingType="period"
+            markedDates={{
+              ...selectedDates.reduce((result, date, index) => {
+                result[date] = {
+                  selected: true,
+                  color: "#2f95dc",
+                  ...(index === 0 && { startingDay: true }),
+                  ...(index === selectedDates.length - 1 && {
+                    endingDay: true,
+                  }),
+                };
+                return result;
+              }, {}),
+            }}
+            onDayPress={(day) => toggleStartingEndingDays(day)}
+            disabledDates={[...getDatesBetween(today, "2099-12-31"), today]}
+          />
+        </ListItem.Accordion>
+      </View>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          margin: 20,
         }}
-        onPress={handleSubmit(onSubmit)}
-      />
+      >
+        <Button
+          title="Save"
+          size="lg"
+          radius="sm"
+          type="solid"
+          containerStyle={{
+            width: 150,
+            alignSelf: "center",
+          }}
+          onPress={handleSubmit(saveHandler)}
+        />
+        <Button
+          title="Publish"
+          size="lg"
+          radius="sm"
+          type="solid"
+          containerStyle={{
+            width: 150,
+            alignSelf: "center",
+          }}
+          disabled={!formComplete}
+          onPress={handleSubmit(publishHandler)}
+        />
+      </View>
+      <Dialog
+        isVisible={showSaveDraftDialog}
+        onBackdropPress={() => setShowSaveDraftDialog(false)}
+        overlayStyle={{ borderRadius: 10 }}
+      >
+        <Text>Do you want to save the draft before exiting?</Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}
+        >
+          <Dialog.Button title="Back" onPress={() => router.back()} />
+          <Dialog.Button
+            title="Save"
+            onPress={() => {
+              // Handle saving the draft here
+              // For example, you can call a saveDraft function
+              saveHandler();
+              setShowSaveDraftDialog(false);
+              router.back();
+            }}
+          />
+        </View>
+      </Dialog>
     </ScrollView>
   );
 };
@@ -702,7 +1161,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.2)",
     borderRadius: 5,
-    marginTop: 10,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 12,
+    paddingLeft: 10,
+    marginTop: -10,
   },
 });
 

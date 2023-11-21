@@ -10,7 +10,7 @@ type CardsComponentsProps = {
     id: string;
     title: string;
     description: string;
-    images: any[];
+    images: string[];
     price: number;
     favorited: boolean;
     address: {
