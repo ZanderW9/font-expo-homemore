@@ -2,7 +2,7 @@ import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Card, Image, CheckBox } from "@rneui/themed";
 import { router } from "expo-router";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, Pressable } from "react-native";
 
 type CardsComponentsProps = {
@@ -24,9 +24,20 @@ type CardsComponentsProps = {
 const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
-  // const [favoriteBottomSheet, setFavoriteBottomSheet] = useState(false);
+  const [ratio, setRatio] = useState(1);
+  const onLayout = useCallback(() => {
+    Image.getSize(data.images[0], (width, height) => {
+      const ratio = width / height;
+      if (ratio > 1.34) {
+        setRatio(1.34);
+      } else if (ratio < 0.75) {
+        setRatio(0.75);
+      } else {
+        setRatio(width / height);
+      }
+    });
+  }, []);
   const toggleCheckboxHandler = () => {
-    // setFavoriteBottomSheet(!favoriteBottomSheet);
     router.push({ pathname: "/addwishlist", params: { listingId: data.id } });
   };
 
@@ -38,8 +49,9 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
       <Pressable onPress={pressHandler}>
         <Card containerStyle={styles.cardContainer}>
           <Image
-            style={styles.image}
-            containerStyle={styles.item}
+            onLayout={onLayout}
+            style={{ ...styles.image, aspectRatio: ratio }}
+            resizeMode="cover"
             source={{ uri: data.images[0] }}
           />
           <View style={styles.cardContent}>
@@ -80,7 +92,6 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     margin: 3,
     borderRadius: 9,
     borderWidth: 0,
@@ -90,23 +101,21 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   cardContainer: {
-    width: "100%",
-    flex: 1,
     margin: 0,
     padding: 0,
     borderRadius: 8,
     borderWidth: 0,
+  },
+  image: {
+    width: "100%",
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
   },
   cardContent: {
     paddingHorizontal: 8,
     marginBottom: 8,
     borderRadius: 8,
     borderWidth: 0,
-  },
-  item: {
-    aspectRatio: 1,
-    width: "100%",
-    flex: 1,
   },
   icon: {
     marginRight: 0,
@@ -140,14 +149,6 @@ const styles = StyleSheet.create({
     marginRight: 2,
     marginLeft: 2,
     textAlign: "left",
-  },
-  image: {
-    aspectRatio: 1,
-    width: "100%",
-    flex: 1,
-    resizeMode: "cover",
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
   },
   description: {
     fontSize: 12,
