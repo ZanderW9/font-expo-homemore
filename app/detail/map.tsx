@@ -1,9 +1,8 @@
 import { View } from "@components/Themed";
 import MapScreen from "@components/map/MapView";
-import { useGetLocalItem } from "@config/hooks/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { FAB } from "@rneui/themed";
-import { router } from "expo-router";
+import { router, useLocalSearchParams, Stack } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 
@@ -15,20 +14,24 @@ const styles = StyleSheet.create({
   },
 });
 
-function ExploreMapScreen() {
-  const { storedValue: initialLocation } = useGetLocalItem("userLocation");
-
+function DetailMapScreen() {
+  const { lat, lng } = useLocalSearchParams();
   return (
     <View style={styles.container}>
-      {initialLocation && (
-        <MapScreen
-          center={{
-            lat: initialLocation.coords.latitude,
-            lng: initialLocation.coords.longitude,
-          }}
-          scrollEnabled // 设置可拖动
-        />
-      )}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          animation: "slide_from_bottom",
+        }}
+      />
+      <MapScreen
+        center={{
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
+        }}
+        scrollEnabled // 设置可拖动
+      />
+
       <FAB
         size="small"
         title="Search this area"
@@ -49,10 +52,10 @@ function ExploreMapScreen() {
         style={{ position: "absolute", bottom: 20, left: 10 }}
         icon={<Ionicons name="close" size={21} color="white" />}
         color="rgba(0,0,0,0.4)"
-        onPress={() => router.push("/")}
+        onPress={() => router.back()}
       />
     </View>
   );
 }
 
-export default ExploreMapScreen;
+export default DetailMapScreen;

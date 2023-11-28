@@ -44,7 +44,7 @@ function MyFavoritesScreen() {
       <MasonryList
         style={styles.container}
         data={data ? data.favorite.listings.map((item) => item.listing) : []}
-        numColumns={1}
+        numColumns={2}
         renderItem={({ item }) => <ListingCard data={item} />}
         refreshing={loading}
         onRefresh={handleRefresh}

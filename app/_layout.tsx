@@ -9,6 +9,7 @@ import useUserLocation from "@config/hooks/useUserLocation";
 import { getLocalItem } from "@config/storageManager";
 import { BACKEND_URL } from "@env";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import {
   DarkTheme,
   DefaultTheme,
@@ -116,40 +117,42 @@ function RootLayoutNav() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            <Stack.Screen
-              name="search"
-              options={{
-                presentation: "modal",
-                headerShown: false,
-              }}
+          <BottomSheetModalProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+              <Stack.Screen
+                name="search"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="addwishlist"
+                options={{
+                  presentation: "transparentModal",
+                  animation: "slide_from_bottom",
+                  headerShown: false,
+                  animationDuration: 100,
+                }}
+              />
+              <Stack.Screen
+                name="createwishlist"
+                options={{
+                  presentation: "transparentModal",
+                  animation: "slide_from_bottom",
+                  headerShown: false,
+                  animationDuration: 100,
+                }}
+              />
+            </Stack>
+            <FlashMessage
+              position="top"
+              floating
+              statusBarHeight={Platform.OS === "ios" ? null : 35}
             />
-            <Stack.Screen
-              name="addwishlist"
-              options={{
-                presentation: "transparentModal",
-                animation: "slide_from_bottom",
-                headerShown: false,
-                animationDuration: 100,
-              }}
-            />
-            <Stack.Screen
-              name="createwishlist"
-              options={{
-                presentation: "transparentModal",
-                animation: "slide_from_bottom",
-                headerShown: false,
-                animationDuration: 100,
-              }}
-            />
-          </Stack>
-          <FlashMessage
-            position="top"
-            floating
-            statusBarHeight={Platform.OS === "ios" ? null : 35}
-          />
+          </BottomSheetModalProvider>
         </ThemeProvider>
       </GlobalContext.Provider>
     </ApolloProvider>

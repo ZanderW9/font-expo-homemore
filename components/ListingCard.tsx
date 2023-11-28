@@ -28,8 +28,8 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   const onLayout = useCallback(() => {
     Image.getSize(data.images[0], (width, height) => {
       const ratio = width / height;
-      if (ratio > 1.34) {
-        setRatio(1.34);
+      if (ratio > 1.333) {
+        setRatio(1.333);
       } else if (ratio < 0.75) {
         setRatio(0.75);
       } else {
