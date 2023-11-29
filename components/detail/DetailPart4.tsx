@@ -1,11 +1,44 @@
 import { Text, View } from "@components/Themed";
 import { StyleSheet } from "react-native";
 
-function DetailPart4() {
+function DetailPart4(data: any) {
+  const amenities = data.amenities;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Facilities/Services</Text>
-
+      <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+        {amenities.map((amenity: any, index: number) => {
+          if (amenity.length > 5) {
+            amenity = amenity.replace(/([A-Z])/g, " $1").trim();
+          }
+          return (
+            <View
+              key={index}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                marginBottom: 5,
+              }}
+            >
+              <View
+                style={{
+                  padding: 5,
+                  borderWidth: 1,
+                  borderColor: "rgba(0, 0, 0, 0.1)",
+                  borderRadius: 15,
+                  marginRight: 5,
+                  width: "auto",
+                }}
+              >
+                <Text style={{ fontSize: 14, color: "gray" }}>{amenity}</Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
       <View
         style={styles.separator}
         lightColor="#eee"

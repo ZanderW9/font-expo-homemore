@@ -120,7 +120,7 @@ function ListingDetailScreen() {
           lng={data ? data.listingDetail.coordinate.lng : 0}
         />
         {/* Part4 */}
-        <DetailPart4 />
+        <DetailPart4 amenities={data ? data.listingDetail.amenities : []} />
         {/* Part5 */}
         <DetailPart5
           reviews={data ? data.listingDetail.reviews : []}
