@@ -1,6 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
 import { View, Text, SafeAreaView } from "@components/Themed";
-import MyCarousel from "@components/detail/Carousel";
 import DetailEnd from "@components/detail/DetailEnd";
 import DetailPart1 from "@components/detail/DetailPart1";
 import DetailPart2 from "@components/detail/DetailPart2";
@@ -8,6 +7,7 @@ import DetailPart3 from "@components/detail/DetailPart3";
 import DetailPart4 from "@components/detail/DetailPart4";
 import DetailPart5 from "@components/detail/DetailPart5";
 import ReviewInputModal from "@components/detail/InputModal";
+import MyCarousel from "@components/detail/MyCarousel";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams, Stack, router } from "expo-router";
