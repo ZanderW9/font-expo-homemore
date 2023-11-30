@@ -7,7 +7,7 @@ import DetailPart3 from "@components/detail/DetailPart3";
 import DetailPart4 from "@components/detail/DetailPart4";
 import DetailPart5 from "@components/detail/DetailPart5";
 import ReviewInputModal from "@components/detail/InputModal";
-import MyCarousel from "@components/detail/MyCarousel";
+import MyCarousel from "@components/detail/myCarousel";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams, Stack, router } from "expo-router";
