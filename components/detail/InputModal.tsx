@@ -7,7 +7,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Button } from "@rneui/themed";
 import React, { useState, useMemo, useCallback } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Keyboard } from "react-native";
 
 const createReviewMutation = gql`
   mutation Mutation($listingId: Int!, $text: String!) {
@@ -97,6 +97,7 @@ function ReviewInputModal(data: any) {
                 ],
               });
               setReviewText("");
+              Keyboard.dismiss();
               data.bottomSheetModalRef.current?.close();
             }}
           />

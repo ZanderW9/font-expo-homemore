@@ -207,6 +207,7 @@ const UploadImageScreen = () => {
     } else {
       setSelectedDates([day.dateString]);
     }
+    handleFormChange();
   };
 
   const getDatesBetween = (startDate, endDate) => {
@@ -249,6 +250,7 @@ const UploadImageScreen = () => {
           }),
         );
         setS3Images([...s3Images, ...newS3Images]);
+        handleFormChange();
       }
     } catch (error) {
       console.log("Error picking image:", error);
@@ -377,10 +379,10 @@ const UploadImageScreen = () => {
       citySuburb !== "" &&
       stateProvince !== "" &&
       postCode !== "" &&
-      guestNum > 0 &&
-      bedroomNum > 0 &&
-      bedNum > 0 &&
-      bathroomNum > 0 &&
+      guestNum >= 0 &&
+      bedroomNum >= 0 &&
+      bedNum >= 0 &&
+      bathroomNum >= 0 &&
       selectedDates.length > 0;
     setFormComplete(isFormComplete);
     const haveContent =
@@ -511,6 +513,7 @@ const UploadImageScreen = () => {
                 labelStyle={{ color: "gray" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
+                value={title}
                 onChangeText={(text) => {
                   setTitle(text);
                   handleFormChange();
@@ -535,6 +538,7 @@ const UploadImageScreen = () => {
                 multiline
                 textAlignVertical="top"
                 numberOfLines={4}
+                value={description}
                 onChangeText={(text) => {
                   setDescription(text);
                   handleFormChange();
@@ -553,6 +557,7 @@ const UploadImageScreen = () => {
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 keyboardType="numeric"
+                value={price.toString()}
                 onChangeText={(text) => {
                   text = text.replace(/[^0-9]/g, "");
                   setPrice(parseInt(text));
@@ -619,6 +624,7 @@ const UploadImageScreen = () => {
                 labelStyle={{ color: "gray" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
+                value={unit}
                 onChangeText={(text) => {
                   setUnit(text);
                 }}
@@ -634,6 +640,7 @@ const UploadImageScreen = () => {
                 labelStyle={{ color: "gray" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
+                value={streetAddress}
                 onChangeText={(text) => {
                   setStreetAddress(text);
                   handleFormChange();
@@ -650,6 +657,7 @@ const UploadImageScreen = () => {
                 labelStyle={{ color: "gray" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
+                value={citySuburb}
                 onChangeText={(text) => {
                   setCitySuburb(text);
                   handleFormChange();
@@ -666,6 +674,7 @@ const UploadImageScreen = () => {
                 labelStyle={{ color: "gray" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
+                value={stateProvince}
                 onChangeText={(text) => {
                   setStateProvince(text);
                   handleFormChange();
@@ -683,6 +692,7 @@ const UploadImageScreen = () => {
                 keyboardType="numeric"
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
+                value={postCode}
                 onChangeText={(text) => {
                   setPostCode(text);
                   handleFormChange();
