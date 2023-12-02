@@ -31,6 +31,7 @@ const listingDetailQuery = gql`
       coordinate
       favorited
       availability
+      unavailability
       createdAt
       publishAt
       placeType
@@ -61,10 +62,13 @@ function ListingDetailScreen() {
     variables: { listingDetailId: parseInt(listing) },
     errorPolicy: "all",
   });
-
+  const inputRef = useRef(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const openBottomSheet = useCallback(() => {
     bottomSheetModalRef.current?.present();
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
   }, []);
 
   const toggleCheckboxHandler = () => {
@@ -75,7 +79,8 @@ function ListingDetailScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
+    // <SafeAreaView style={styles.container} edges={["bottom"]}>
+    <View style={styles.container}>
       <Stack.Screen
         options={{
           title: data ? data.listingDetail.owner.userName : "",
@@ -132,7 +137,8 @@ function ListingDetailScreen() {
       {/* BottomSheet */}
       <ReviewInputModal
         listingId={data ? data.listingDetail.id : 0}
-        ref={bottomSheetModalRef}
+        bottomSheetModalRef={bottomSheetModalRef}
+        inputRef={inputRef}
       />
       {/* Bottom */}
       <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
@@ -145,9 +151,8 @@ function ListingDetailScreen() {
           style={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: "flex-start",
-            width: "100%",
-            padding: 5,
+            justifyContent: "flex-end",
+            paddingVertical: 5,
           }}
         >
           <Pressable
@@ -155,14 +160,13 @@ function ListingDetailScreen() {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              width: "40%",
-              height: 30,
+              marginStart: 10,
+              marginVertical: 5,
               backgroundColor: "rgba(0, 0, 0, 0.1)",
-              borderRadius: 15,
+              borderRadius: 20,
+              flex: 1,
             }}
-            onPress={() => {
-              openBottomSheet();
-            }}
+            onPress={openBottomSheet}
           >
             <SimpleLineIcons
               name="pencil"
@@ -171,28 +175,36 @@ function ListingDetailScreen() {
             />
             <Text
               style={{
-                fontSize: 13,
+                fontSize: 15,
                 color: "gray",
                 marginLeft: 5,
               }}
             >
-              leave a review ···
+              Leave a review ···
             </Text>
           </Pressable>
           <View
             style={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "flex-start",
+              justifyContent: "flex-end",
+              alignItems: "center",
             }}
           >
             <Ionicons
               name="md-chatbubble-ellipses-outline"
-              size={28}
+              size={32}
               color="black"
             />
-            <Text style={{ marginTop: 3, fontSize: 13, alignSelf: "center" }}>
-              Review
+            <Text
+              style={{
+                fontSize: 13,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              {data ? data.listingDetail.reviews.length : 0}
             </Text>
           </View>
 
@@ -200,13 +212,14 @@ function ListingDetailScreen() {
             style={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "flex-start",
+              justifyContent: "flex-end",
+              alignItems: "center",
             }}
           >
             {data && data?.listingDetail?.favorited ? (
               <Ionicons
                 name="md-heart"
-                size={28}
+                size={32}
                 color="rgb(236, 76, 96)"
                 onPress={() => {
                   toggleCheckboxHandler();
@@ -215,31 +228,48 @@ function ListingDetailScreen() {
             ) : (
               <Ionicons
                 name="md-heart-outline"
-                size={28}
+                size={32}
                 color="black"
                 onPress={() => {
                   toggleCheckboxHandler();
                 }}
               />
             )}
-            <Text style={{ marginTop: 3, fontSize: 13, alignSelf: "center" }}>
+            {/* <Text
+              style={{
+                fontSize: 13,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
               Save
-            </Text>
+            </Text> */}
           </View>
-          <TouchableOpacity
-            style={styles.reserveButton}
-            onPress={() => {
-              router.push({
-                pathname: "/booking",
-                params: { listingId: data.listingDetail.id },
-              });
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              paddingHorizontal: 10,
             }}
           >
-            <Text style={styles.reserveButtonText}>Booking</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.reserveButton}
+              onPress={() => {
+                router.push({
+                  pathname: "/booking",
+                  params: { listingId: data.listingDetail.id },
+                });
+              }}
+            >
+              <Text style={styles.reserveButtonText}>Booking</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -261,14 +291,12 @@ const styles = StyleSheet.create({
   },
   reserveButton: {
     backgroundColor: "rgb(236, 76, 96)",
-    padding: 8,
+    padding: 10,
     borderRadius: 5,
-    position: "absolute",
-    right: 10,
   },
   reserveButtonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: 18,
     alignSelf: "center",
     justifyContent: "center",
   },

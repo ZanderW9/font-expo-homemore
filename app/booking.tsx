@@ -1,10 +1,11 @@
-import { Text, View } from "@components/Themed";
+import BookingProvider from "@components/booking/bookingProvider";
+import MyBooking from "@components/booking/myBooking";
 
 function Booking() {
   return (
-    <View>
-      <Text>Booking</Text>
-    </View>
+    <BookingProvider>
+      <MyBooking />
+    </BookingProvider>
   );
 }
 

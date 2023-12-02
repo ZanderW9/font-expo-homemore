@@ -33,14 +33,13 @@ const listingDetailQuery = gql`
   }
 `;
 
-const ReviewInputModal = React.forwardRef((props, ref) => {
-  const snapPoints = useMemo(() => ["40%"], []);
+function ReviewInputModal(data: any) {
+  const snapPoints = useMemo(() => [80], []);
   const [reviewText, setReviewText] = useState("");
   const [createReviewFunction] = useMutation(createReviewMutation, {
     errorPolicy: "all",
   });
-  const listingId = parseInt(props.listingId);
-
+  const listingId = parseInt(data.listingId);
   const renderBackdrop = useCallback(
     (propsBackdrop) => (
       <BottomSheetBackdrop
@@ -57,7 +56,7 @@ const ReviewInputModal = React.forwardRef((props, ref) => {
   return (
     <View style={styles.container}>
       <BottomSheetModal
-        ref={ref}
+        ref={data.bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
@@ -67,11 +66,11 @@ const ReviewInputModal = React.forwardRef((props, ref) => {
       >
         <View style={styles.contentContainer}>
           <BottomSheetTextInput
+            ref={data.inputRef}
             style={styles.input}
             placeholder="Write your review here"
-            multiline
             value={reviewText}
-            onChangeText={(text) => setReviewText(text)}
+            onChangeText={setReviewText}
           />
           <Button
             title="Send"
@@ -98,14 +97,14 @@ const ReviewInputModal = React.forwardRef((props, ref) => {
                 ],
               });
               setReviewText("");
-              ref.current?.close();
+              data.bottomSheetModalRef.current?.close();
             }}
           />
         </View>
       </BottomSheetModal>
     </View>
   );
-});
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -118,25 +117,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginHorizontal: 24,
+    marginHorizontal: 10,
   },
   input: {
-    marginTop: 8,
-    marginBottom: 10,
     borderRadius: 10,
     fontSize: 16,
-    lineHeight: 20,
+    height: 40,
     padding: 8,
-    width: "75%",
+    flex: 1,
+    marginEnd: 10,
     backgroundColor: "rgba(151, 151, 151, 0.25)",
   },
   buttonContainer: {
     alignSelf: "flex-start",
-    marginTop: 8,
-    marginBottom: 10,
     borderRadius: 10,
     fontSize: 16,
-    lineHeight: 20,
+    height: 40,
   },
 });
 

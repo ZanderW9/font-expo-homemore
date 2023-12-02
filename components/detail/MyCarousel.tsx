@@ -81,7 +81,7 @@ function MyCarousel(data: any) {
           width: adjustedImageWidth,
           height: adjustedImageHeight,
         }}
-        loop
+        loop={false}
         pagingEnabled
         snapEnabled
         onProgressChange={(_, absoluteProgress) =>

@@ -24,7 +24,7 @@ function DetailPart5(data: any) {
             marginLeft: 5,
           }}
         >
-          leave a review ···
+          Leave a review ···
         </Text>
       </Pressable>
 
@@ -57,7 +57,6 @@ function DetailPart5(data: any) {
               {/* 一个回复按钮，点击回复消息 */}
               <Pressable
                 onPress={() => {
-                  console.log(review.id);
                   data.openBottomSheet();
                 }}
               >

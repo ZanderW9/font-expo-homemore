@@ -533,6 +533,7 @@ const UploadImageScreen = () => {
                   justifyContent: "flex-start",
                 }}
                 multiline
+                textAlignVertical="top"
                 numberOfLines={4}
                 onChangeText={(text) => {
                   setDescription(text);
@@ -1015,7 +1016,6 @@ const UploadImageScreen = () => {
               }, {}),
             }}
             onDayPress={(day) => toggleStartingEndingDays(day)}
-            disabledDates={[...getDatesBetween(today, "2099-12-31"), today]}
           />
         </ListItem.Accordion>
       </View>

@@ -1,6 +1,6 @@
 import { View, Text } from "@components/Themed";
 import Colors from "@constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs, router } from "expo-router";
 import React from "react";
 import { useColorScheme, Pressable } from "react-native";
@@ -9,7 +9,7 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
   color: string;
 }) {
-  return <Ionicons size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <AntDesign size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
 export default function () {
@@ -75,7 +75,7 @@ export default function () {
         options={{
           title: "Wishlist",
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="hearto" color={color} />,
         }}
       />
 
@@ -85,7 +85,7 @@ export default function () {
           title: "Inbox",
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="chatbox-ellipses" color={color} />
+            <TabBarIcon name="message1" color={color} />
           ),
         }}
       />
@@ -95,7 +95,7 @@ export default function () {
         options={{
           title: "Profile",
           headerTitleAlign: "center",
-          tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>
