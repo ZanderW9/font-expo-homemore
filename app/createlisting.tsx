@@ -57,7 +57,7 @@ const createListingMutation = gql`
   }
 `;
 
-const UploadImageScreen = () => {
+const CreateListingScreen = () => {
   // const { storedValue: initialLocation } = useGetLocalItem("userLocation");
   // console.log(initialLocation);
   const [formComplete, setFormComplete] = useState(false);
@@ -71,7 +71,7 @@ const UploadImageScreen = () => {
   const [expanded, setExpanded] = React.useState([0]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState<number | null>(null);
   const [unit, setUnit] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [citySuburb, setCitySuburb] = useState("");
@@ -207,7 +207,6 @@ const UploadImageScreen = () => {
     } else {
       setSelectedDates([day.dateString]);
     }
-    handleFormChange();
   };
 
   const getDatesBetween = (startDate, endDate) => {
@@ -250,7 +249,6 @@ const UploadImageScreen = () => {
           }),
         );
         setS3Images([...s3Images, ...newS3Images]);
-        handleFormChange();
       }
     } catch (error) {
       console.log("Error picking image:", error);
@@ -368,7 +366,7 @@ const UploadImageScreen = () => {
     router.back();
   };
 
-  const handleFormChange = () => {
+  React.useEffect(() => {
     const isFormComplete =
       s3Images.length > 0 &&
       title !== "" &&
@@ -386,10 +384,10 @@ const UploadImageScreen = () => {
       selectedDates.length > 0;
     setFormComplete(isFormComplete);
     const haveContent =
+      s3Images.length > 0 ||
       title !== "" ||
       description !== "" ||
       price > 0 ||
-      selectedCountry !== "" ||
       streetAddress !== "" ||
       citySuburb !== "" ||
       stateProvince !== "" ||
@@ -400,7 +398,21 @@ const UploadImageScreen = () => {
       bathroomNum > 0 ||
       selectedDates.length > 0;
     setHaveContent(haveContent);
-  };
+  }, [
+    s3Images,
+    title,
+    description,
+    price,
+    selectedCountry,
+    streetAddress,
+    stateProvince,
+    postCode,
+    guestNum,
+    bedroomNum,
+    bedNum,
+    bathroomNum,
+    selectedDates,
+  ]);
 
   const handleExit = () => {
     if (haveContent) {
@@ -441,6 +453,19 @@ const UploadImageScreen = () => {
               style={{ marginRight: 30 }}
               onPress={handleExit}
             />
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                marginRight: 10,
+              }}
+              onPress={saveHandler}
+            >
+              <Text style={{ fontSize: 16, marginTop: 5 }}>Save</Text>
+            </TouchableOpacity>
           ),
         }}
       />
@@ -516,7 +541,6 @@ const UploadImageScreen = () => {
                 value={title}
                 onChangeText={(text) => {
                   setTitle(text);
-                  handleFormChange();
                 }}
               />
             )}
@@ -541,7 +565,6 @@ const UploadImageScreen = () => {
                 value={description}
                 onChangeText={(text) => {
                   setDescription(text);
-                  handleFormChange();
                 }}
               />
             )}
@@ -557,11 +580,10 @@ const UploadImageScreen = () => {
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 keyboardType="numeric"
-                value={price.toString()}
+                value={price !== null ? price.toString() : ""}
                 onChangeText={(text) => {
                   text = text.replace(/[^0-9]/g, "");
-                  setPrice(parseInt(text));
-                  handleFormChange();
+                  setPrice(text ? parseInt(text) : null);
                 }}
               />
             )}
@@ -643,7 +665,6 @@ const UploadImageScreen = () => {
                 value={streetAddress}
                 onChangeText={(text) => {
                   setStreetAddress(text);
-                  handleFormChange();
                 }}
               />
             )}
@@ -660,7 +681,6 @@ const UploadImageScreen = () => {
                 value={citySuburb}
                 onChangeText={(text) => {
                   setCitySuburb(text);
-                  handleFormChange();
                 }}
               />
             )}
@@ -677,7 +697,6 @@ const UploadImageScreen = () => {
                 value={stateProvince}
                 onChangeText={(text) => {
                   setStateProvince(text);
-                  handleFormChange();
                 }}
               />
             )}
@@ -695,7 +714,6 @@ const UploadImageScreen = () => {
                 value={postCode}
                 onChangeText={(text) => {
                   setPostCode(text);
-                  handleFormChange();
                 }}
               />
             )}
@@ -1033,21 +1051,11 @@ const UploadImageScreen = () => {
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "center",
+          alignItems: "center",
           margin: 20,
         }}
       >
-        <Button
-          title="Save"
-          size="lg"
-          radius="sm"
-          type="solid"
-          containerStyle={{
-            width: 150,
-            alignSelf: "center",
-          }}
-          onPress={handleSubmit(saveHandler)}
-        />
         <Button
           title="Publish"
           size="lg"
@@ -1180,4 +1188,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UploadImageScreen;
+export default CreateListingScreen;
