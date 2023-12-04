@@ -1,5 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import { View } from "@components/Themed";
+import { useDetailContext } from "@components/detail/DetailProvider";
 import {
   BottomSheetModal,
   BottomSheetTextInput,
@@ -7,11 +8,11 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Button } from "@rneui/themed";
 import React, { useState, useMemo, useCallback } from "react";
-import { StyleSheet, Keyboard } from "react-native";
+import { StyleSheet } from "react-native";
 
 const createReviewMutation = gql`
-  mutation Mutation($listingId: Int!, $text: String!) {
-    createReviewOnListing(listingId: $listingId, text: $text) {
+  mutation CreateReview($listingId: Int!, $text: String!, $parentId: Int) {
+    createReview(listingId: $listingId, text: $text, parentId: $parentId) {
       id
     }
   }
@@ -34,6 +35,7 @@ const listingDetailQuery = gql`
 `;
 
 function ReviewInputModal(data: any) {
+  const { reviewId, setReviewId } = useDetailContext();
   const snapPoints = useMemo(() => [80], []);
   const [reviewText, setReviewText] = useState("");
   const [createReviewFunction] = useMutation(createReviewMutation, {
@@ -87,6 +89,7 @@ function ReviewInputModal(data: any) {
               createReviewFunction({
                 variables: {
                   listingId,
+                  parentId: reviewId ? reviewId : null,
                   text: reviewText,
                 },
                 refetchQueries: [
@@ -97,7 +100,7 @@ function ReviewInputModal(data: any) {
                 ],
               });
               setReviewText("");
-              Keyboard.dismiss();
+              setReviewId(null);
               data.bottomSheetModalRef.current?.close();
             }}
           />

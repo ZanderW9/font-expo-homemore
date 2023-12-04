@@ -1,12 +1,87 @@
 import { Text, View } from "@components/Themed";
+import { useDetailContext } from "@components/detail/DetailProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Pressable } from "react-native";
 
-function DetailPart5(data: any) {
+function formatTime(timestamp) {
   const now = new Date();
+  const createdAt = new Date(timestamp);
+  const timeDiff = now.getTime() - createdAt.getTime();
+
+  if (timeDiff < 60000) {
+    return "Now";
+  } else if (timeDiff < 3600000) {
+    return `${Math.floor(timeDiff / 60000)} minutes ago`;
+  } else if (timeDiff < 86400000) {
+    return `${Math.floor(timeDiff / 3600000)} hours ago`;
+  } else {
+    return `${Math.floor(timeDiff / 86400000)} days ago`;
+  }
+}
+
+function renderReviw(data: any, review: any, setReviewId: any) {
+  const renderSubReview = (subReview: any) => {
+    if (!subReview || !subReview.length) {
+      return;
+    }
+
+    return (
+      <View style={styles.subReviewWrapper}>
+        {subReview.map((subReview: any) => (
+          <View key={subReview.id} style={styles.subReviewsContainer}>
+            <Text style={styles.senderName}>{subReview.sender.userName}</Text>
+            <Text style={styles.reviewText}>{subReview.text}</Text>
+            <View style={styles.reviewEndWrapper}>
+              <Text style={styles.reviewEnd}>
+                {formatTime(subReview.createdAt)}
+              </Text>
+              {/* 一个回复按钮，点击回复消息 */}
+              <Pressable
+                onPress={() => {
+                  data.openBottomSheet();
+                  setReviewId(review.id);
+                }}
+              >
+                <Text style={styles.reviewEnd}>Reply</Text>
+              </Pressable>
+            </View>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  return (
+    <View key={review.id} style={styles.reviewWrapper}>
+      <Text style={styles.senderName}>{review.sender.userName}</Text>
+      <Text style={styles.reviewText}>{review.text}</Text>
+      <View style={styles.reviewEndWrapper}>
+        <Text style={styles.reviewEnd}>{formatTime(review.createdAt)}</Text>
+        {/* 一个回复按钮，点击回复消息 */}
+        <Pressable
+          onPress={() => {
+            data.openBottomSheet();
+            setReviewId(review.id);
+          }}
+        >
+          <Text style={styles.reviewEnd}>Reply</Text>
+        </Pressable>
+      </View>
+      {renderSubReview(review.subReviews)}
+      <View
+        style={styles.separator}
+        lightColor="#eee"
+        darkColor="rgba(255,255,255,0.1)"
+      />
+    </View>
+  );
+}
+
+function DetailPart5(data: any) {
   const openModalHandler = () => {
     data.openBottomSheet();
   };
+  const { setReviewId } = useDetailContext();
 
   return (
     <View style={styles.container}>
@@ -27,49 +102,9 @@ function DetailPart5(data: any) {
           Leave a review ···
         </Text>
       </Pressable>
-
-      {data.reviews.length !== 0 &&
-        data.reviews.map((review: any) => (
-          <View key={review.id} style={styles.reviewWrapper}>
-            <Text style={styles.senderName}>{review.sender.userName}</Text>
-            <Text style={styles.reviewText}>{review.text}</Text>
-            <View style={styles.reviewEndWrapper}>
-              <Text style={styles.reviewEnd}>
-                {now.getTime() - new Date(review.createdAt).getTime() < 60000
-                  ? `Now`
-                  : now.getTime() - new Date(review.createdAt).getTime() <
-                    3600000
-                  ? `${Math.floor(
-                      (now.getTime() - new Date(review.createdAt).getTime()) /
-                        60000,
-                    )} minutes ago`
-                  : now.getTime() - new Date(review.createdAt).getTime() <
-                    86400000
-                  ? `${Math.floor(
-                      (now.getTime() - new Date(review.createdAt).getTime()) /
-                        3600000,
-                    )} hours ago`
-                  : `${Math.floor(
-                      (now.getTime() - new Date(review.createdAt).getTime()) /
-                        86400000,
-                    )} days ago`}
-              </Text>
-              {/* 一个回复按钮，点击回复消息 */}
-              <Pressable
-                onPress={() => {
-                  data.openBottomSheet();
-                }}
-              >
-                <Text style={styles.reviewEnd}>Reply</Text>
-              </Pressable>
-            </View>
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-          </View>
-        ))}
+      {data.reviews.map((review: any) =>
+        renderReviw(data, review, setReviewId),
+      )}
     </View>
   );
 }
@@ -130,6 +165,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     marginVertical: 10,
+  },
+  subReviewsContainer: {
+    marginLeft: 20, // Adjust the margin to your preference
+  },
+  subReviewWrapper: {
+    borderRadius: 10,
+    marginTop: 5,
   },
 });
 
