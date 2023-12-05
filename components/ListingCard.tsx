@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
   cardContent: {
     paddingHorizontal: 8,
     marginBottom: 8,
-    borderRadius: 8,
     borderWidth: 0,
   },
   icon: {

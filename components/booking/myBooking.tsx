@@ -52,10 +52,11 @@ function MyBooking() {
   const { adultNum, childNum, infantNum, selectedDates } = useBookingContext();
 
   const { listingId } = useLocalSearchParams();
-  const { data } = useQuery(listingDetailQuery, {
+  const { data, refetch } = useQuery(listingDetailQuery, {
     variables: { listingDetailId: parseInt(listingId) },
     errorPolicy: "all",
   });
+  refetch();
   const [createBookingFunction] = useMutation(createBookingMutation, {
     errorPolicy: "all",
   });

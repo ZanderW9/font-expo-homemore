@@ -48,6 +48,10 @@ function TabProfileScreen() {
     router.push("/createlisting");
   };
 
+  const myOrderHandler = async () => {
+    router.push("/manageorder");
+  };
+
   const changePasswordHandler = async () => {
     router.push("/changepassword");
   };
@@ -91,9 +95,9 @@ function TabProfileScreen() {
                   </ListItem.Content>
                   <ListItem.Chevron />
                 </ListItem>
-                <ListItem onPress={createListingHandler}>
+                <ListItem onPress={myOrderHandler}>
                   <ListItem.Content>
-                    <ListItem.Title>Manage Booking</ListItem.Title>
+                    <ListItem.Title>My Order</ListItem.Title>
                   </ListItem.Content>
                   <ListItem.Chevron />
                 </ListItem>

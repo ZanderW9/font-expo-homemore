@@ -107,7 +107,7 @@ function ListingDetailScreen() {
                   // 处理分享按钮点击事件
                 }}
               >
-                <Ionicons name="md-share-outline" size={28} color="black" />
+                <Ionicons name="share-social-outline" size={28} color="black" />
               </TouchableOpacity>
             ),
           }}
