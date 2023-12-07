@@ -2,7 +2,11 @@ import { Text, View } from "@components/Themed";
 import { StyleSheet } from "react-native";
 
 function DetailPart4(data: any) {
-  const amenities = data.amenities;
+  const deviceType = data.deviceType;
+  const standoutType = data.standoutType;
+  const safetyDeviceType = data.safetyDeviceType;
+
+  const amenities = [...deviceType, ...standoutType, ...safetyDeviceType];
 
   return (
     <View style={styles.container}>

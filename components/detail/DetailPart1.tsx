@@ -5,7 +5,7 @@ function DetailPart1(data: any) {
   let rentType = "";
   if (data.data.rentType === "ARoom") {
     rentType = "A Separate Room";
-  } else {
+  } else if (data.data.rentType === "entirePlace") {
     rentType = "An Entire Place";
   }
 

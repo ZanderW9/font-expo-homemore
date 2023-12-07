@@ -48,6 +48,10 @@ function TabProfileScreen() {
     router.push("/createlisting");
   };
 
+  const myPostHandler = async () => {
+    router.push("/managepost");
+  };
+
   const myOrderHandler = async () => {
     router.push("/manageorder");
   };
@@ -89,7 +93,7 @@ function TabProfileScreen() {
                   </ListItem.Content>
                   <ListItem.Chevron />
                 </ListItem>
-                <ListItem onPress={createListingHandler}>
+                <ListItem onPress={myPostHandler}>
                   <ListItem.Content>
                     <ListItem.Title>Manage Listing</ListItem.Title>
                   </ListItem.Content>

@@ -1,12 +1,11 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { View } from "@components/Themed";
-// import { useGetLocalItem } from "@config/hooks/storage";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
 import { Ionicons } from "@expo/vector-icons";
 import { ListItem, Input, ButtonGroup, Button, Dialog } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
-import { Stack, router } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -21,8 +20,81 @@ import { CalendarList } from "react-native-calendars";
 import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
 
-const createListingMutation = gql`
+const listingDetailQuery = gql`
+  query Query($listingDetailId: Int) {
+    listingDetail(id: $listingDetailId) {
+      id
+      title
+      description
+      images
+      price
+      address
+      coordinate
+      favorited
+      availability
+      unavailability
+      createdAt
+      publishAt
+      placeType
+      rentType
+      roomDetails
+      deviceType
+      standoutType
+      safetyDeviceType
+      guestType
+      meta
+      owner {
+        userName
+      }
+      reviews {
+        id
+        text
+        createdAt
+        sender {
+          id
+          userName
+        }
+        subReviews {
+          text
+          id
+          createdAt
+          sender {
+            id
+            userName
+          }
+        }
+      }
+    }
+  }
+`;
+
+const meQuery = gql`
+  query Query {
+    me {
+      myPublishedListings {
+        id
+        title
+        description
+        images
+        price
+        favorited
+        address
+      }
+      myUnPublishedListings {
+        id
+        title
+        description
+        images
+        price
+        address
+      }
+    }
+  }
+`;
+
+const editListingMutation = gql`
   mutation Mutation(
+    $editListingId: Int!
     $title: String
     $description: String
     $images: [String]
@@ -39,7 +111,8 @@ const createListingMutation = gql`
     $guestType: [String]
     $availability: [String]
   ) {
-    createListing(
+    editListing(
+      id: $editListingId
       title: $title
       description: $description
       images: $images
@@ -56,53 +129,72 @@ const createListingMutation = gql`
       guestType: $guestType
       availability: $availability
     ) {
-      title
+      id
     }
   }
 `;
 
-const CreateListingScreen = () => {
-  // const { storedValue: initialLocation } = useGetLocalItem("userLocation");
-  // console.log(initialLocation);
-  const [formComplete, setFormComplete] = useState(false);
-  const [haveContent, setHaveContent] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [showSaveDraftDialog, setShowSaveDraftDialog] = useState(false);
-  const [deleteIndex, setDeleteIndex] = useState(null);
-  const [createListingFunction] = useMutation(createListingMutation);
+function getKeyByValue(
+  dictionary: { [key: number]: string },
+  value: string,
+): number | undefined {
+  const keys = Object.keys(dictionary).map(Number);
+  const foundKey = keys.find((key) => dictionary[key] === value);
+  return foundKey;
+}
 
-  const [s3Images, setS3Images] = useState([]);
-  const [expanded, setExpanded] = React.useState([0]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number | null>(null);
-  const [unit, setUnit] = useState("");
-  const [streetAddress, setStreetAddress] = useState("");
-  const [citySuburb, setCitySuburb] = useState("");
-  const [stateProvince, setStateProvince] = useState("");
-  const [postCode, setPostCode] = useState("");
+const EditListingScreen = () => {
+  const { listing } = useLocalSearchParams();
+  const { data: listingDetail, loading } = useQuery(listingDetailQuery, {
+    variables: { listingDetailId: parseInt(listing) },
+    errorPolicy: "all",
+  });
 
-  const [open, setOpen] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState("au");
-  const [country, setCountry] = useState([
-    { label: "Australia", value: "au" },
-    { label: "China", value: "cn" },
-  ]);
-
-  const [guestNum, setGuestNum] = useState(0);
-  const [bedroomNum, setBedroomNum] = useState(0);
-  const [bedNum, setBedNum] = useState(0);
-  const [bathroomNum, setBathroomNum] = useState(0);
-
-  const roomDetails = {
-    Guests: guestNum,
-    Bedrooms: bedroomNum,
-    Bed: bedNum,
-    Bathrooms: bathroomNum,
-  };
-
-  const [placeType, setPlaceType] = useState(null);
-  const [rentType, setRentType] = useState(null);
+  useEffect(() => {
+    if (!loading && listingDetail) {
+      setS3Images(listingDetail?.listingDetail?.images);
+      setTitle(listingDetail?.listingDetail?.title);
+      setDescription(listingDetail?.listingDetail?.description);
+      setPrice(listingDetail?.listingDetail?.price);
+      setUnit(listingDetail?.listingDetail?.address.unit);
+      setStreetAddress(listingDetail?.listingDetail?.address.street);
+      setCitySuburb(listingDetail?.listingDetail?.address.city);
+      setStateProvince(listingDetail?.listingDetail?.address.state);
+      setPostCode(listingDetail?.listingDetail?.address.postCode);
+      setSelectedCountry(listingDetail?.listingDetail?.address.country);
+      setGuestNum(listingDetail?.listingDetail?.roomDetails.Guests);
+      setBedroomNum(listingDetail?.listingDetail?.roomDetails.Bedrooms);
+      setBedNum(listingDetail?.listingDetail?.roomDetails.Bed);
+      setBathroomNum(listingDetail?.listingDetail?.roomDetails.Bathrooms);
+      setPlaceType(
+        getKeyByValue(placeTypeDict, listingDetail?.listingDetail?.placeType),
+      );
+      setRentType(
+        getKeyByValue(rentTypeDict, listingDetail?.listingDetail?.rentType),
+      );
+      setDeviceType(
+        listingDetail?.listingDetail?.deviceType.map((item) =>
+          getKeyByValue(deviceTypeDict, item),
+        ),
+      );
+      setStandoutType(
+        listingDetail?.listingDetail?.standoutType.map((item) =>
+          getKeyByValue(standoutTypeDict, item),
+        ),
+      );
+      setSafetyDeviceType(
+        listingDetail?.listingDetail?.safetyDeviceType.map((item) =>
+          getKeyByValue(safetyDeviceTypeDict, item),
+        ),
+      );
+      setGuestType(
+        listingDetail?.listingDetail?.guestType.map((item) =>
+          getKeyByValue(guestTypeDict, item),
+        ),
+      );
+      setSelectedDates(listingDetail?.listingDetail?.availability);
+    }
+  }, [loading, listingDetail]);
 
   const placeTypeDict = {
     0: "House",
@@ -178,6 +270,41 @@ const CreateListingScreen = () => {
     3: "CarbonMonoxideAlarm",
   };
 
+  const [formComplete, setFormComplete] = useState(false);
+  const [haveContent, setHaveContent] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showSaveDraftDialog, setShowSaveDraftDialog] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [editListingFunction] = useMutation(editListingMutation);
+  const [expanded, setExpanded] = React.useState([0]);
+  const [open, setOpen] = useState(false);
+
+  const [s3Images, setS3Images] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState<number | null>(null);
+  const [unit, setUnit] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [citySuburb, setCitySuburb] = useState("");
+  const [stateProvince, setStateProvince] = useState("");
+  const [postCode, setPostCode] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("au");
+  const [country, setCountry] = useState([
+    { label: "Australia", value: "au" },
+    { label: "China", value: "cn" },
+  ]);
+  const [guestNum, setGuestNum] = useState(0);
+  const [bedroomNum, setBedroomNum] = useState(0);
+  const [bedNum, setBedNum] = useState(0);
+  const [bathroomNum, setBathroomNum] = useState(0);
+  const roomDetails = {
+    Guests: guestNum,
+    Bedrooms: bedroomNum,
+    Bed: bedNum,
+    Bathrooms: bathroomNum,
+  };
+  const [placeType, setPlaceType] = useState(null);
+  const [rentType, setRentType] = useState(null);
   const [deviceType, setDeviceType] = useState([]);
   const [standoutType, setStandoutType] = useState([]);
   const [safetyDeviceType, setSafetyDeviceType] = useState([]);
@@ -265,21 +392,7 @@ const CreateListingScreen = () => {
     }
   };
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      title: "",
-      description: "",
-      price: 0,
-      country: "",
-      unit: "",
-      streetAddress: "",
-      citySuburb: "",
-      stateProvince: "",
-      postCode: "",
-      rentType: "",
-      placeType: "",
-    },
-  });
+  const { control, handleSubmit } = useForm({});
 
   const deleteImage = (index: number) => {
     setShowDeleteDialog(true);
@@ -299,8 +412,9 @@ const CreateListingScreen = () => {
   };
 
   const saveHandler = () => {
-    createListingFunction({
+    editListingFunction({
       variables: {
+        editListingId: parseInt(listing),
         title,
         description,
         images: s3Images,
@@ -315,8 +429,8 @@ const CreateListingScreen = () => {
         },
         published: false,
         finished: false,
-        placeType: placeType ? placeTypeDict[placeType] : null,
-        rentType: rentType ? rentTypeDict[rentType] : null,
+        placeType: placeTypeDict[placeType],
+        rentType: rentTypeDict[rentType],
         roomDetails,
         deviceType: deviceType.map((index) => deviceTypeDict[index]),
         standoutType: standoutType.map((index) => standoutTypeDict[index]),
@@ -326,13 +440,21 @@ const CreateListingScreen = () => {
         guestType: guestType.map((index) => guestTypeDict[index]),
         availability: selectedDates,
       },
+      refetchQueries: [
+        { query: meQuery },
+        {
+          query: listingDetailQuery,
+          variables: { listingDetailId: parseInt(listing) },
+        },
+      ],
     });
     router.back();
   };
 
   const publishHandler = () => {
-    createListingFunction({
+    editListingFunction({
       variables: {
+        editListingId: parseInt(listing),
         title,
         description,
         images: s3Images,
@@ -347,8 +469,8 @@ const CreateListingScreen = () => {
         },
         published: true,
         finished: true,
-        placeType: placeType ? placeTypeDict[placeType] : null,
-        rentType: rentType ? rentTypeDict[rentType] : null,
+        placeType: placeTypeDict[placeType],
+        rentType: rentTypeDict[rentType],
         roomDetails,
         deviceType: deviceType.map((index) => deviceTypeDict[index]),
         standoutType: standoutType.map((index) => standoutTypeDict[index]),
@@ -358,31 +480,39 @@ const CreateListingScreen = () => {
         guestType: guestType.map((index) => guestTypeDict[index]),
         availability: selectedDates,
       },
+      refetchQueries: [
+        { query: meQuery },
+        {
+          query: listingDetailQuery,
+          variables: { listingDetailId: parseInt(listing) },
+        },
+      ],
     });
     router.back();
   };
 
   React.useEffect(() => {
     const isFormComplete =
-      s3Images.length > 0 && title !== "" && description !== "" && price
-        ? price > 0
-        : false &&
-          selectedCountry !== "" &&
-          streetAddress !== "" &&
-          citySuburb !== "" &&
-          stateProvince !== "" &&
-          postCode !== "" &&
-          guestNum >= 0 &&
-          bedroomNum >= 0 &&
-          bedNum >= 0 &&
-          bathroomNum >= 0 &&
-          selectedDates.length > 0;
+      s3Images.length > 0 &&
+      title !== "" &&
+      description !== "" &&
+      price > 0 &&
+      selectedCountry !== "" &&
+      streetAddress !== "" &&
+      citySuburb !== "" &&
+      stateProvince !== "" &&
+      postCode !== "" &&
+      guestNum >= 0 &&
+      bedroomNum >= 0 &&
+      bedNum >= 0 &&
+      bathroomNum >= 0 &&
+      selectedDates.length > 0;
     setFormComplete(isFormComplete);
     const haveContent =
       s3Images.length > 0 ||
       title !== "" ||
       description !== "" ||
-      price !== null ||
+      price > 0 ||
       streetAddress !== "" ||
       citySuburb !== "" ||
       stateProvince !== "" ||
@@ -466,7 +596,7 @@ const CreateListingScreen = () => {
       />
       <View style={styles.imagesContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {s3Images.map((image, index) => (
+          {s3Images?.map((image, index) => (
             <TouchableOpacity
               key={index}
               style={styles.imageContainer}
@@ -1026,7 +1156,7 @@ const CreateListingScreen = () => {
             scrollEnabled
             markingType="period"
             markedDates={{
-              ...selectedDates.reduce((result, date, index) => {
+              ...selectedDates?.reduce((result, date, index) => {
                 result[date] = {
                   selected: true,
                   color: "#2f95dc",
@@ -1083,8 +1213,6 @@ const CreateListingScreen = () => {
           <Dialog.Button
             title="Save"
             onPress={() => {
-              // Handle saving the draft here
-              // For example, you can call a saveDraft function
               saveHandler();
               setShowSaveDraftDialog(false);
               router.back();
@@ -1183,4 +1311,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateListingScreen;
+export default EditListingScreen;

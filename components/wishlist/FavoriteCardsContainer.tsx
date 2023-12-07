@@ -53,7 +53,7 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
             <>
               <ListItem.Content>
                 <ListItem.Title style={{ fontSize: 18, fontWeight: "700" }}>
-                  My Wishlists · {data && data.myFavorites.length}
+                  My Wishlists · {data && data.myFavorites?.length}
                 </ListItem.Title>
               </ListItem.Content>
             </>

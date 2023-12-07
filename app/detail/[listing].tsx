@@ -38,7 +38,9 @@ const listingDetailQuery = gql`
       placeType
       rentType
       roomDetails
-      amenities
+      deviceType
+      standoutType
+      safetyDeviceType
       guestType
       meta
       owner {
@@ -135,7 +137,12 @@ function ListingDetailScreen() {
             lng={data ? data.listingDetail.coordinate.lng : 0}
           />
           {/* Part4 */}
-          <DetailPart4 amenities={data ? data.listingDetail.amenities : []} />
+          <DetailPart4
+            deviceType={data ? data.listingDetail.deviceType : []}
+            standoutType={data ? data.listingDetail.standoutType : []}
+            safetyDeviceType={data ? data.listingDetail.safetyDeviceType : []}
+          />
+
           {/* Part5 */}
           <DetailPart5
             reviews={data ? data.listingDetail.reviews : []}
