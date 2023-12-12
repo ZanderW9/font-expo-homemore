@@ -74,7 +74,7 @@ function CheckIn(data: any) {
   };
 
   const markedDates = useMemo(() => {
-    const unavailabilityMarks = data.unavailability.reduce((result, date) => {
+    const unavailabilityMarks = data.unavailability?.reduce((result, date) => {
       result[date] = {
         disabled: true,
       };
@@ -283,7 +283,7 @@ function CheckIn(data: any) {
             <CalendarList
               minDate={today}
               maxDate={
-                data.availability.length
+                data.availability?.length
                   ? data.availability[data.availability.length - 1]
                   : today
               }

@@ -22,7 +22,9 @@ const listingDetailQuery = gql`
       placeType
       rentType
       roomDetails
-      amenities
+      roomDetails
+      deviceType
+      standoutType
       owner {
         userName
       }
