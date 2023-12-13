@@ -1,9 +1,11 @@
+import { gql, useMutation } from "@apollo/client";
 import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Card, Image } from "@rneui/themed";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 type CardsComponentsProps = {
   data: {
@@ -20,9 +22,39 @@ type CardsComponentsProps = {
   };
 };
 
+const meQuery = gql`
+  query Query {
+    me {
+      myUnPublishedListings {
+        id
+        title
+        description
+        images
+        price
+        address
+      }
+    }
+  }
+`;
+
+const deleteListingMutation = gql`
+  mutation Mutation($deleteListingId: Int!) {
+    deleteListing(id: $deleteListingId) {
+      id
+    }
+  }
+`;
+
 const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
+  const [deleteListingFunction, { error: deleteListingError }] = useMutation(
+    deleteListingMutation,
+    {
+      errorPolicy: "all",
+    },
+  );
+
   const [ratio, setRatio] = useState(1);
   const onLayout = useCallback(() => {
     Image.getSize(data.images[0], (width, height) => {
@@ -39,6 +71,15 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   const [showOptions, setShowOptions] = useState(false);
 
+  useEffect(() => {
+    if (deleteListingError) {
+      showMessage({
+        message: "This listing has orders, cannot be deleted",
+        type: "danger",
+      });
+    }
+  }, [deleteListingError]);
+
   const onImagePress = () => {
     setShowOptions(true);
   };
@@ -48,7 +89,17 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const editHandler = () => {
-    router.push(`/edit/${data.id}`);
+    router.push({ pathname: "/createlisting", params: { listingId: data.id } });
+    closeOptions();
+  };
+
+  const deleteHandler = () => {
+    deleteListingFunction({
+      variables: {
+        deleteListingId: parseInt(data.id),
+      },
+      refetchQueries: [{ query: meQuery }],
+    });
     closeOptions();
   };
 
@@ -112,6 +163,12 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
                 onPress={editHandler}
               >
                 <Text style={styles.optionText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={deleteHandler}
+              >
+                <Text style={styles.optionText}>Delete</Text>
               </TouchableOpacity>
             </Pressable>
           )}

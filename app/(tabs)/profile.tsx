@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { gql, useMutation, useApolloClient } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View } from "@components/Themed";
 import { clearLocalItems, getLocalItem } from "@config/storageManager";
@@ -12,9 +12,27 @@ import {
   ScrollView,
 } from "react-native";
 
+const createListingMutation = gql`
+  mutation Mutation {
+    createListing {
+      id
+    }
+  }
+`;
+
 function TabProfileScreen() {
   const client = useApolloClient();
   const { setIsLoggedIn, isLoggedIn } = useContext(GlobalContext);
+  const [createListingFunction, { data }] = useMutation(createListingMutation);
+
+  useEffect(() => {
+    if (data?.createListing.id) {
+      router.push({
+        pathname: "/createlisting",
+        params: { listingId: data?.createListing.id },
+      });
+    }
+  }, [data]);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -45,7 +63,7 @@ function TabProfileScreen() {
   };
 
   const createListingHandler = async () => {
-    router.push("/createlisting");
+    createListingFunction();
   };
 
   const myPostHandler = async () => {

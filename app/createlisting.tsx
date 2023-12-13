@@ -6,7 +6,7 @@ import { uploadImage } from "@config/s3";
 import { Ionicons } from "@expo/vector-icons";
 import { ListItem, Input, ButtonGroup, Button, Dialog } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
-import { Stack, router } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -21,8 +21,9 @@ import { CalendarList } from "react-native-calendars";
 import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
 
-const createListingMutation = gql`
+const updateListingMutation = gql`
   mutation Mutation(
+    $updateListingId: Int!
     $title: String
     $description: String
     $images: [String]
@@ -39,7 +40,8 @@ const createListingMutation = gql`
     $guestType: [String]
     $availability: [String]
   ) {
-    createListing(
+    updateListing(
+      id: $updateListingId
       title: $title
       description: $description
       images: $images
@@ -56,7 +58,15 @@ const createListingMutation = gql`
       guestType: $guestType
       availability: $availability
     ) {
-      title
+      id
+    }
+  }
+`;
+
+const deleteListingMutation = gql`
+  mutation Mutation($deleteListingId: Int!) {
+    deleteListing(id: $deleteListingId) {
+      id
     }
   }
 `;
@@ -64,12 +74,15 @@ const createListingMutation = gql`
 const CreateListingScreen = () => {
   // const { storedValue: initialLocation } = useGetLocalItem("userLocation");
   // console.log(initialLocation);
+  const { listingId } = useLocalSearchParams();
+  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [deleteListingFunction] = useMutation(deleteListingMutation);
+
   const [formComplete, setFormComplete] = useState(false);
   const [haveContent, setHaveContent] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSaveDraftDialog, setShowSaveDraftDialog] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
-  const [createListingFunction] = useMutation(createListingMutation);
 
   const [s3Images, setS3Images] = useState([]);
   const [expanded, setExpanded] = React.useState([0]);
@@ -299,8 +312,9 @@ const CreateListingScreen = () => {
   };
 
   const saveHandler = () => {
-    createListingFunction({
+    updateListingFunction({
       variables: {
+        updateListingId: parseInt(listingId),
         title,
         description,
         images: s3Images,
@@ -331,8 +345,9 @@ const CreateListingScreen = () => {
   };
 
   const publishHandler = () => {
-    createListingFunction({
+    updateListingFunction({
       variables: {
+        updateListingId: parseInt(listingId),
         title,
         description,
         images: s3Images,
@@ -413,8 +428,17 @@ const CreateListingScreen = () => {
     if (haveContent) {
       setShowSaveDraftDialog(true);
     } else {
-      router.back();
+      handleDelete();
     }
+  };
+
+  const handleDelete = () => {
+    deleteListingFunction({
+      variables: {
+        deleteListingId: parseInt(listingId),
+      },
+    });
+    router.back();
   };
 
   useEffect(() => {
@@ -1079,7 +1103,7 @@ const CreateListingScreen = () => {
             marginTop: 10,
           }}
         >
-          <Dialog.Button title="Back" onPress={() => router.back()} />
+          <Dialog.Button title="Back" onPress={handleDelete} />
           <Dialog.Button
             title="Save"
             onPress={() => {

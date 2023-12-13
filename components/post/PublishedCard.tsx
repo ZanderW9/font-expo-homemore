@@ -83,7 +83,7 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const editHandler = () => {
-    router.push(`/edit/${data.id}`);
+    router.push({ pathname: "/createlisting", params: { listingId: data.id } });
     closeOptions();
   };
 
