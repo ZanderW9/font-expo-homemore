@@ -117,6 +117,9 @@ const CreateListingScreen = () => {
   const [placeType, setPlaceType] = useState(null);
   const [rentType, setRentType] = useState(null);
 
+  const today = new Date().toISOString().slice(0, 10);
+  const [nightStayCount, setNightStayCount] = useState(0);
+
   const placeTypeDict = {
     0: "House",
     1: "Apartment",
@@ -197,8 +200,6 @@ const CreateListingScreen = () => {
   const [guestType, setGuestType] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
 
-  const today = new Date().toISOString().split("T")[0];
-
   const toggleStartingEndingDays = (day) => {
     if (day.dateString < today) {
       // 今天之前的日期不进行处理
@@ -208,14 +209,17 @@ const CreateListingScreen = () => {
     if (selectedDates.length === 1 && selectedDates[0] === day.dateString) {
       // 点击同一天两次，该天既是startingDay也是endingDay
       setSelectedDates([day.dateString]);
+      setNightStayCount(0);
     } else if (selectedDates.length === 0) {
       setSelectedDates([day.dateString]);
+      setNightStayCount(0);
     } else if (selectedDates.length === 1) {
       const firstSelectedDate = selectedDates[0];
       const secondSelectedDate = day.dateString;
 
       if (firstSelectedDate > secondSelectedDate) {
         setSelectedDates([secondSelectedDate]);
+        setNightStayCount(0);
       } else {
         const datesBetween = getDatesBetween(
           firstSelectedDate,
@@ -226,9 +230,11 @@ const CreateListingScreen = () => {
           ...datesBetween,
           secondSelectedDate,
         ]);
+        setNightStayCount(datesBetween.length + 1);
       }
     } else {
       setSelectedDates([day.dateString]);
+      setNightStayCount(0);
     }
   };
 
@@ -241,6 +247,8 @@ const CreateListingScreen = () => {
       dates.push(currentDate.toISOString().split("T")[0]);
       currentDate.setDate(currentDate.getDate() + 1);
     }
+
+    // setNightStayCount(dates.length - 1);
 
     return dates.slice(1, -1);
   };
@@ -1042,6 +1050,51 @@ const CreateListingScreen = () => {
             }
           }}
         >
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              justifyContent: "space-between",
+              padding: 20,
+            }}
+          >
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={styles.text}>Start Day</Text>
+
+              <Text style={{ fontSize: 16 }}>{selectedDates[0]}</Text>
+            </View>
+
+            <View
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              {/* 计算共几天 */}
+              <Text style={{ fontSize: 14 }}>
+                {nightStayCount >= 0 ? nightStayCount : 0} nights
+              </Text>
+            </View>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={styles.text}>End Day</Text>
+              <Text style={{ fontSize: 16 }}>
+                {selectedDates[selectedDates.length - 1]}
+              </Text>
+            </View>
+          </View>
           <CalendarList
             minDate={today}
             horizontal
@@ -1204,6 +1257,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     paddingLeft: 10,
     marginTop: -10,
+  },
+  text: {
+    fontSize: 12,
   },
 });
 
