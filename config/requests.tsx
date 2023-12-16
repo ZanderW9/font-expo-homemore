@@ -13,7 +13,7 @@ const fatchData = async (url: string, method: string, body = undefined) => {
   };
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}${url}`,
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}${url}`,
       requestOption,
     );
     if (response.ok) {

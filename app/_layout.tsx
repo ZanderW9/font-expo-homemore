@@ -7,7 +7,6 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import useUserLocation from "@config/hooks/useUserLocation";
 import { getLocalItem } from "@config/storageManager";
-import { BACKEND_URL } from "@env";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import {
@@ -60,7 +59,9 @@ export default function RootLayout() {
 
 export const GlobalContext = createContext();
 
-const httpLink = new HttpLink({ uri: `${BACKEND_URL}/graphql` });
+const httpLink = new HttpLink({
+  uri: `${process.env.EXPO_PUBLIC_BACKEND_URL}/graphql`,
+});
 
 const authLink = setContext(async (_, { headers }) => {
   // Get the authentication token from local storage if it exists
