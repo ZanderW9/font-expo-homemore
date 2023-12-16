@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View } from "@components/Themed";
 // import { useGetLocalItem } from "@config/hooks/storage";
@@ -21,6 +21,54 @@ import {
 import { CalendarList } from "react-native-calendars";
 import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
+
+const listingDetailQuery = gql`
+  query Query($listingDetailId: Int) {
+    listingDetail(id: $listingDetailId) {
+      id
+      title
+      description
+      images
+      price
+      address
+      coordinate
+      favorited
+      availability
+      unavailability
+      createdAt
+      publishAt
+      placeType
+      rentType
+      roomDetails
+      deviceType
+      standoutType
+      safetyDeviceType
+      guestType
+      meta
+      owner {
+        userName
+      }
+      reviews {
+        id
+        text
+        createdAt
+        sender {
+          id
+          userName
+        }
+        subReviews {
+          text
+          id
+          createdAt
+          sender {
+            id
+            userName
+          }
+        }
+      }
+    }
+  }
+`;
 
 const updateListingMutation = gql`
   mutation Mutation(
@@ -64,6 +112,15 @@ const updateListingMutation = gql`
   }
 `;
 
+function getKeyByValue(
+  dictionary: { [key: number]: string },
+  value: string,
+): number | undefined {
+  const keys = Object.keys(dictionary).map(Number);
+  const foundKey = keys.find((key) => dictionary[key] === value);
+  return foundKey;
+}
+
 const deleteListingMutation = gql`
   mutation Mutation($deleteListingId: Int!) {
     deleteListing(id: $deleteListingId) {
@@ -79,6 +136,10 @@ const CreateListingScreen = () => {
   const { listingId } = useLocalSearchParams();
   const [updateListingFunction] = useMutation(updateListingMutation);
   const [deleteListingFunction] = useMutation(deleteListingMutation);
+  const { data: listingDetail, loading } = useQuery(listingDetailQuery, {
+    variables: { listingDetailId: parseInt(listingId) },
+    errorPolicy: "all",
+  });
 
   const [formComplete, setFormComplete] = useState(false);
   const [haveContent, setHaveContent] = useState(false);
@@ -387,7 +448,53 @@ const CreateListingScreen = () => {
     router.back();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!loading && listingDetail) {
+      setS3Images(listingDetail?.listingDetail?.images);
+      setTitle(listingDetail?.listingDetail?.title);
+      setDescription(listingDetail?.listingDetail?.description);
+      setPrice(listingDetail?.listingDetail?.price);
+      setUnit(listingDetail?.listingDetail?.address.unit);
+      setStreetAddress(listingDetail?.listingDetail?.address.street);
+      setCitySuburb(listingDetail?.listingDetail?.address.city);
+      setStateProvince(listingDetail?.listingDetail?.address.state);
+      setPostCode(listingDetail?.listingDetail?.address.postCode);
+      setSelectedCountry(listingDetail?.listingDetail?.address.country);
+      setGuestNum(listingDetail?.listingDetail?.roomDetails.Guests);
+      setBedroomNum(listingDetail?.listingDetail?.roomDetails.Bedrooms);
+      setBedNum(listingDetail?.listingDetail?.roomDetails.Bed);
+      setBathroomNum(listingDetail?.listingDetail?.roomDetails.Bathrooms);
+      setPlaceType(
+        getKeyByValue(placeTypeDict, listingDetail?.listingDetail?.placeType),
+      );
+      setRentType(
+        getKeyByValue(rentTypeDict, listingDetail?.listingDetail?.rentType),
+      );
+      setDeviceType(
+        listingDetail?.listingDetail?.deviceType.map((item) =>
+          getKeyByValue(deviceTypeDict, item),
+        ),
+      );
+      setStandoutType(
+        listingDetail?.listingDetail?.standoutType.map((item) =>
+          getKeyByValue(standoutTypeDict, item),
+        ),
+      );
+      setSafetyDeviceType(
+        listingDetail?.listingDetail?.safetyDeviceType.map((item) =>
+          getKeyByValue(safetyDeviceTypeDict, item),
+        ),
+      );
+      setGuestType(
+        listingDetail?.listingDetail?.guestType.map((item) =>
+          getKeyByValue(guestTypeDict, item),
+        ),
+      );
+      setSelectedDates(listingDetail?.listingDetail?.availability);
+    }
+  }, [loading, listingDetail]);
+
+  useEffect(() => {
     const isFormComplete =
       s3Images.length > 0 && title !== "" && description !== "" && price
         ? price > 0
