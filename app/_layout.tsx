@@ -6,6 +6,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import useUserLocation from "@config/hooks/useUserLocation";
+import { fetchDynamicUrl } from "@config/s3";
 import { getLocalItem } from "@config/storageManager";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -59,10 +60,6 @@ export default function RootLayout() {
 
 export const GlobalContext = createContext();
 
-const httpLink = new HttpLink({
-  uri: `${process.env.EXPO_PUBLIC_BACKEND_URL}/graphql`,
-});
-
 const authLink = setContext(async (_, { headers }) => {
   // Get the authentication token from local storage if it exists
   const token = await getLocalItem("userToken");
@@ -86,35 +83,62 @@ function offsetFromCursor(merged, incoming, readField) {
   return 0;
 }
 
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          allListings: {
-            keyArgs: false,
-            merge(existing, incoming, { args, readField }) {
-              const merged = existing ? existing.slice(0) : [];
-              const offset = offsetFromCursor(merged, incoming, readField);
-              if (offset >= incoming.length) return merged;
-              const newmerged = [...merged, ...incoming.slice(offset)];
-              return newmerged;
+const createApolloClient = (httpLink) => {
+  return new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            allListings: {
+              keyArgs: false,
+              merge(existing, incoming, { args, readField }) {
+                const merged = existing ? existing.slice(0) : [];
+                const offset = offsetFromCursor(merged, incoming, readField);
+                if (offset >= incoming.length) return merged;
+                const newmerged = [...merged, ...incoming.slice(offset)];
+                return newmerged;
+              },
             },
           },
         },
       },
-    },
-  }),
-});
+    }),
+  });
+};
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   useUserLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [httpLinkUrl, setHttpLinkUrl] = useState(
+    process.env.EXPO_PUBLIC_BACKEND_URL,
+  );
+  const httpLink = new HttpLink({
+    uri: `${httpLinkUrl}/graphql`,
+  });
+
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await fetchDynamicUrl();
+      setHttpLinkUrl(data.url);
+    };
+    if (
+      process.env.EXPO_PUBLIC_DEVELOPER !== "production" &&
+      process.env.EXPO_PUBLIC_DEVELOPER !== "staging"
+    ) {
+      fetch();
+    }
+  }, []);
+
+  const client = createApolloClient(httpLink);
+
   return (
     <ApolloProvider client={client}>
-      <GlobalContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+      <GlobalContext.Provider
+        value={{ isLoggedIn, setIsLoggedIn, httpLinkUrl }}
+      >
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >

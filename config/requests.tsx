@@ -1,6 +1,11 @@
 import { getLocalItem } from "@config/storageManager";
 
-const fatchData = async (url: string, method: string, body = undefined) => {
+const fatchData = async (
+  baseUrl: string,
+  path: string,
+  method: string,
+  body = undefined,
+) => {
   const token = await getLocalItem("userToken");
 
   const requestOption = {
@@ -12,10 +17,7 @@ const fatchData = async (url: string, method: string, body = undefined) => {
     body: body ? JSON.stringify(body) : undefined,
   };
   try {
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}${url}`,
-      requestOption,
-    );
+    const response = await fetch(`${baseUrl}${path}`, requestOption);
     if (response.ok) {
       const data = await response.json();
       return { data, ok: true };
@@ -28,14 +30,18 @@ const fatchData = async (url: string, method: string, body = undefined) => {
   }
 };
 
-export const signImageUrl = async (fileName: string, fileType: string) => {
+export const signImageUrl = async (
+  baseUrl: string,
+  fileName: string,
+  fileType: string,
+) => {
   const body = { fileName, fileType };
-  const response = await fatchData("/api/signS3Image", "POST", body);
+  const response = await fatchData(baseUrl, "/api/signS3Image", "POST", body);
   return response;
 };
 
-export const deleteImageFromS3 = async (fileName: string) => {
+export const deleteImageFromS3 = async (baseUrl: string, fileName: string) => {
   const body = { fileName };
-  const response = await fatchData("/api/deleteS3Image", "POST", body);
+  const response = await fatchData(baseUrl, "/api/deleteS3Image", "POST", body);
   return response;
 };

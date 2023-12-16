@@ -19,14 +19,24 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location."
-      }
+      },
+      "config":{
+        "googleMapsApiKey": "AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
+      },
+      "bundleIdentifier": "com.marclu.footholdslug"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "config":{
+        "googleMaps": {
+          "apiKey": "AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
+        }
+      },
       "permissions": [
+        "android.permission.INTERNET",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"

@@ -50,6 +50,19 @@ yarn add react-native-safe-area-context react-native-screens
 npx expo install --fix 
 ```
 
+# BUILD
+build 命令：eas build -p android --profile preview --local
+
+.env 设置必须放在 eas.json 中，以 EXPO_PUBLIC_开头
+
+安装java11: https://medium.com/@kirebyte/using-homebrew-to-install-java-jdk11-on-macos-2021-4a90aa276f1c
+
+配置 android studio: 
+```zsh
+export ANDROID_HOME=~/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+```
+
 # 代码规范
 
 ## 样式设置

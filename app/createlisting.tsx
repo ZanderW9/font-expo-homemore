@@ -1,4 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
+import { GlobalContext } from "@app/_layout";
 import { View } from "@components/Themed";
 // import { useGetLocalItem } from "@config/hooks/storage";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
@@ -7,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ListItem, Input, ButtonGroup, Button, Dialog } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, router, useLocalSearchParams } from "expo-router";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   ScrollView,
@@ -72,6 +73,7 @@ const deleteListingMutation = gql`
 `;
 
 const CreateListingScreen = () => {
+  const { httpLinkUrl } = useContext(GlobalContext);
   // const { storedValue: initialLocation } = useGetLocalItem("userLocation");
   // console.log(initialLocation);
   const { listingId } = useLocalSearchParams();
@@ -269,7 +271,7 @@ const CreateListingScreen = () => {
           result.assets.map(async (asset) => {
             const fileName = asset.uri.split("/").pop();
             const fileType = fileName?.split(".").pop();
-            const res = await signImageUrl(fileName, fileType);
+            const res = await signImageUrl(httpLinkUrl, fileName, fileType);
             if (res.ok) {
               const { data } = res;
               const { signedUrl, objectUrl } = data;
@@ -308,7 +310,7 @@ const CreateListingScreen = () => {
   };
 
   const confirmDelete = () => {
-    deleteImageFromS3(s3Images[deleteIndex].split("/").pop());
+    deleteImageFromS3(httpLinkUrl, s3Images[deleteIndex].split("/").pop());
     const updatedS3Images = [...s3Images];
     updatedS3Images.splice(deleteIndex, 1);
     setS3Images(updatedS3Images);

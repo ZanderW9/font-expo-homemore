@@ -12,7 +12,6 @@ function MapScreen(props) {
   return (
     <MapView
       provider="google"
-      googleMapsApiKey={process.env.GOOGLE_MAPS_API_KEY}
       initialRegion={{
         latitude: center.lat,
         longitude: center.lng,
