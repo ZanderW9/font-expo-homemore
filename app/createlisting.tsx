@@ -28,7 +28,14 @@ const listingDetailQuery = gql`
       id
       title
       description
-      images
+      images {
+        url
+        smallUrl
+        thumbhash
+        ratio
+        width
+        height
+      }
       price
       address
       coordinate
@@ -450,7 +457,10 @@ const CreateListingScreen = () => {
 
   useEffect(() => {
     if (!loading && listingDetail) {
-      setS3Images(listingDetail?.listingDetail?.images);
+      const images = listingDetail?.listingDetail?.images.map(
+        (image) => image.url,
+      );
+      setS3Images(images);
       setTitle(listingDetail?.listingDetail?.title);
       setDescription(listingDetail?.listingDetail?.description);
       setPrice(listingDetail?.listingDetail?.price);
