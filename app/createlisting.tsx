@@ -2,6 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View } from "@components/Themed";
 // import { useGetLocalItem } from "@config/hooks/storage";
+import { compressImage } from "@config/media";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
 import { Ionicons } from "@expo/vector-icons";
@@ -345,7 +346,8 @@ const CreateListingScreen = () => {
               const { signedUrl, objectUrl } = data;
               newS3Images.push(objectUrl);
               // 通过 signedUrl 上传图片
-              await uploadImage(signedUrl, fileType, asset);
+              const compressedAsset = await compressImage(asset.uri);
+              await uploadImage(signedUrl, fileType, compressedAsset);
             }
           }),
         );
