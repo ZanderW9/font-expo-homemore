@@ -1,5 +1,5 @@
 import { Text, View } from "@components/Themed";
-import { Image } from "@rneui/themed";
+import { Image } from "expo-image";
 import { StyleSheet } from "react-native";
 
 function BaseInfo(data: any) {
@@ -33,7 +33,8 @@ function BaseInfo(data: any) {
           }}
         >
           <Image
-            source={{ uri: data.image }}
+            source={{ uri: data.image.smallUrl }}
+            placeholder={{ thumbhash: data.image.thumbhash }}
             style={{
               width: "100%",
               height: "100%",

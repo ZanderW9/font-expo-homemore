@@ -13,7 +13,10 @@ const listingDetailQuery = gql`
     listingDetail(id: $listingDetailId) {
       id
       title
-      images
+      images {
+        smallUrl
+        thumbhash
+      }
       price
       address
       coordinate
