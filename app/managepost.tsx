@@ -1,5 +1,5 @@
-import PostProvider from "@components/order/OrderProvider";
 import MyPost from "@components/post/MyPost";
+import PostProvider from "@components/post/PostProvider";
 
 function ManagerOrder() {
   return (

@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { Text, View } from "@components/Themed";
-import { Image, Dialog } from "@rneui/themed";
+import { Dialog } from "@rneui/themed";
+import { Image } from "expo-image";
 import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { showMessage } from "react-native-flash-message";
@@ -22,7 +23,11 @@ const meQuery = gql`
         status
         createdAt
         listing {
-          images
+          images {
+            smallUrl
+            thumbhash
+            ratio
+          }
         }
         guests {
           user {
@@ -75,6 +80,7 @@ function PendingCard(data: any) {
         },
       ],
     });
+
     if (!result.data.updateBookingStatus) {
       showMessage({
         type: "danger",
@@ -131,7 +137,8 @@ function PendingCard(data: any) {
           }}
         >
           <Image
-            source={{ uri: data.image }}
+            source={{ uri: data.image.smallUrl }}
+            placeholder={{ thumbhash: data.image.thumbhash }}
             style={{
               width: "100%",
               height: "100%",

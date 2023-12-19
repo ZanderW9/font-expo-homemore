@@ -1,5 +1,5 @@
 import { Text, View } from "@components/Themed";
-import { Image } from "@rneui/themed";
+import { Image } from "expo-image";
 import { StyleSheet } from "react-native";
 
 function formatTime(timestamp) {
@@ -45,7 +45,10 @@ function GuestCard(data: any) {
           }}
         >
           <Image
-            source={{ uri: data.image }}
+            source={{ uri: data.image.smallUrl }}
+            placeholder={{
+              thumbhash: data.image.thumbhash || "MwgGDYJZZ3hvioiDdoeId4eAewi4",
+            }}
             style={{
               width: "100%",
               height: "100%",

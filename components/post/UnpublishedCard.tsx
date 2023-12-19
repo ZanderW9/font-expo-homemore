@@ -1,9 +1,10 @@
 import { gql, useMutation } from "@apollo/client";
 import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
-import { Card, Image } from "@rneui/themed";
+import { Card } from "@rneui/themed";
+import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
@@ -12,7 +13,11 @@ type CardsComponentsProps = {
     id: string;
     title: string;
     description: string;
-    images: string[];
+    images: {
+      smallUrl: string;
+      thumbhash: string;
+      ratio: number;
+    };
     price: number;
     address: {
       state: string;
@@ -29,7 +34,11 @@ const meQuery = gql`
         id
         title
         description
-        images
+        images {
+          smallUrl
+          thumbhash
+          ratio
+        }
         price
         address
       }
@@ -54,20 +63,7 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
       errorPolicy: "all",
     },
   );
-
-  const [ratio, setRatio] = useState(1);
-  const onLayout = useCallback(() => {
-    Image.getSize(data.images[0], (width, height) => {
-      const ratio = width / height;
-      if (ratio > 1.333) {
-        setRatio(1.333);
-      } else if (ratio < 0.75) {
-        setRatio(0.75);
-      } else {
-        setRatio(width / height);
-      }
-    });
-  }, []);
+  const imageData = data.images[0] || {};
 
   const [showOptions, setShowOptions] = useState(false);
 
@@ -112,10 +108,12 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
       <TouchableOpacity onLongPress={onImagePress} onPress={viewHandler}>
         <Card containerStyle={styles.cardContainer}>
           <Image
-            onLayout={onLayout}
-            style={{ ...styles.image, aspectRatio: ratio }}
-            resizeMode="cover"
-            source={{ uri: data.images[0] }}
+            source={{ uri: imageData.smallUrl }}
+            placeholder={{
+              thumbhash: imageData.thumbhash || "MwgGDYJZZ3hvioiDdoeId4eAewi4",
+            }}
+            style={{ ...styles.image, aspectRatio: imageData.ratio || 1 }}
+            contentFit="cover"
           />
 
           <View style={styles.cardContent}>

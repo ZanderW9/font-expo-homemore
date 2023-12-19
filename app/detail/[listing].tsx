@@ -26,7 +26,13 @@ const listingDetailQuery = gql`
       id
       title
       description
-      images
+      images {
+        url
+        smallUrl
+        thumbhash
+        width
+        height
+      }
       price
       address
       coordinate

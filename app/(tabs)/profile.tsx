@@ -1,6 +1,6 @@
 import { gql, useMutation, useApolloClient } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
-import { View } from "@components/Themed";
+import { View, Text } from "@components/Themed";
 import { clearLocalItems, getLocalItem } from "@config/storageManager";
 import { ListItem } from "@rneui/themed";
 import { router } from "expo-router";
@@ -22,7 +22,7 @@ const createListingMutation = gql`
 
 function TabProfileScreen() {
   const client = useApolloClient();
-  const { setIsLoggedIn, isLoggedIn } = useContext(GlobalContext);
+  const { setIsLoggedIn, isLoggedIn, httpLinkUrl } = useContext(GlobalContext);
   const [createListingFunction, { data }] = useMutation(createListingMutation);
 
   useEffect(() => {
@@ -138,6 +138,7 @@ function TabProfileScreen() {
               </View>
             )}
           </View>
+          <Text>LINK:{httpLinkUrl}</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

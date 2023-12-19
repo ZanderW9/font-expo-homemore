@@ -17,7 +17,11 @@ const meQuery = gql`
           status
           createdAt
           listing {
-            images
+            images {
+              smallUrl
+              thumbhash
+              ratio
+            }
           }
         }
       }
@@ -29,7 +33,11 @@ const meQuery = gql`
         status
         createdAt
         listing {
-          images
+          images {
+            smallUrl
+            thumbhash
+            ratio
+          }
         }
         guests {
           user {

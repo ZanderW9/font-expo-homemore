@@ -1,8 +1,9 @@
 import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
-import { Card, Image, CheckBox } from "@rneui/themed";
+import { Card, CheckBox } from "@rneui/themed";
+import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { StyleSheet, Pressable } from "react-native";
 
 type CardsComponentsProps = {
@@ -10,7 +11,11 @@ type CardsComponentsProps = {
     id: string;
     title: string;
     description: string;
-    images: string[];
+    images: {
+      smallUrl: string;
+      thumbhash: string;
+      ratio: number;
+    };
     price: number;
     favorited: boolean;
     address: {
@@ -24,19 +29,6 @@ type CardsComponentsProps = {
 const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
-  const [ratio, setRatio] = useState(1);
-  const onLayout = useCallback(() => {
-    Image.getSize(data.images[0], (width, height) => {
-      const ratio = width / height;
-      if (ratio > 1.333) {
-        setRatio(1.333);
-      } else if (ratio < 0.75) {
-        setRatio(0.75);
-      } else {
-        setRatio(width / height);
-      }
-    });
-  }, []);
   const toggleCheckboxHandler = () => {
     router.push({ pathname: "/addwishlist", params: { listingId: data.id } });
   };
@@ -44,15 +36,17 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   const pressHandler = () => {
     router.push(`/detail/${data.id}`);
   };
+
+  const imageData = data.images[0];
+
   return (
     <View style={styles.container}>
       <Pressable onPress={pressHandler}>
         <Card containerStyle={styles.cardContainer}>
           <Image
-            onLayout={onLayout}
-            style={{ ...styles.image, aspectRatio: ratio }}
-            resizeMode="cover"
-            source={{ uri: data.images[0] }}
+            style={{ ...styles.image, aspectRatio: imageData.ratio || 1 }}
+            placeholder={{ thumbhash: imageData.thumbhash }}
+            source={{ uri: imageData.smallUrl }}
           />
           <View style={styles.cardContent}>
             <Card.Title style={styles.price}>${data.price}</Card.Title>

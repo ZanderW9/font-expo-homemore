@@ -1,6 +1,6 @@
 import { View } from "@components/Themed";
-import { Image } from "@rneui/themed";
-import React, { useEffect, useState } from "react";
+import { Image } from "expo-image";
+import React from "react";
 import { Dimensions } from "react-native";
 import Animated, {
   Extrapolate,
@@ -14,73 +14,22 @@ function MyCarousel(data: any) {
   const PAGE_WIDTH = Dimensions.get("window").width;
   const PAGE_HEIGHT = Dimensions.get("window").height;
   const progressValue = useSharedValue<number>(0);
-  const baseOptions = {
-    vertical: false,
-    width: PAGE_WIDTH,
-  };
 
-  const MAX_IMAGE_HEIGHT = PAGE_HEIGHT * 0.65;
-  const [maxImageWidth, setMaxImageWidth] = useState(0);
-  const [maxImageHeight, setMaxImageHeight] = useState(0);
-
-  const adjustedImageWidth = Math.min(PAGE_WIDTH, maxImageWidth);
-  const adjustedImageHeight = Math.min(MAX_IMAGE_HEIGHT, maxImageHeight);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const calculateMaxSize = () => {
-      if (data.images) {
-        // 遍历图片数组，获取图片尺寸
-        const imageSizePromises = data.images.map((image: any) => {
-          return new Promise((resolve) => {
-            Image.getSize(image, (width, height) => {
-              if (width > PAGE_WIDTH) {
-                height = (PAGE_WIDTH / width) * height;
-                width = PAGE_WIDTH;
-              } else if (height > MAX_IMAGE_HEIGHT) {
-                width = (MAX_IMAGE_HEIGHT / height) * width;
-                height = MAX_IMAGE_HEIGHT;
-              }
-              resolve({ width, height });
-            });
-          });
-        });
-
-        Promise.all(imageSizePromises).then((imageSizes) => {
-          // 计算最大宽度和最大高度
-          let maxWidth = 0;
-          let maxHeight = 0;
-
-          imageSizes.forEach(({ width, height }) => {
-            maxWidth = Math.max(maxWidth, width);
-            maxHeight = Math.max(maxHeight, height);
-          });
-
-          // 设置状态
-          if (isMounted) {
-            setMaxImageWidth(maxWidth);
-            setMaxImageHeight(maxHeight);
-          }
-        });
-      }
-    };
-
-    calculateMaxSize();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [data.images]);
+  const MAX_IMAGE_HEIGHT = PAGE_HEIGHT * 0.6;
+  let maxImageHeight = 300;
+  if (data.images.length > 0) {
+    const imagesHeights = data.images.map(
+      (image) => (PAGE_WIDTH / image.width) * image.height,
+    );
+    maxImageHeight = Math.min(Math.max(...imagesHeights), MAX_IMAGE_HEIGHT);
+  }
 
   return (
     <View>
       <Carousel
-        {...baseOptions}
-        style={{
-          width: adjustedImageWidth,
-          height: adjustedImageHeight,
-        }}
+        vertical={false}
+        width={PAGE_WIDTH}
+        height={maxImageHeight}
         loop={false}
         pagingEnabled
         snapEnabled
@@ -94,12 +43,14 @@ function MyCarousel(data: any) {
         data={data.images ? data.images : []}
         renderItem={({ item }) => (
           <Image
-            source={{ uri: item }}
+            source={{ uri: item.smallUrl }}
+            cachePolicy="memory-disk"
+            placeholder={{ thumbhash: item.thumbhash }}
             style={{
-              width: adjustedImageWidth,
-              height: adjustedImageHeight,
+              width: "100%",
+              height: maxImageHeight,
             }}
-            resizeMode="contain"
+            contentFit="contain"
           />
         )}
       />

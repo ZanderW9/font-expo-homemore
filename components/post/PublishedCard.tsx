@@ -1,9 +1,10 @@
 import { gql, useMutation } from "@apollo/client";
 import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
-import { Card, Image, CheckBox } from "@rneui/themed";
+import { Card, CheckBox } from "@rneui/themed";
+import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
 
 type CardsComponentsProps = {
@@ -11,7 +12,11 @@ type CardsComponentsProps = {
     id: string;
     title: string;
     description: string;
-    images: string[];
+    images: {
+      smallUrl: string;
+      thumbhash: string;
+      ratio: number;
+    };
     price: number;
     favorited: boolean;
     address: {
@@ -22,9 +27,9 @@ type CardsComponentsProps = {
   };
 };
 
-const modefyPublishMutation = gql`
-  mutation Mutation($modefyPublishId: Int!, $published: Boolean!) {
-    modefyPublish(id: $modefyPublishId, published: $published) {
+const modifyPublishMutation = gql`
+  mutation Mutation($modifyPublishId: Int!, $published: Boolean!) {
+    modifyPublish(id: $modifyPublishId, published: $published) {
       id
     }
   }
@@ -37,7 +42,11 @@ const meQuery = gql`
         id
         title
         description
-        images
+        images {
+          smallUrl
+          thumbhash
+          ratio
+        }
         price
         favorited
         address
@@ -46,7 +55,11 @@ const meQuery = gql`
         id
         title
         description
-        images
+        images {
+          smallUrl
+          thumbhash
+          ratio
+        }
         price
         address
       }
@@ -57,22 +70,11 @@ const meQuery = gql`
 const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
-  const [modefyPublishFunction] = useMutation(modefyPublishMutation);
-  const [ratio, setRatio] = useState(1);
-  const onLayout = useCallback(() => {
-    Image.getSize(data.images[0], (width, height) => {
-      const ratio = width / height;
-      if (ratio > 1.333) {
-        setRatio(1.333);
-      } else if (ratio < 0.75) {
-        setRatio(0.75);
-      } else {
-        setRatio(width / height);
-      }
-    });
-  }, []);
+  const [modifyPublishFunction] = useMutation(modifyPublishMutation);
 
   const [showOptions, setShowOptions] = useState(false);
+
+  const imageData = data.images[0];
 
   const onImagePress = () => {
     setShowOptions(true);
@@ -88,9 +90,9 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const unpublishHandler = () => {
-    modefyPublishFunction({
+    modifyPublishFunction({
       variables: {
-        modefyPublishId: data.id,
+        modifyPublishId: data.id,
         published: false,
       },
       refetchQueries: [{ query: meQuery }],
@@ -111,10 +113,10 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
       <TouchableOpacity onLongPress={onImagePress} onPress={viewHandler}>
         <Card containerStyle={styles.cardContainer}>
           <Image
-            onLayout={onLayout}
-            style={{ ...styles.image, aspectRatio: ratio }}
-            resizeMode="cover"
-            source={{ uri: data.images[0] }}
+            source={{ uri: imageData.smallUrl }}
+            placeholder={{ thumbhash: imageData.thumbhash }}
+            style={{ ...styles.image, aspectRatio: imageData.ratio }}
+            contentFit="cover"
           />
           <View style={styles.cardContent}>
             <Card.Title style={styles.price}>${data.price}</Card.Title>

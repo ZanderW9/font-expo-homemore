@@ -14,7 +14,11 @@ const favoriteListingsQuery = gql`
           id
           title
           description
-          images
+          images {
+            smallUrl
+            thumbhash
+            ratio
+          }
           price
           favorited
           address

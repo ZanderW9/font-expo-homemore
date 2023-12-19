@@ -120,13 +120,15 @@ function RootLayoutNav() {
   });
 
   useEffect(() => {
+    // use to get dynamic url for development
     const fetch = async () => {
       const data = await fetchDynamicUrl();
       setHttpLinkUrl(data.url);
     };
     if (
       process.env.EXPO_PUBLIC_DEVELOPER !== "production" &&
-      process.env.EXPO_PUBLIC_DEVELOPER !== "staging"
+      process.env.EXPO_PUBLIC_DEVELOPER !== "staging" &&
+      process.env.EXPO_PUBLIC_DEV_ON_GO !== "true"
     ) {
       fetch();
     }

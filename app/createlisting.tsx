@@ -6,6 +6,7 @@ import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
 import { Ionicons } from "@expo/vector-icons";
 import { ListItem, Input, ButtonGroup, Button, Dialog } from "@rneui/themed";
+import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useState, useEffect, useContext } from "react";
@@ -13,7 +14,6 @@ import { useForm, Controller } from "react-hook-form";
 import {
   ScrollView,
   TouchableOpacity,
-  Image,
   Text,
   StyleSheet,
   BackHandler,
