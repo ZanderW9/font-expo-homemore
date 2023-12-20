@@ -127,8 +127,7 @@ function RootLayoutNav() {
     };
     if (
       process.env.EXPO_PUBLIC_DEVELOPER !== "production" &&
-      process.env.EXPO_PUBLIC_DEVELOPER !== "staging" &&
-      process.env.EXPO_PUBLIC_DEV_ON_GO !== "true"
+      process.env.EXPO_PUBLIC_DEVELOPER !== "staging"
     ) {
       fetch();
     }
