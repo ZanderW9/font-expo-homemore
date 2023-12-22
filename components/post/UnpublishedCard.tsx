@@ -100,7 +100,10 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const viewHandler = () => {
-    router.push(`/detail/${data.id}`);
+    router.push({
+      pathname: "/detail",
+      params: { listing: data.id },
+    });
   };
 
   return (

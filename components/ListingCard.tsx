@@ -34,7 +34,10 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const pressHandler = () => {
-    router.push(`/detail/${data.id}`);
+    router.push({
+      pathname: "/detail",
+      params: { listing: data.id },
+    });
   };
 
   const imageData = data.images[0];

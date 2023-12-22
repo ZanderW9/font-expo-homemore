@@ -9,11 +9,13 @@ function DetailPart3(data: any) {
       <Text style={styles.title}>Location</Text>
       <Pressable
         style={styles.mapWrapper}
-        onPress={() =>
-          router.push({
-            pathname: "/detail/map",
-            params: { lat: data.lat, lng: data.lng },
-          })
+        onPress={
+          () =>
+            router.push({
+              pathname: "/detail/map",
+              params: { lat: data.lat, lng: data.lng },
+            })
+          // router.push("/detail/map")
         }
       >
         {data.lat !== 0 && data.lng !== 0 && (
@@ -21,8 +23,11 @@ function DetailPart3(data: any) {
             center={{
               lat: data.lat,
               lng: data.lng,
+              latDelta: 0.0922 / 3,
+              lngDelta: 0.0421 / 3,
             }}
             scrollEnabled={false} // 设置不可拖动
+            isFullScreen={false}
           />
         )}
       </Pressable>

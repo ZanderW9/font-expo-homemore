@@ -91,7 +91,7 @@ const createApolloClient = (httpLink) => {
         Query: {
           fields: {
             allListings: {
-              keyArgs: false,
+              keyArgs: true,
               merge(existing, incoming, { args, readField }) {
                 const merged = existing ? existing.slice(0) : [];
                 const offset = offsetFromCursor(merged, incoming, readField);

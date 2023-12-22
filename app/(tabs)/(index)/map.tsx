@@ -25,28 +25,17 @@ function ExploreMapScreen() {
           center={{
             lat: initialLocation.coords.latitude,
             lng: initialLocation.coords.longitude,
+            latDelta: 0.0922,
+            lngDelta: 0.0421,
           }}
           scrollEnabled // 设置可拖动
+          isFullScreen
         />
       )}
       <FAB
         size="small"
-        title="Search this area"
-        style={{ position: "absolute", bottom: 20 }}
-        icon={
-          <Ionicons
-            name="search-outline"
-            size={24}
-            color="white"
-            style={{ paddingLeft: 7 }}
-          />
-        }
-        color="rgba(0,0,0,0.4)"
-      />
-      <FAB
-        size="small"
         title=""
-        style={{ position: "absolute", bottom: 20, left: 10 }}
+        style={{ position: "absolute", bottom: 20, right: 10 }}
         icon={<Ionicons name="close" size={21} color="white" />}
         color="rgba(0,0,0,0.4)"
         onPress={() => router.push("/")}
