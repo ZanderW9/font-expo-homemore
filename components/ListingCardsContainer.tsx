@@ -6,8 +6,18 @@ import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
 const allListingsQuery = gql`
-  query Query($after: String, $first: Int, $sortOrder: SortOrder) {
-    allListings(after: $after, first: $first, sortOrder: $sortOrder) {
+  query Query(
+    $after: String
+    $first: Int
+    $sortOrder: SortOrder
+    $published: Boolean
+  ) {
+    allListings(
+      after: $after
+      first: $first
+      sortOrder: $sortOrder
+      published: $published
+    ) {
       id
       title
       description
@@ -25,7 +35,7 @@ const allListingsQuery = gql`
 
 function ListingCardsContainer() {
   const { loading, data, refetch, fetchMore } = useQuery(allListingsQuery, {
-    variables: { first: 10, after: null, sortOrder: "desc" },
+    variables: { first: 10, after: null, sortOrder: "desc", published: true },
     errorPolicy: "all",
   });
 

@@ -5,8 +5,8 @@ import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 const mapViewQuery = gql`
-  query Query($first: Int, $boundary: Json) {
-    allListings(first: $first, boundary: $boundary) {
+  query Query($first: Int, $boundary: Json, $published: Boolean) {
+    allListings(first: $first, boundary: $boundary, published: $published) {
       id
       coordinate
       price
@@ -19,6 +19,7 @@ function MapScreen(props) {
   const { data } = useQuery(mapViewQuery, {
     variables: {
       first: 100,
+      published: true,
       boundary: {
         northEast: {
           latitude: boundaries.northEast?.latitude,

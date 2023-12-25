@@ -24,8 +24,8 @@ import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
 
 const listingDetailQuery = gql`
-  query Query($listingDetailId: Int) {
-    listingDetail(id: $listingDetailId) {
+  query Query($ids: [Int]) {
+    allListings(ids: $ids) {
       id
       title
       description
@@ -144,27 +144,36 @@ const CreateListingScreen = () => {
   const { listingId } = useLocalSearchParams();
   const [updateListingFunction] = useMutation(updateListingMutation);
   const [deleteListingFunction] = useMutation(deleteListingMutation);
-  const { data: listingDetail, loading } = useQuery(listingDetailQuery, {
-    variables: { listingDetailId: parseInt(listingId) },
+  const { data: gqlData, loading } = useQuery(listingDetailQuery, {
+    variables: { ids: [parseInt(listingId)] },
     errorPolicy: "all",
   });
-
+  console.log("gqlData:", gqlData);
+  const [expanded, setExpanded] = React.useState([0]);
   const [formComplete, setFormComplete] = useState(false);
-  const [haveContent, setHaveContent] = useState(false);
+  const [isChange, setIsChange] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSaveDraftDialog, setShowSaveDraftDialog] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
 
   const [s3Images, setS3Images] = useState([]);
-  const [expanded, setExpanded] = React.useState([0]);
+  const [oldS3Images, setOldS3Images] = useState([]);
   const [title, setTitle] = useState("");
+  const [oldTitle, setOldTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [oldDescription, setOldDescription] = useState("");
   const [price, setPrice] = useState<number | null>(null);
+  const [oldPrice, setOldPrice] = useState<number | null>(null);
   const [unit, setUnit] = useState("");
+  const [oldUnit, setOldUnit] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
+  const [oldStreetAddress, setOldStreetAddress] = useState("");
   const [citySuburb, setCitySuburb] = useState("");
+  const [oldCitySuburb, setOldCitySuburb] = useState("");
   const [stateProvince, setStateProvince] = useState("");
+  const [oldStateProvince, setOldStateProvince] = useState("");
   const [postCode, setPostCode] = useState("");
+  const [oldPostCode, setOldPostCode] = useState("");
 
   const [open, setOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("au");
@@ -174,9 +183,13 @@ const CreateListingScreen = () => {
   ]);
 
   const [guestNum, setGuestNum] = useState(0);
+  const [oldGuestNum, setOldGuestNum] = useState(0);
   const [bedroomNum, setBedroomNum] = useState(0);
+  const [oldBedroomNum, setOldBedroomNum] = useState(0);
   const [bedNum, setBedNum] = useState(0);
+  const [oldBedNum, setOldBedNum] = useState(0);
   const [bathroomNum, setBathroomNum] = useState(0);
+  const [oldBathroomNum, setOldBathroomNum] = useState(0);
 
   const roomDetails = {
     Guests: guestNum,
@@ -270,6 +283,7 @@ const CreateListingScreen = () => {
   const [safetyDeviceType, setSafetyDeviceType] = useState([]);
   const [guestType, setGuestType] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
+  const [oldSelectedDates, setOldSelectedDates] = useState([]);
 
   const toggleStartingEndingDays = (day) => {
     if (day.dateString < today) {
@@ -412,12 +426,12 @@ const CreateListingScreen = () => {
         placeType: placeType !== null ? placeTypeDict[placeType] : null,
         rentType: rentType !== null ? rentTypeDict[rentType] : null,
         roomDetails,
-        deviceType: deviceType.map((index) => deviceTypeDict[index]),
-        standoutType: standoutType.map((index) => standoutTypeDict[index]),
-        safetyDeviceType: safetyDeviceType.map(
+        deviceType: deviceType?.map((index) => deviceTypeDict[index]),
+        standoutType: standoutType?.map((index) => standoutTypeDict[index]),
+        safetyDeviceType: safetyDeviceType?.map(
           (index) => safetyDeviceTypeDict[index],
         ),
-        guestType: guestType.map((index) => guestTypeDict[index]),
+        guestType: guestType?.map((index) => guestTypeDict[index]),
         availability: selectedDates,
       },
     });
@@ -458,85 +472,100 @@ const CreateListingScreen = () => {
   };
 
   useEffect(() => {
-    if (!loading && listingDetail) {
-      const images = listingDetail?.listingDetail?.images.map(
-        (image) => image.url,
-      );
+    // 这里的if可以改为lodash的方法
+    if (!loading && gqlData && gqlData?.allListings[0]) {
+      const images = gqlData?.allListings[0]?.images.map((image) => image.url);
       setS3Images(images);
-      setTitle(listingDetail?.listingDetail?.title);
-      setDescription(listingDetail?.listingDetail?.description);
-      setPrice(listingDetail?.listingDetail?.price);
-      setUnit(listingDetail?.listingDetail?.address.unit);
-      setStreetAddress(listingDetail?.listingDetail?.address.street);
-      setCitySuburb(listingDetail?.listingDetail?.address.city);
-      setStateProvince(listingDetail?.listingDetail?.address.state);
-      setPostCode(listingDetail?.listingDetail?.address.postCode);
-      setSelectedCountry(listingDetail?.listingDetail?.address.country);
-      setGuestNum(listingDetail?.listingDetail?.roomDetails.Guests);
-      setBedroomNum(listingDetail?.listingDetail?.roomDetails.Bedrooms);
-      setBedNum(listingDetail?.listingDetail?.roomDetails.Bed);
-      setBathroomNum(listingDetail?.listingDetail?.roomDetails.Bathrooms);
+      setOldS3Images(images);
+      setTitle(gqlData?.allListings[0]?.title);
+      setOldTitle(gqlData?.allListings[0]?.title);
+      setDescription(gqlData?.allListings[0]?.description);
+      setOldDescription(gqlData?.allListings[0]?.description);
+      setPrice(gqlData?.allListings[0]?.price);
+      setOldPrice(gqlData?.allListings[0]?.price);
+      setUnit(gqlData?.allListings[0]?.address.unit);
+      setOldUnit(gqlData?.allListings[0]?.address.unit);
+      setStreetAddress(gqlData?.allListings[0]?.address.street);
+      setOldStreetAddress(gqlData?.allListings[0]?.address.street);
+      setCitySuburb(gqlData?.allListings[0]?.address.city);
+      setOldCitySuburb(gqlData?.allListings[0]?.address.city);
+      setStateProvince(gqlData?.allListings[0]?.address.state);
+      setOldStateProvince(gqlData?.allListings[0]?.address.state);
+      setPostCode(gqlData?.allListings[0]?.address.postCode);
+      setOldPostCode(gqlData?.allListings[0]?.address.postCode);
+      setSelectedCountry(gqlData?.allListings[0]?.address.country);
+      setGuestNum(gqlData?.allListings[0]?.roomDetails.Guests);
+      setOldGuestNum(gqlData?.allListings[0]?.roomDetails.Guests);
+      setBedroomNum(gqlData?.allListings[0]?.roomDetails.Bedrooms);
+      setOldBedroomNum(gqlData?.allListings[0]?.roomDetails.Bedrooms);
+      setBedNum(gqlData?.allListings[0]?.roomDetails.Bed);
+      setOldBedNum(gqlData?.allListings[0]?.roomDetails.Bed);
+      setBathroomNum(gqlData?.allListings[0]?.roomDetails.Bathrooms);
+      setOldBathroomNum(gqlData?.allListings[0]?.roomDetails.Bathrooms);
       setPlaceType(
-        getKeyByValue(placeTypeDict, listingDetail?.listingDetail?.placeType),
+        getKeyByValue(placeTypeDict, gqlData?.allListings[0]?.placeType),
       );
       setRentType(
-        getKeyByValue(rentTypeDict, listingDetail?.listingDetail?.rentType),
+        getKeyByValue(rentTypeDict, gqlData?.allListings[0]?.rentType),
       );
       setDeviceType(
-        listingDetail?.listingDetail?.deviceType.map((item) =>
+        gqlData?.allListings[0]?.deviceType.map((item) =>
           getKeyByValue(deviceTypeDict, item),
         ),
       );
       setStandoutType(
-        listingDetail?.listingDetail?.standoutType.map((item) =>
+        gqlData?.allListings[0]?.standoutType.map((item) =>
           getKeyByValue(standoutTypeDict, item),
         ),
       );
       setSafetyDeviceType(
-        listingDetail?.listingDetail?.safetyDeviceType.map((item) =>
+        gqlData?.allListings[0]?.safetyDeviceType.map((item) =>
           getKeyByValue(safetyDeviceTypeDict, item),
         ),
       );
       setGuestType(
-        listingDetail?.listingDetail?.guestType.map((item) =>
+        gqlData?.allListings[0]?.guestType.map((item) =>
           getKeyByValue(guestTypeDict, item),
         ),
       );
-      setSelectedDates(listingDetail?.listingDetail?.availability);
+      setSelectedDates(gqlData?.allListings[0]?.availability);
+      setOldSelectedDates(gqlData?.allListings[0]?.availability);
     }
-  }, [loading, listingDetail]);
+  }, [loading, gqlData]);
 
   useEffect(() => {
     const isFormComplete =
-      s3Images.length > 0 && title !== "" && description !== "" && price
-        ? price > 0
-        : false &&
-          selectedCountry !== "" &&
-          streetAddress !== "" &&
-          citySuburb !== "" &&
-          stateProvince !== "" &&
-          postCode !== "" &&
-          guestNum >= 0 &&
-          bedroomNum >= 0 &&
-          bedNum >= 0 &&
-          bathroomNum >= 0 &&
-          selectedDates.length > 0;
-    setFormComplete(isFormComplete);
-    const haveContent =
-      s3Images.length > 0 ||
-      title !== "" ||
-      description !== "" ||
-      price !== null ||
-      streetAddress !== "" ||
-      citySuburb !== "" ||
-      stateProvince !== "" ||
-      postCode !== "" ||
-      guestNum > 0 ||
-      bedroomNum > 0 ||
-      bedNum > 0 ||
-      bathroomNum > 0 ||
+      s3Images?.length > 0 &&
+      title !== "" &&
+      description !== "" &&
+      (price ? price > 0 : false) &&
+      selectedCountry !== "" &&
+      streetAddress !== "" &&
+      citySuburb !== "" &&
+      stateProvince !== "" &&
+      postCode !== "" &&
+      guestNum >= 0 &&
+      bedroomNum >= 0 &&
+      bedNum >= 0 &&
+      bathroomNum >= 0 &&
       selectedDates.length > 0;
-    setHaveContent(haveContent);
+    setFormComplete(isFormComplete);
+    const isChange =
+      s3Images !== oldS3Images ||
+      title !== oldTitle ||
+      description !== oldDescription ||
+      price !== oldPrice ||
+      unit !== oldUnit ||
+      streetAddress !== oldStreetAddress ||
+      citySuburb !== oldCitySuburb ||
+      stateProvince !== oldStateProvince ||
+      postCode !== oldPostCode ||
+      guestNum !== oldGuestNum ||
+      bedroomNum !== oldBedroomNum ||
+      bedNum !== oldBedNum ||
+      bathroomNum !== oldBathroomNum ||
+      selectedDates !== oldSelectedDates;
+    setIsChange(isChange);
   }, [
     s3Images,
     title,
@@ -554,10 +583,10 @@ const CreateListingScreen = () => {
   ]);
 
   const handleExit = () => {
-    if (haveContent) {
+    if (isChange) {
       setShowSaveDraftDialog(true);
     } else {
-      handleDelete();
+      router.back();
     }
   };
 
@@ -582,7 +611,7 @@ const CreateListingScreen = () => {
     return () => {
       backHandler.remove();
     };
-  }, [haveContent]);
+  }, [isChange]);
 
   return (
     <ScrollView
@@ -619,7 +648,7 @@ const CreateListingScreen = () => {
       />
       <View style={styles.imagesContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {s3Images.map((image, index) => (
+          {s3Images?.map((image, index) => (
             <TouchableOpacity
               key={index}
               style={styles.imageContainer}
@@ -728,7 +757,7 @@ const CreateListingScreen = () => {
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 keyboardType="numeric"
-                value={price !== null ? price.toString() : ""}
+                value={price ? price.toString() : ""}
                 onChangeText={(text) => {
                   text = text.replace(/[^0-9]/g, "");
                   setPrice(text ? parseInt(text) : null);
@@ -1189,7 +1218,11 @@ const CreateListingScreen = () => {
             >
               <Text style={styles.text}>Start Day</Text>
 
-              <Text style={{ fontSize: 16 }}>{selectedDates[0]}</Text>
+              <Text style={{ fontSize: 16 }}>
+                {selectedDates && selectedDates.length !== 0
+                  ? selectedDates[0]
+                  : today}
+              </Text>
             </View>
 
             <View
@@ -1212,7 +1245,11 @@ const CreateListingScreen = () => {
             >
               <Text style={styles.text}>End Day</Text>
               <Text style={{ fontSize: 16 }}>
-                {selectedDates[selectedDates.length - 1]}
+                {selectedDates && selectedDates.length !== 0 ? (
+                  selectedDates[selectedDates.length - 1]
+                ) : (
+                  <Text style={{ fontSize: 16 }}>{today}</Text>
+                )}
               </Text>
             </View>
           </View>
@@ -1224,7 +1261,7 @@ const CreateListingScreen = () => {
             scrollEnabled
             markingType="period"
             markedDates={{
-              ...selectedDates.reduce((result, date, index) => {
+              ...selectedDates?.reduce((result, date, index) => {
                 result[date] = {
                   selected: true,
                   color: "#2f95dc",
@@ -1277,7 +1314,11 @@ const CreateListingScreen = () => {
             marginTop: 10,
           }}
         >
-          <Dialog.Button title="Back" onPress={handleDelete} />
+          <Dialog.Button
+            title="Delete"
+            titleStyle={{ color: "red" }}
+            onPress={handleDelete}
+          />
           <Dialog.Button
             title="Save"
             onPress={() => {

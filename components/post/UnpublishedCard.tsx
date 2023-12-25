@@ -30,6 +30,19 @@ type CardsComponentsProps = {
 const meQuery = gql`
   query Query {
     me {
+      myPublishedListings {
+        id
+        title
+        description
+        images {
+          smallUrl
+          thumbhash
+          ratio
+        }
+        price
+        favorited
+        address
+      }
       myUnPublishedListings {
         id
         title
@@ -99,16 +112,9 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
     closeOptions();
   };
 
-  const viewHandler = () => {
-    router.push({
-      pathname: "/detail",
-      params: { listing: data.id },
-    });
-  };
-
   return (
     <View style={styles.container}>
-      <TouchableOpacity onLongPress={onImagePress} onPress={viewHandler}>
+      <TouchableOpacity onLongPress={onImagePress} onPress={editHandler}>
         <Card containerStyle={styles.cardContainer}>
           <Image
             source={{ uri: imageData.smallUrl }}

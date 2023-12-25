@@ -9,8 +9,8 @@ import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const listingDetailQuery = gql`
-  query Query($listingDetailId: Int) {
-    listingDetail(id: $listingDetailId) {
+  query Query($ids: [Int]) {
+    allListings(ids: $ids) {
       id
       title
       images {
@@ -58,9 +58,10 @@ function MyBooking() {
 
   const { listingId } = useLocalSearchParams();
   const { data, refetch } = useQuery(listingDetailQuery, {
-    variables: { listingDetailId: parseInt(listingId) },
+    variables: { ids: [parseInt(listingId)] },
     errorPolicy: "all",
   });
+  console.log(data?.allListings[0].images[0].smallUrl);
   refetch();
   const [createBookingFunction] = useMutation(createBookingMutation, {
     errorPolicy: "all",
@@ -103,18 +104,18 @@ function MyBooking() {
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <BaseInfo
-          title={data?.listingDetail.title}
-          price={data?.listingDetail.price}
-          placeType={data?.listingDetail.placeType}
-          rentType={data?.listingDetail.rentType}
-          image={data?.listingDetail.images[0]}
+          title={data?.allListings[0].title}
+          price={data?.allListings[0].price}
+          placeType={data?.allListings[0].placeType}
+          rentType={data?.allListings[0].rentType}
+          image={data?.allListings[0].images[0]}
         />
         <CheckIn
-          availability={data?.listingDetail.availability}
-          unavailability={data?.listingDetail.unavailability}
-          guestCount={data?.listingDetail.roomDetails.Guests}
+          availability={data?.allListings[0].availability}
+          unavailability={data?.allListings[0].unavailability}
+          guestCount={data?.allListings[0].roomDetails.Guests}
         />
-        <PriceInfo price={data?.listingDetail.price} />
+        <PriceInfo price={data?.allListings[0].price} />
       </ScrollView>
 
       <SafeAreaView style={styles.safeArea} edges={["bottom"]}>

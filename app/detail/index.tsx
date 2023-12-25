@@ -21,8 +21,8 @@ import {
 } from "react-native";
 
 const listingDetailQuery = gql`
-  query Query($listingDetailId: Int) {
-    listingDetail(id: $listingDetailId) {
+  query Query($ids: [Int]) {
+    allListings(ids: $ids) {
       id
       title
       description
@@ -48,7 +48,6 @@ const listingDetailQuery = gql`
       standoutType
       safetyDeviceType
       guestType
-      meta
       owner {
         userName
       }
@@ -77,7 +76,7 @@ const listingDetailQuery = gql`
 function ListingDetailScreen() {
   const { listing } = useLocalSearchParams();
   const { data } = useQuery(listingDetailQuery, {
-    variables: { listingDetailId: parseInt(listing) },
+    variables: { ids: [parseInt(listing)] },
     errorPolicy: "all",
   });
   const inputRef = useRef(null);
@@ -92,7 +91,7 @@ function ListingDetailScreen() {
   const toggleCheckboxHandler = () => {
     router.push({
       pathname: "/addwishlist",
-      params: { listingId: data.listingDetail.id },
+      params: { listingId: data.allListings[0].id },
     });
   };
 
@@ -101,7 +100,7 @@ function ListingDetailScreen() {
       <View style={styles.container}>
         <Stack.Screen
           options={{
-            title: data ? data.listingDetail.owner.userName : "",
+            title: data ? data.allListings[0]?.owner.userName : "",
             animation: "simple_push",
             headerRight: () => (
               <TouchableOpacity
@@ -123,35 +122,35 @@ function ListingDetailScreen() {
 
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Carousel */}
-          <MyCarousel images={data ? data.listingDetail.images : []} />
+          <MyCarousel images={data ? data.allListings[0]?.images : []} />
           {/* Part1 */}
-          <DetailPart1 data={data ? data.listingDetail : {}} />
+          <DetailPart1 data={data ? data.allListings[0] : {}} />
           {/* Part2 */}
           <DetailPart2
-            bathRooms={data ? data.listingDetail.roomDetails.Bathrooms : 0}
-            bedRooms={data ? data.listingDetail.roomDetails.Bedrooms : 0}
-            bed={data ? data.listingDetail.roomDetails.Bed : 0}
-            guests={data ? data.listingDetail.roomDetails.Guests : 0}
-            placeType={data ? data.listingDetail.placeType : ""}
-            rentType={data ? data.listingDetail.rentType : ""}
-            price={data ? data.listingDetail.price : 0}
-            guestType={data ? data.listingDetail.guestType : []}
+            bathRooms={data ? data.allListings[0]?.roomDetails.Bathrooms : 0}
+            bedRooms={data ? data.allListings[0]?.roomDetails.Bedrooms : 0}
+            bed={data ? data.allListings[0]?.roomDetails.Bed : 0}
+            guests={data ? data.allListings[0]?.roomDetails.Guests : 0}
+            placeType={data ? data.allListings[0]?.placeType : ""}
+            rentType={data ? data.allListings[0]?.rentType : ""}
+            price={data ? data.allListings[0]?.price : 0}
+            guestType={data ? data.allListings[0]?.guestType : []}
           />
           {/* Part3 */}
           <DetailPart3
-            lat={data ? data.listingDetail.coordinate.lat : 0}
-            lng={data ? data.listingDetail.coordinate.lng : 0}
+            lat={data ? data.allListings[0]?.coordinate.lat : 0}
+            lng={data ? data.allListings[0]?.coordinate.lng : 0}
           />
           {/* Part4 */}
           <DetailPart4
-            deviceType={data ? data.listingDetail.deviceType : []}
-            standoutType={data ? data.listingDetail.standoutType : []}
-            safetyDeviceType={data ? data.listingDetail.safetyDeviceType : []}
+            deviceType={data ? data.allListings[0]?.deviceType : []}
+            standoutType={data ? data.allListings[0]?.standoutType : []}
+            safetyDeviceType={data ? data.allListings[0]?.safetyDeviceType : []}
           />
 
           {/* Part5 */}
           <DetailPart5
-            reviews={data ? data.listingDetail.reviews : []}
+            reviews={data ? data.allListings[0]?.reviews : []}
             openBottomSheet={openBottomSheet}
           />
           {/* End */}
@@ -159,7 +158,7 @@ function ListingDetailScreen() {
         </ScrollView>
         {/* BottomSheet */}
         <ReviewInputModal
-          listingId={data ? data.listingDetail.id : 0}
+          listingId={data ? data.allListings[0]?.id : 0}
           bottomSheetModalRef={bottomSheetModalRef}
           inputRef={inputRef}
         />
@@ -227,7 +226,7 @@ function ListingDetailScreen() {
                   alignItems: "center",
                 }}
               >
-                {data ? data.listingDetail.reviews.length : 0}
+                {data ? data.allListings[0]?.reviews.length : 0}
               </Text>
             </View>
 
@@ -239,7 +238,7 @@ function ListingDetailScreen() {
                 alignItems: "center",
               }}
             >
-              {data && data?.listingDetail?.favorited ? (
+              {data && data?.allListings[0]?.favorited ? (
                 <Ionicons
                   name="md-heart"
                   size={32}
@@ -283,7 +282,7 @@ function ListingDetailScreen() {
                 onPress={() => {
                   router.push({
                     pathname: "/booking",
-                    params: { listingId: data.listingDetail.id },
+                    params: { listingId: data.allListings[0].id },
                   });
                 }}
               >

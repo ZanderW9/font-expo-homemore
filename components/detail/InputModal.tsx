@@ -19,8 +19,8 @@ const createReviewMutation = gql`
 `;
 
 const listingDetailQuery = gql`
-  query Query($listingDetailId: Int) {
-    listingDetail(id: $listingDetailId) {
+  query Query($ids: [Int]) {
+    allListings(ids: $ids) {
       reviews {
         id
         text
@@ -95,7 +95,7 @@ function ReviewInputModal(data: any) {
                 refetchQueries: [
                   {
                     query: listingDetailQuery,
-                    variables: { listingDetailId: listingId },
+                    variables: { ids: [listingId] },
                   },
                 ],
               });

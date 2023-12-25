@@ -33,8 +33,8 @@ function BaseInfo(data: any) {
           }}
         >
           <Image
-            source={{ uri: data.image.smallUrl }}
-            placeholder={{ thumbhash: data.image.thumbhash }}
+            source={{ uri: data?.image?.smallUrl }}
+            placeholder={{ thumbhash: data?.image?.thumbhash }}
             style={{
               width: "100%",
               height: "100%",

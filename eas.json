@@ -10,7 +10,7 @@
       "env": {
         "EXPO_PUBLIC_BACKEND_URL": "http://192.168.50.64:4001",
         "EXPO_PUBLIC_S3_URL": "https://foothold-config.s3.ap-southeast-2.amazonaws.com",
-        "EXPO_PUBLIC_DEVELOPER": "haijing"
+        "EXPO_PUBLIC_DEVELOPER": "yuhang"
       }
     },
     "preview2": {

@@ -89,7 +89,7 @@ function MyPost() {
             <Text
               style={currentPage === 1 ? styles.activeTabText : styles.tabText}
             >
-              Unpublished and Draft
+              Draft
             </Text>
           </TouchableOpacity>
         </View>
