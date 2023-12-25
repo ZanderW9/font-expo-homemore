@@ -38,7 +38,7 @@ function ExploreMapScreen() {
         style={{ position: "absolute", bottom: 20, right: 10 }}
         icon={<Ionicons name="close" size={21} color="white" />}
         color="rgba(0,0,0,0.4)"
-        onPress={() => router.push("/")}
+        onPress={() => router.back()}
       />
     </View>
   );

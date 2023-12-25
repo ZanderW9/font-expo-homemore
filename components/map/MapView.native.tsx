@@ -1,5 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { View, Text } from "@components/Themed";
+import { router } from "expo-router";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
@@ -33,8 +34,6 @@ function MapScreen(props) {
     },
   });
 
-  console.log("MapScreen data:", data);
-
   const { center, scrollEnabled, isFullScreen } = props;
   const [region, setRegion] = useState({
     latitude: center.lat,
@@ -52,6 +51,7 @@ function MapScreen(props) {
         latitudeDelta: center.latDelta,
         longitudeDelta: center.lngDelta,
       });
+      handleGetBoundaries();
     }
   }, [center]);
 
@@ -60,7 +60,6 @@ function MapScreen(props) {
       if (mapRef.current) {
         const result = await mapRef.current.getMapBoundaries();
         setBoundaries(result);
-        // console.log("Search area boundaries:", boundaries);
       }
     } catch (error) {
       console.log("Error getting map boundaries:", error);
@@ -117,11 +116,29 @@ function MapScreen(props) {
             longitude: listing.coordinate.lng,
           };
           return showCircleMarker ? (
-            <Marker key={listing.id} coordinate={coordinate}>
+            <Marker
+              key={listing.id}
+              coordinate={coordinate}
+              onPress={() => {
+                router.push({
+                  pathname: "/detail",
+                  params: { listing: data.allListings[0].id },
+                });
+              }}
+            >
               <View style={styles.circleMarker} />
             </Marker>
           ) : (
-            <Marker key={listing.id} coordinate={coordinate}>
+            <Marker
+              key={listing.id}
+              coordinate={coordinate}
+              onPress={() => {
+                router.push({
+                  pathname: "/detail",
+                  params: { listing: data.allListings[0].id },
+                });
+              }}
+            >
               <View style={styles.marker}>
                 <Text style={styles.markerText}>${listing.price}</Text>
               </View>
@@ -140,7 +157,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderColor: "white",
     borderWidth: 1,
-    width: 40,
+    minWidth: 40,
   },
   markerText: {
     color: "white",

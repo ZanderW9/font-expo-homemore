@@ -9,13 +9,11 @@ function DetailPart3(data: any) {
       <Text style={styles.title}>Location</Text>
       <Pressable
         style={styles.mapWrapper}
-        onPress={
-          () =>
-            router.push({
-              pathname: "/detail/map",
-              params: { lat: data.lat, lng: data.lng },
-            })
-          // router.push("/detail/map")
+        onPress={() =>
+          router.push({
+            pathname: "/map",
+            params: { lat: data.lat, lng: data.lng },
+          })
         }
       >
         {data.lat !== 0 && data.lng !== 0 && (
