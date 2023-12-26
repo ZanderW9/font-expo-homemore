@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { View, Text } from "@components/Themed";
 import { router } from "expo-router";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
@@ -176,4 +176,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(MapScreen);
+export default MapScreen;

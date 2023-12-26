@@ -18,12 +18,6 @@ function DetailMapScreen() {
   const { lat, lng } = useLocalSearchParams();
   return (
     <View style={styles.container}>
-      {/* <Stack.Screen
-        options={{
-          headerShown: false,
-          animation: "slide_from_bottom",
-        }}
-      /> */}
       <MapScreen
         center={{
           lat: parseFloat(lat),

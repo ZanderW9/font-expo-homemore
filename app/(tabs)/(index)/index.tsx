@@ -45,7 +45,9 @@ function TabExploreScreen() {
             style={{ paddingLeft: 7 }}
           />
         }
-        onPress={() => router.push("/map")}
+        onPress={() =>
+          router.push({ pathname: "/map", params: { center: {} } })
+        }
         color="rgba(0,0,0,0.4)"
       />
     </View>

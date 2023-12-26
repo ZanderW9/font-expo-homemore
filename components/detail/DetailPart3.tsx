@@ -11,7 +11,7 @@ function DetailPart3(data: any) {
         style={styles.mapWrapper}
         onPress={() =>
           router.push({
-            pathname: "/map",
+            pathname: "/detailMap",
             params: { lat: data.lat, lng: data.lng },
           })
         }
