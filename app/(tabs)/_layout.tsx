@@ -95,6 +95,7 @@ export default function () {
         options={{
           title: "Profile",
           headerTitleAlign: "center",
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
