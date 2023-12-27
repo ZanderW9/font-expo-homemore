@@ -82,6 +82,13 @@ function LoginScreen() {
 
   const sendCodeHandler = async () => {
     try {
+      if (email === "") {
+        showMessage({
+          message: "Email cannot be empty.",
+          type: "danger",
+        });
+        return;
+      }
       setIsButtonDisabled(true);
       sendVeriCodeFunction({ variables: { email } });
       setTimeout(() => {

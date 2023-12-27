@@ -40,8 +40,8 @@ export const signImageUrl = async (
   return response;
 };
 
-export const deleteImageFromS3 = async (baseUrl: string, fileName: string) => {
-  const body = { fileName };
+export const deleteImageFromS3 = async (baseUrl: string, fileUrl: string) => {
+  const body = { fileUrl };
   const response = await fatchData(baseUrl, "/api/deleteS3Image", "POST", body);
   return response;
 };

@@ -124,17 +124,29 @@ function TabProfileScreen() {
             <Pressable
               style={styles.userInfo}
               onPress={() => {
-                router.push("/editprofile");
+                router.push("/user/user-info");
               }}
             >
-              <Avatar
-                size={64}
-                rounded
-                title={gqlData?.me?.userName?.slice(0, 2) ?? ""}
-                containerStyle={styles.avatar}
-              >
-                <Avatar.Accessory size={20} />
-              </Avatar>
+              {gqlData?.me?.avatar ? (
+                <Avatar
+                  size={64}
+                  rounded
+                  source={{ uri: gqlData?.me?.avatar }}
+                  containerStyle={styles.avatar}
+                >
+                  <Avatar.Accessory size={20} />
+                </Avatar>
+              ) : (
+                <Avatar
+                  size={64}
+                  rounded
+                  title={gqlData?.me?.userName?.slice(0, 2) ?? ""}
+                  containerStyle={styles.avatar}
+                >
+                  <Avatar.Accessory size={20} />
+                </Avatar>
+              )}
+
               <View style={styles.usernameWrapper}>
                 <Text style={styles.username}>{gqlData?.me?.userName}</Text>
                 <Text style={{ color: "gray", fontSize: 12 }}>

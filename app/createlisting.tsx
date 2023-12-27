@@ -394,7 +394,7 @@ const CreateListingScreen = () => {
   };
 
   const confirmDelete = () => {
-    deleteImageFromS3(httpLinkUrl, s3Images[deleteIndex].split("/").pop());
+    deleteImageFromS3(httpLinkUrl, s3Images[deleteIndex]);
     const updatedS3Images = [...s3Images];
     updatedS3Images.splice(deleteIndex, 1);
     setS3Images(updatedS3Images);
