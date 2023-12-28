@@ -31,8 +31,9 @@ function TabWishlistScreen() {
           headerTitleAlign: "center",
           headerRight: () => (
             <Ionicons
-              name="create-outline"
-              size={24}
+              name="md-add-outline"
+              size={30}
+              color="gray"
               onPress={() => {
                 router.push("/createwishlist");
               }}

@@ -1,8 +1,11 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
+import EditModal from "@components/wishlist/EditModal";
 import useCachedQuery from "@config/useCachedQuery";
-import { ListItem, Button } from "@rneui/themed";
+import { Ionicons } from "@expo/vector-icons";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { ListItem, Avatar } from "@rneui/themed";
 import { usePathname, router } from "expo-router";
-import React from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 
 const favoriteByUserQuery = gql`
@@ -15,95 +18,93 @@ const favoriteByUserQuery = gql`
       listings {
         listing {
           id
+          images {
+            smallUrl
+            thumbhash
+          }
         }
       }
     }
   }
 `;
 
-const deleteFavoriteMutation = gql`
-  mutation DeleteFavorite($favoriteId: String!) {
-    deleteFavorite(favoriteId: $favoriteId)
-  }
-`;
-
 const FavoriteCardsContainer: React.FunctionComponent = () => {
   const { data } = useCachedQuery(favoriteByUserQuery, usePathname(), {});
-  const [expanded, setExpanded] = React.useState(true);
-  const [deleteFavoriteFunction] = useMutation(deleteFavoriteMutation, {
-    errorPolicy: "all",
-  });
+  const [favoriteId, setFavoriteId] = React.useState("");
 
-  const deleteFavoriteHandler = (favoriteId: string) => () => {
-    deleteFavoriteFunction({
-      variables: { favoriteId },
-      refetchQueries: [
-        {
-          query: favoriteByUserQuery,
-        },
-      ],
-    });
-  };
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <ListItem.Accordion
-          content={
-            <>
+        {data &&
+          data.myFavorites &&
+          data.myFavorites.map((item, index) => (
+            <ListItem
+              style={styles.card}
+              key={index}
+              onPress={() => {
+                router.push({
+                  pathname: `/wishlist/${item.name}`,
+                  params: { favoriteId: item.id },
+                });
+              }}
+            >
               <ListItem.Content>
-                <ListItem.Title style={{ fontSize: 18, fontWeight: "700" }}>
-                  My Wishlists · {data && data.myFavorites?.length}
-                </ListItem.Title>
+                <View style={{ flexDirection: "row" }}>
+                  {item?.listings[0]?.listing?.images[0]?.smallUrl ? (
+                    <Avatar
+                      size={64}
+                      source={{
+                        uri: item?.listings[0]?.listing?.images[0]?.smallUrl,
+                      }}
+                      containerStyle={styles.avatar}
+                      avatarStyle={{ borderRadius: 10 }}
+                    />
+                  ) : (
+                    <Avatar
+                      size={64}
+                      title={item.name?.slice(0, 2) ?? ""}
+                      containerStyle={styles.avatar}
+                      avatarStyle={{ borderRadius: 10 }}
+                    />
+                  )}
+                  <View
+                    style={{
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <ListItem.Title>{item.name}</ListItem.Title>
+                    <ListItem.Subtitle style={{ color: "gray" }}>
+                      {item.listings ? item.listings.length : 0} Items
+                      {" · "}
+                      {item.private ? "Private" : "Public"}
+                    </ListItem.Subtitle>
+                  </View>
+                </View>
               </ListItem.Content>
-            </>
-          }
-          isExpanded={expanded}
-          onPress={() => {
-            setExpanded(!expanded);
-          }}
-        >
-          {data &&
-            data.myFavorites &&
-            data.myFavorites.map((item, index) => (
-              <ListItem.Swipeable
-                style={styles.card}
-                key={index}
-                leftContent={(reset) => (
-                  <Button
-                    title="Delete"
-                    onPress={deleteFavoriteHandler(item.id)}
-                    icon={{ name: "delete", color: "white" }}
-                    buttonStyle={{ minHeight: "100%", backgroundColor: "red" }}
-                  />
-                )}
-                rightContent={(reset) => (
-                  <Button
-                    title="share"
-                    onPress={() => reset()}
-                    icon={{ name: "share", color: "white" }}
-                    buttonStyle={{ minHeight: "100%" }}
-                  />
-                )}
-                onPress={() => {
-                  router.push({
-                    pathname: `/wishlist/${item.name}`,
-                    params: { favoriteId: item.id },
-                  });
+              <Ionicons
+                name="ellipsis-vertical"
+                size={15}
+                color="gray"
+                style={{
+                  alignSelf: "flex-end",
+                  paddingHorizontal: 10,
+                  paddingTop: 10,
+                  borderRadius: 10,
                 }}
-              >
-                <ListItem.Content>
-                  <ListItem.Title>{item.name}</ListItem.Title>
-                  <ListItem.Subtitle>
-                    {item.listings ? item.listings.length : 0} Items
-                    {" · "}
-                    {item.private ? "Private" : "Public"}
-                  </ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem.Swipeable>
-            ))}
-        </ListItem.Accordion>
+                onPress={() => {
+                  bottomSheetModalRef.current?.present();
+                  setFavoriteId(item.id);
+                }}
+              />
+            </ListItem>
+          ))}
+        <EditModal
+          bottomSheetModalRef={bottomSheetModalRef}
+          favoriteId={favoriteId}
+        />
       </ScrollView>
     </View>
   );
@@ -117,6 +118,13 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     fontSize: 30,
+  },
+  avatar: {
+    width: 106.7,
+    height: 60,
+    borderRadius: 10,
+    marginRight: 20,
+    backgroundColor: "coral",
   },
 });
 export default FavoriteCardsContainer;
