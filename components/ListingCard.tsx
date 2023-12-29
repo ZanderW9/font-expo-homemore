@@ -30,7 +30,10 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
   const toggleCheckboxHandler = () => {
-    router.push({ pathname: "/addwishlist", params: { listingId: data.id } });
+    router.push({
+      pathname: "/addwishlist",
+      params: { listingId: data.id },
+    });
   };
 
   const pressHandler = () => {
@@ -40,7 +43,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
     });
   };
 
-  const imageData = data.images[0];
+  const imageData = data?.images[0];
 
   return (
     <View style={styles.container}>

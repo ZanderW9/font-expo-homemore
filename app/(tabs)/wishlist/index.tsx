@@ -1,30 +1,17 @@
 import { View } from "@components/Themed";
+import CreateModal from "@components/wishlist/CreateModal";
 import FavoriteCardContainer from "@components/wishlist/FavoriteCardsContainer";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack, router } from "expo-router";
-import React from "react";
-import { StyleSheet } from "react-native";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Stack } from "expo-router";
+import React, { useRef } from "react";
 
 function TabWishlistScreen() {
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const inputRef = useRef(null);
+
   return (
-    <View style={styles.container}>
+    <View>
       <Stack.Screen
         options={{
           title: "Wishlist",
@@ -35,13 +22,20 @@ function TabWishlistScreen() {
               size={30}
               color="gray"
               onPress={() => {
-                router.push("/createwishlist");
+                bottomSheetModalRef.current?.present();
+                setTimeout(() => {
+                  inputRef.current?.focus();
+                }, 100);
               }}
             />
           ),
         }}
       />
       <FavoriteCardContainer />
+      <CreateModal
+        bottomSheetModalRef={bottomSheetModalRef}
+        inputRef={inputRef}
+      />
     </View>
   );
 }

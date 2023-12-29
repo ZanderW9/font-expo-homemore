@@ -158,7 +158,7 @@ function RootLayoutNav() {
                 name="addwishlist"
                 options={{
                   presentation: "transparentModal",
-                  animation: "slide_from_bottom",
+                  animation: "none",
                   headerShown: false,
                   animationDuration: 100,
                 }}

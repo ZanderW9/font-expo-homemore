@@ -1,26 +1,23 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Text, View } from "@components/Themed";
 import CreateModal from "@components/wishlist/CreateModal";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { Button, ListItem } from "@rneui/themed";
-import { useLocalSearchParams, router } from "expo-router";
 import React, {
-  useEffect,
   useState,
   useMemo,
   useCallback,
   useRef,
+  useEffect,
 } from "react";
-import { StyleSheet, Pressable, ScrollView, Platform } from "react-native";
-
-import useCachedQuery from "../config/useCachedQuery";
+import { StyleSheet, Platform, Pressable, ScrollView } from "react-native";
 
 const favoriteByUserQuery = gql`
   query Query($listingId: Int!) {
     myFavorites {
-      name
       id
+      name
       private
       listings {
         listingId
@@ -44,22 +41,16 @@ const addOrMoveListingToFavoriteMutation = gql`
   }
 `;
 
-function AddwishlistScreen() {
-  const snapPoints = useMemo(() => ["60%"], []);
+function AddModal(data: any) {
+  const snapPoints = useMemo(() => ["50%"], []);
+
+  const listingId = data.listingId;
+  const { data: gqlData } = useQuery(favoriteByUserQuery, {
+    variables: { listingId },
+  });
+
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const inputRef = useRef(null);
-  const bottomSheetAddRef = useRef<BottomSheetModal>(null);
-  bottomSheetAddRef.current?.present();
-
-  const listingId = parseInt(useLocalSearchParams().listingId);
-
-  const { data: gqlData } = useCachedQuery(
-    favoriteByUserQuery,
-    `/wishlist/${listingId}`,
-    {
-      listingId,
-    },
-  );
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
 
   const [foldersToCreate, setFoldersToCreate] = useState<string[]>([]);
@@ -129,7 +120,6 @@ function AddwishlistScreen() {
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         pressBehavior="close"
-        onPress={() => router.back()}
       />
     ),
     [],
@@ -138,7 +128,7 @@ function AddwishlistScreen() {
   return (
     <View style={styles.container}>
       <BottomSheetModal
-        ref={bottomSheetAddRef}
+        ref={data.bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
@@ -163,12 +153,10 @@ function AddwishlistScreen() {
               <Text style={{ color: "gray" }}>New Wishlist</Text>
             </Pressable>
           </View>
-          <View
-            style={styles.separator}
-            lightColor="#eee"
-            darkColor="rgba(255,255,255,0.1)"
-          />
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            // style={{ height: "100%" }}
+            showsVerticalScrollIndicator={false}
+          >
             {gqlData?.myFavorites?.map((favorite: any) => (
               <ListItem
                 key={favorite.id}
@@ -216,8 +204,7 @@ function AddwishlistScreen() {
                   foldersToDelete,
                 },
               });
-              bottomSheetAddRef.current?.close();
-              router.back();
+              data.bottomSheetModalRef.current?.close();
             }}
           />
           <CreateModal
@@ -233,9 +220,6 @@ function AddwishlistScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
-    backgroundColor: "transparentModal",
   },
   content: {
     flex: 1,
@@ -243,24 +227,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginBottom: Platform.OS === "ios" ? 0 : -35,
   },
-  safeContainer: {
-    backgroundColor: "white",
-    width: "100%",
-    height: "50%",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
   title: {
     fontSize: 20,
     fontWeight: "bold",
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 17,
     marginBottom: 10,
     marginTop: 10,
-    marginLeft: 20,
+    marginLeft: 10,
     textAlign: "left",
   },
   modalSubTitle: {
@@ -271,19 +246,8 @@ const styles = StyleSheet.create({
     marginRight: 20,
     flexDirection: "row",
   },
-  closeButton: {
-    position: "absolute",
-    top: 12,
-    left: 10,
-    zIndex: 1,
-  },
-
   modalHeader: {
     height: 50,
-    borderBottomColor: "rgba(230, 230, 230, 1)",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -294,4 +258,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddwishlistScreen;
+export default AddModal;

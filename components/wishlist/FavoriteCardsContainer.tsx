@@ -14,6 +14,7 @@ const favoriteByUserQuery = gql`
     myFavorites {
       id
       name
+      description
       private
       listings {
         listing {
@@ -41,7 +42,6 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
           data.myFavorites &&
           data.myFavorites.map((item, index) => (
             <ListItem
-              style={styles.card}
               key={index}
               onPress={() => {
                 router.push({
@@ -75,7 +75,10 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <ListItem.Title>{item.name}</ListItem.Title>
+                    <ListItem.Title>{item?.name}</ListItem.Title>
+                    <ListItem.Subtitle style={{ color: "gray" }}>
+                      {item?.description}
+                    </ListItem.Subtitle>
                     <ListItem.Subtitle style={{ color: "gray" }}>
                       {item.listings ? item.listings.length : 0} Items
                       {" · "}
@@ -112,19 +115,14 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     width: "100%",
-  },
-  card: {
-    width: "100%",
-    fontSize: 30,
   },
   avatar: {
     width: 106.7,
     height: 60,
     borderRadius: 10,
     marginRight: 20,
-    backgroundColor: "coral",
+    backgroundColor: "gray",
   },
 });
 export default FavoriteCardsContainer;
