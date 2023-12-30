@@ -110,6 +110,9 @@ function EditAvatarScreen() {
               size={64}
               rounded
               title={gqlData?.me?.userName?.slice(0, 2) ?? ""}
+              titleStyle={{
+                fontSize: 100,
+              }}
               containerStyle={styles.avatar}
             />
           )}
@@ -146,7 +149,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 30,
-    backgroundColor: "orange",
+    backgroundColor: "#F3EED9",
   },
   reserveButton: {
     padding: 5,

@@ -11,6 +11,7 @@ import ReviewInputModal from "@components/detail/InputModal";
 import MyCarousel from "@components/detail/MyCarousel";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Avatar } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useRef, useCallback } from "react";
 import {
@@ -50,6 +51,8 @@ const listingDetailQuery = gql`
       guestType
       owner {
         userName
+        avatar
+        id
       }
       reviews {
         id
@@ -58,6 +61,7 @@ const listingDetailQuery = gql`
         sender {
           id
           userName
+          avatar
         }
         subReviews {
           text
@@ -66,12 +70,48 @@ const listingDetailQuery = gql`
           sender {
             id
             userName
+            avatar
           }
         }
       }
     }
   }
 `;
+
+const CustomHeaderTitle = (data: any) => {
+  const owner = data ? data?.allListings[0]?.owner : null;
+
+  return (
+    <Pressable
+      style={{ flexDirection: "row", alignItems: "center" }}
+      onPress={() => console.log("pressed")}
+    >
+      {owner?.avatar ? (
+        <Avatar
+          size={35}
+          rounded
+          containerStyle={styles.Avatar}
+          source={{
+            uri: owner?.avatar,
+          }}
+        />
+      ) : (
+        <Avatar
+          size={35}
+          rounded
+          containerStyle={styles.Avatar}
+          title={owner?.userName?.slice(0, 2) ?? ""}
+          titleStyle={{
+            justifyContent: "center",
+            alignSelf: "center",
+            fontSize: 20,
+          }}
+        />
+      )}
+      <Text style={styles.headerTitle}>{owner ? owner?.userName : ""}</Text>
+    </Pressable>
+  );
+};
 
 function ListingDetailScreen() {
   const { listing } = useLocalSearchParams();
@@ -100,7 +140,7 @@ function ListingDetailScreen() {
       <View style={styles.container}>
         <Stack.Screen
           options={{
-            title: data ? data.allListings[0]?.owner.userName : "",
+            headerTitle: () => CustomHeaderTitle(data),
             animation: "simple_push",
             headerRight: () => (
               <TouchableOpacity
@@ -322,6 +362,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     alignSelf: "center",
     justifyContent: "center",
+  },
+  Avatar: {
+    marginRight: 10,
+    justifyContent: "flex-start",
+    alignContent: "flex-start",
+    backgroundColor: "#F3EED9",
+  },
+  headerTitle: {
+    fontSize: 18,
+    justifyContent: "flex-start",
+    alignContent: "center",
   },
 });
 

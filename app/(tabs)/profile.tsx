@@ -230,6 +230,7 @@ function TabProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: Platform.OS === "android" ? 70 : 20,
   },
   title: {
     fontSize: 18,
@@ -273,7 +274,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "gray",
     borderStyle: "dashed",
-    backgroundColor: "transparent",
+    backgroundColor: "#F3EED9",
   },
   usernameWrapper: {
     display: "flex",

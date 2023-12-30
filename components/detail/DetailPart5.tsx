@@ -1,6 +1,7 @@
 import { Text, View } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
 import { Ionicons } from "@expo/vector-icons";
+import { Avatar } from "@rneui/themed";
 import { StyleSheet, Pressable } from "react-native";
 
 function formatTime(timestamp) {
@@ -28,22 +29,48 @@ function renderReviw(data: any, review: any, setReviewId: any) {
     return (
       <View style={styles.subReviewWrapper}>
         {subReview.map((subReview: any) => (
-          <View key={subReview.id} style={styles.subReviewsContainer}>
-            <Text style={styles.senderName}>{subReview.sender.userName}</Text>
-            <Text style={styles.reviewText}>{subReview.text}</Text>
-            <View style={styles.reviewEndWrapper}>
-              <Text style={styles.reviewEnd}>
-                {formatTime(subReview.createdAt)}
-              </Text>
-              {/* 一个回复按钮，点击回复消息 */}
-              <Pressable
-                onPress={() => {
-                  data.openBottomSheet();
-                  setReviewId(review.id);
+          <View key={subReview.id} style={styles.reviewWrapper}>
+            {subReview?.sender?.avatar ? (
+              <Avatar
+                size={20}
+                rounded
+                containerStyle={styles.Avatar}
+                source={{
+                  uri: subReview?.sender?.avatar,
                 }}
-              >
-                <Text style={styles.reviewEnd}>Reply</Text>
-              </Pressable>
+              />
+            ) : (
+              <Avatar
+                title={subReview?.sender?.userName?.slice(0, 2) ?? ""}
+                titleStyle={{
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  fontSize: 12,
+                }}
+                size={20}
+                rounded
+                containerStyle={styles.Avatar}
+              />
+            )}
+            <View style={styles.reviewContent}>
+              <Text style={styles.senderName}>
+                {subReview?.sender?.userName}
+              </Text>
+              <Text style={styles.reviewText}>{subReview?.text}</Text>
+              <View style={styles.reviewEndWrapper}>
+                <Text style={styles.reviewEnd}>
+                  {formatTime(subReview.createdAt)}
+                </Text>
+                {/* 一个回复按钮，点击回复消息 */}
+                <Pressable
+                  onPress={() => {
+                    data.openBottomSheet();
+                    setReviewId(review.id);
+                  }}
+                >
+                  <Text style={styles.reviewEnd}>Reply</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
         ))}
@@ -53,26 +80,51 @@ function renderReviw(data: any, review: any, setReviewId: any) {
 
   return (
     <View key={review.id} style={styles.reviewWrapper}>
-      <Text style={styles.senderName}>{review.sender.userName}</Text>
-      <Text style={styles.reviewText}>{review.text}</Text>
-      <View style={styles.reviewEndWrapper}>
-        <Text style={styles.reviewEnd}>{formatTime(review.createdAt)}</Text>
-        {/* 一个回复按钮，点击回复消息 */}
-        <Pressable
-          onPress={() => {
-            data.openBottomSheet();
-            setReviewId(review.id);
+      {review?.sender?.avatar ? (
+        <Avatar
+          size={35}
+          rounded
+          containerStyle={styles.Avatar}
+          source={{
+            uri: review?.sender?.avatar,
           }}
-        >
-          <Text style={styles.reviewEnd}>Reply</Text>
-        </Pressable>
+        />
+      ) : (
+        <Avatar
+          title={review?.sender?.userName?.slice(0, 2) ?? ""}
+          titleStyle={{
+            justifyContent: "center",
+            alignSelf: "center",
+            fontSize: 20,
+          }}
+          size={35}
+          rounded
+          containerStyle={styles.Avatar}
+        />
+      )}
+
+      <View style={styles.reviewContent}>
+        <Text style={styles.senderName}>{review.sender.userName}</Text>
+        <Text style={styles.reviewText}>{review.text}</Text>
+        <View style={styles.reviewEndWrapper}>
+          <Text style={styles.reviewEnd}>{formatTime(review.createdAt)}</Text>
+          {/* 一个回复按钮，点击回复消息 */}
+          <Pressable
+            onPress={() => {
+              data.openBottomSheet();
+              setReviewId(review.id);
+            }}
+          >
+            <Text style={styles.reviewEnd}>Reply</Text>
+          </Pressable>
+        </View>
+        {renderSubReview(review.subReviews)}
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
       </View>
-      {renderSubReview(review.subReviews)}
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
     </View>
   );
 }
@@ -119,20 +171,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   separator: {
-    marginVertical: 10,
+    marginVertical: 3,
     height: 1,
-    width: "100%",
+    width: "85%",
   },
   title: {
     fontSize: 16,
     color: "rgba(0, 0, 0, 0.5)",
     marginLeft: 8,
   },
-  reviewWrapper: {
+  reviewContent: {
     width: "100%",
     height: "auto",
     borderRadius: 10,
-    // padding: 10,
   },
   senderName: {
     fontSize: 14,
@@ -166,12 +217,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 10,
   },
-  subReviewsContainer: {
-    marginLeft: 20, // Adjust the margin to your preference
-  },
   subReviewWrapper: {
     borderRadius: 10,
     marginTop: 5,
+  },
+  reviewWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  Avatar: {
+    marginRight: 10,
+    marginTop: 5,
+    justifyContent: "flex-start",
+    alignContent: "flex-start",
+    backgroundColor: "#F3EED9",
   },
 });
 
