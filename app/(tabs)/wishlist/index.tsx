@@ -11,7 +11,7 @@ function TabWishlistScreen() {
   const inputRef = useRef(null);
 
   return (
-    <View>
+    <View style={{ backgroundColor: "#f5f5f5", flex: 1 }}>
       <Stack.Screen
         options={{
           title: "Wishlist",
