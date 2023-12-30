@@ -115,7 +115,7 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    height: "100%",
   },
   avatar: {
     width: 106.7,

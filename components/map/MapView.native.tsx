@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { View, Text } from "@components/Themed";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 const mapViewQuery = gql`
@@ -44,7 +44,7 @@ function MapScreen(props) {
   const mapRef = useRef(null);
 
   useEffect(() => {
-    if (mapRef.current) {
+    if (Platform.OS === "android" && mapRef.current) {
       mapRef.current.animateToRegion({
         latitude: center.lat,
         longitude: center.lng,

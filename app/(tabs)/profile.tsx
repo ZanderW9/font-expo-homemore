@@ -1,9 +1,10 @@
-import { gql, useQuery, useMutation, useApolloClient } from "@apollo/client";
+import { gql, useMutation, useApolloClient } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View, Text } from "@components/Themed";
 import { clearLocalItems, getLocalItem } from "@config/storageManager";
+import useCachedQuery from "@config/useCachedQuery";
 import { ListItem, Avatar } from "@rneui/themed";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import React, { useEffect, useContext } from "react";
 import {
   StyleSheet,
@@ -37,7 +38,7 @@ function TabProfileScreen() {
   const { setIsLoggedIn, isLoggedIn } = useContext(GlobalContext);
   const [createListingFunction, { data }] = useMutation(createListingMutation);
 
-  const { data: gqlData } = useQuery(meQuery);
+  const { data: gqlData } = useCachedQuery(meQuery, usePathname());
 
   useEffect(() => {
     if (data?.createListing.id) {
@@ -93,8 +94,8 @@ function TabProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom", "top"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         {!isLoggedIn && (
           <>
             <ListItem onPress={signUpHandler}>
@@ -229,7 +230,6 @@ function TabProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? 70 : 0,
   },
   title: {
     fontSize: 18,
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     padding: 10,
+    paddingTop: Platform.OS === "android" ? 70 : 20,
     borderBottomWidth: 0.5,
     borderBottomColor: "white",
   },
@@ -269,7 +270,10 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     marginRight: 20,
-    backgroundColor: "orange",
+    borderWidth: 0.5,
+    borderColor: "gray",
+    borderStyle: "dashed",
+    backgroundColor: "transparent",
   },
   usernameWrapper: {
     display: "flex",
