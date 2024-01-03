@@ -45,7 +45,6 @@ function TabWishlistScreen() {
           subtitle="You can create, view, and edit your wishlist after signing in"
         />
       )}
-      <FavoriteCardContainer />
       <CreateModal
         bottomSheetModalRef={bottomSheetModalRef}
         inputRef={inputRef}
