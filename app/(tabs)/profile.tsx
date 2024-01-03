@@ -262,7 +262,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     padding: 10,
-    paddingTop: Platform.OS === "android" ? 70 : 20,
     borderBottomWidth: 0.5,
     borderBottomColor: "white",
   },

@@ -176,7 +176,6 @@ function UpdateModal(data: any) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 24,
   },
   content: {
