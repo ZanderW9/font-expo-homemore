@@ -1,9 +1,10 @@
+import { GlobalContext } from "@app/_layout";
 import { Text, View } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Pressable } from "react-native";
 
 type CardsComponentsProps = {
@@ -29,11 +30,17 @@ type CardsComponentsProps = {
 const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
+  const { isLoggedIn } = useContext(GlobalContext);
+
   const toggleCheckboxHandler = () => {
-    router.push({
-      pathname: "/addwishlist",
-      params: { listingId: data.id },
-    });
+    if (!isLoggedIn) {
+      router.push("/signin");
+    } else {
+      router.push({
+        pathname: "/addwishlist",
+        params: { listingId: data.id },
+      });
+    }
   };
 
   const pressHandler = () => {
