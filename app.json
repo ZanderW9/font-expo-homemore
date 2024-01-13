@@ -12,15 +12,20 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location.",
+        "LSApplicationQueriesSchemes": [
+          "weixin",
+          "fb",
+          "instagram",
+          "whatsapp",
+          "twitter"
+        ]
       },
-      "config":{
+      "config": {
         "googleMapsApiKey": "AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
       },
       "bundleIdentifier": "com.marclu.footholdslug"
@@ -30,7 +35,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "config":{
+      "config": {
         "googleMaps": {
           "apiKey": "AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
         }
@@ -48,10 +53,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-location"
-    ],
+    "plugins": ["expo-router", "expo-location"],
     "experiments": {
       "typedRoutes": true
     },

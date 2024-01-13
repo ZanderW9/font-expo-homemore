@@ -121,8 +121,7 @@ function MapScreen(props) {
               coordinate={coordinate}
               onPress={() => {
                 router.push({
-                  pathname: "/detail",
-                  params: { listing: data.allListings[0].id },
+                  pathname: `/detail/${data.allListings[0].id}`,
                 });
               }}
             >
@@ -134,8 +133,7 @@ function MapScreen(props) {
               coordinate={coordinate}
               onPress={() => {
                 router.push({
-                  pathname: "/detail",
-                  params: { listing: data.allListings[0].id },
+                  pathname: `/detail/${data.allListings[0].id}`,
                 });
               }}
             >

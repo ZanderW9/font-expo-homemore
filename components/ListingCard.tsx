@@ -45,8 +45,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   const pressHandler = () => {
     router.push({
-      pathname: "/detail",
-      params: { listing: data.id },
+      pathname: `/detail/${data.id}`,
     });
   };
 

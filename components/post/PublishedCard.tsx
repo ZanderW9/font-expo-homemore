@@ -102,8 +102,7 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   const viewHandler = () => {
     router.push({
-      pathname: "/detail",
-      params: { listing: data.id },
+      pathname: `/detail/${data.id}`,
     });
   };
 

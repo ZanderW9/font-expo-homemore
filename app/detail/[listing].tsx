@@ -9,6 +9,7 @@ import DetailPart5 from "@components/detail/DetailPart5";
 import DetailProvider from "@components/detail/DetailProvider";
 import ReviewInputModal from "@components/detail/InputModal";
 import MyCarousel from "@components/detail/MyCarousel";
+import ShareModal from "@components/detail/ShareModal";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Avatar } from "@rneui/themed";
@@ -119,6 +120,7 @@ function ListingDetailScreen() {
     variables: { ids: [parseInt(listing)] },
     errorPolicy: "all",
   });
+
   const inputRef = useRef(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const openBottomSheet = useCallback(() => {
@@ -126,6 +128,11 @@ function ListingDetailScreen() {
     setTimeout(() => {
       inputRef.current?.focus();
     }, 100);
+  }, []);
+
+  const shareBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const openShareBottomSheet = useCallback(() => {
+    shareBottomSheetModalRef.current?.present();
   }, []);
 
   const toggleCheckboxHandler = () => {
@@ -141,7 +148,7 @@ function ListingDetailScreen() {
         <Stack.Screen
           options={{
             headerTitle: () => CustomHeaderTitle(data),
-            animation: "simple_push",
+            animation: "slide_from_right",
             headerRight: () => (
               <TouchableOpacity
                 style={{
@@ -151,10 +158,10 @@ function ListingDetailScreen() {
                   marginRight: 10,
                 }}
                 onPress={() => {
-                  // 处理分享按钮点击事件
+                  openShareBottomSheet();
                 }}
               >
-                <Ionicons name="share-social-outline" size={28} color="black" />
+                <Ionicons name="ellipsis-vertical" size={28} color="gray" />
               </TouchableOpacity>
             ),
           }}
@@ -201,6 +208,12 @@ function ListingDetailScreen() {
           listingId={data ? data.allListings[0]?.id : 0}
           bottomSheetModalRef={bottomSheetModalRef}
           inputRef={inputRef}
+        />
+        {/* ShareBottomSheet */}
+        <ShareModal
+          bottomSheetModalRef={shareBottomSheetModalRef}
+          listingId={data ? data.allListings[0]?.id : 0}
+          userId={data ? data.allListings[0]?.owner.id : 0}
         />
         {/* Bottom */}
         <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
