@@ -2,7 +2,7 @@ import { Text, View } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
 
 function formatTime(timestamp) {
   const now = new Date();
@@ -20,7 +20,13 @@ function formatTime(timestamp) {
   }
 }
 
-function renderReviw(data: any, review: any, setReviewId: any) {
+function renderReviw(
+  data: any,
+  review: any,
+  setReviewId: any,
+  setReceiverId: any,
+  setReceiverName: any,
+) {
   const renderSubReview = (subReview: any) => {
     if (!subReview || !subReview.length) {
       return;
@@ -52,9 +58,18 @@ function renderReviw(data: any, review: any, setReviewId: any) {
                 containerStyle={styles.Avatar}
               />
             )}
-            <View style={styles.reviewContent}>
+            <TouchableOpacity
+              style={styles.reviewContent}
+              onPress={() => {
+                data.openBottomSheet();
+                setReviewId(review.id);
+                setReceiverId(subReview.sender.id);
+                setReceiverName(subReview.sender.userName);
+              }}
+            >
               <Text style={styles.senderName}>
-                {subReview?.sender?.userName}
+                {subReview?.sender?.userName} {">"}{" "}
+                {subReview?.receiver?.userName}
               </Text>
               <Text style={styles.reviewText}>{subReview?.text}</Text>
               <View style={styles.reviewEndWrapper}>
@@ -66,12 +81,14 @@ function renderReviw(data: any, review: any, setReviewId: any) {
                   onPress={() => {
                     data.openBottomSheet();
                     setReviewId(review.id);
+                    setReceiverId(subReview.sender.id);
+                    setReceiverName(subReview.sender.userName);
                   }}
                 >
                   <Text style={styles.reviewEnd}>Reply</Text>
                 </Pressable>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         ))}
       </View>
@@ -104,20 +121,31 @@ function renderReviw(data: any, review: any, setReviewId: any) {
       )}
 
       <View style={styles.reviewContent}>
-        <Text style={styles.senderName}>{review.sender.userName}</Text>
-        <Text style={styles.reviewText}>{review.text}</Text>
-        <View style={styles.reviewEndWrapper}>
-          <Text style={styles.reviewEnd}>{formatTime(review.createdAt)}</Text>
-          {/* 一个回复按钮，点击回复消息 */}
-          <Pressable
-            onPress={() => {
-              data.openBottomSheet();
-              setReviewId(review.id);
-            }}
-          >
-            <Text style={styles.reviewEnd}>Reply</Text>
-          </Pressable>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            data.openBottomSheet();
+            setReviewId(review.id);
+            setReceiverId(review.sender.id);
+            setReceiverName(review.sender.userName);
+          }}
+        >
+          <Text style={styles.senderName}>{review.sender.userName}</Text>
+          <Text style={styles.reviewText}>{review.text}</Text>
+          <View style={styles.reviewEndWrapper}>
+            <Text style={styles.reviewEnd}>{formatTime(review.createdAt)}</Text>
+            {/* 一个回复按钮，点击回复消息 */}
+            <Pressable
+              onPress={() => {
+                data.openBottomSheet();
+                setReviewId(review.id);
+                setReceiverId(review.sender.id);
+                setReceiverName(review.sender.userName);
+              }}
+            >
+              <Text style={styles.reviewEnd}>Reply</Text>
+            </Pressable>
+          </View>
+        </TouchableOpacity>
         {renderSubReview(review.subReviews)}
         <View
           style={styles.separator}
@@ -133,7 +161,7 @@ function DetailPart5(data: any) {
   const openModalHandler = () => {
     data.openBottomSheet();
   };
-  const { setReviewId } = useDetailContext();
+  const { setReviewId, setReceiverId, setReceiverName } = useDetailContext();
 
   return (
     <View style={styles.container}>
@@ -155,7 +183,7 @@ function DetailPart5(data: any) {
         </Text>
       </Pressable>
       {data.reviews.map((review: any) =>
-        renderReviw(data, review, setReviewId),
+        renderReviw(data, review, setReviewId, setReceiverId, setReceiverName),
       )}
     </View>
   );
@@ -171,7 +199,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   separator: {
-    marginVertical: 3,
+    marginVertical: 10,
     height: 1,
     width: "85%",
   },
@@ -197,6 +225,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     marginTop: 5,
+    marginBottom: 5,
   },
 
   reviewEnd: {

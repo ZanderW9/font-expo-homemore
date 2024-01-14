@@ -73,6 +73,11 @@ const listingDetailQuery = gql`
             userName
             avatar
           }
+          receiver {
+            id
+            userName
+            avatar
+          }
         }
       }
     }
@@ -205,7 +210,8 @@ function ListingDetailScreen() {
         </ScrollView>
         {/* BottomSheet */}
         <ReviewInputModal
-          listingId={data ? data.allListings[0]?.id : 0}
+          listingId={data ? data.allListings[0]?.id : null}
+          // receiverId={data ?
           bottomSheetModalRef={bottomSheetModalRef}
           inputRef={inputRef}
         />

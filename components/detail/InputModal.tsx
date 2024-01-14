@@ -11,8 +11,18 @@ import React, { useState, useMemo, useCallback } from "react";
 import { StyleSheet } from "react-native";
 
 const createReviewMutation = gql`
-  mutation CreateReview($listingId: Int!, $text: String!, $parentId: Int) {
-    createReview(listingId: $listingId, text: $text, parentId: $parentId) {
+  mutation Mutation(
+    $listingId: Int!
+    $text: String!
+    $parentId: Int
+    $receiverId: String
+  ) {
+    createReview(
+      listingId: $listingId
+      text: $text
+      parentId: $parentId
+      receiverId: $receiverId
+    ) {
       id
     }
   }
@@ -35,7 +45,8 @@ const listingDetailQuery = gql`
 `;
 
 function ReviewInputModal(data: any) {
-  const { reviewId, setReviewId } = useDetailContext();
+  const { reviewId, setReviewId, receiverId, receiverName, setReceiverName } =
+    useDetailContext();
   const snapPoints = useMemo(() => [80], []);
   const [reviewText, setReviewText] = useState("");
   const [createReviewFunction] = useMutation(createReviewMutation, {
@@ -50,6 +61,9 @@ function ReviewInputModal(data: any) {
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         pressBehavior="close"
+        onPress={() => {
+          setReceiverName("");
+        }}
       />
     ),
     [],
@@ -70,7 +84,9 @@ function ReviewInputModal(data: any) {
           <BottomSheetTextInput
             ref={data.inputRef}
             style={styles.input}
-            placeholder="Write your review here"
+            placeholder={
+              receiverName ? `Reply to @${receiverName}` : "Leave a review"
+            }
             value={reviewText}
             onChangeText={setReviewText}
           />
@@ -91,6 +107,7 @@ function ReviewInputModal(data: any) {
                   listingId,
                   parentId: reviewId ? reviewId : null,
                   text: reviewText,
+                  receiverId: receiverId ? receiverId : null,
                 },
                 refetchQueries: [
                   {
@@ -102,6 +119,7 @@ function ReviewInputModal(data: any) {
               setReviewText("");
               setReviewId(null);
               data.bottomSheetModalRef.current?.close();
+              setReceiverName("");
             }}
           />
         </View>
