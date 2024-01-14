@@ -40,7 +40,7 @@ const useCachedQuery = (
     }
   }, [networkData, error]);
 
-  return { data, error, loading };
+  return { data, error, loading, refetch };
 };
 
 export default useCachedQuery;

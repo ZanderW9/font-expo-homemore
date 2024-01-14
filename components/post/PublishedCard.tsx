@@ -28,7 +28,7 @@ type CardsComponentsProps = {
 };
 
 const modifyPublishMutation = gql`
-  mutation Mutation($modifyPublishId: Int!, $published: Boolean!) {
+  mutation Mutation($modifyPublishId: String!, $published: Boolean!) {
     modifyPublish(id: $modifyPublishId, published: $published) {
       id
     }

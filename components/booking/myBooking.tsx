@@ -9,7 +9,7 @@ import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const listingDetailQuery = gql`
-  query Query($ids: [Int]) {
+  query Query($ids: [String]) {
     allListings(ids: $ids) {
       id
       title
@@ -58,7 +58,7 @@ function MyBooking() {
 
   const { listingId } = useLocalSearchParams();
   const { data, refetch } = useQuery(listingDetailQuery, {
-    variables: { ids: [parseInt(listingId)] },
+    variables: { ids: [listingId] },
     errorPolicy: "all",
   });
   console.log(data?.allListings[0].images[0].smallUrl);
@@ -77,7 +77,7 @@ function MyBooking() {
     }
     createBookingFunction({
       variables: {
-        listingId: parseInt(listingId),
+        listingId,
         guestType: {
           Adults: adultNum,
           Children: childNum,

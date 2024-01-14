@@ -23,7 +23,7 @@ import {
 } from "react-native";
 
 const listingDetailQuery = gql`
-  query Query($ids: [Int]) {
+  query Query($ids: [String]) {
     allListings(ids: $ids) {
       id
       title
@@ -122,7 +122,7 @@ const CustomHeaderTitle = (data: any) => {
 function ListingDetailScreen() {
   const { listing } = useLocalSearchParams();
   const { data } = useQuery(listingDetailQuery, {
-    variables: { ids: [parseInt(listing)] },
+    variables: { ids: [listing] },
     errorPolicy: "all",
   });
 

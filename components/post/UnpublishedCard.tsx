@@ -60,7 +60,7 @@ const meQuery = gql`
 `;
 
 const deleteListingMutation = gql`
-  mutation Mutation($deleteListingId: Int!) {
+  mutation Mutation($deleteListingId: String!) {
     deleteListing(id: $deleteListingId) {
       id
     }
@@ -105,7 +105,7 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   const deleteHandler = () => {
     deleteListingFunction({
       variables: {
-        deleteListingId: parseInt(data.id),
+        deleteListingId: data.id,
       },
       refetchQueries: [{ query: meQuery }],
     });

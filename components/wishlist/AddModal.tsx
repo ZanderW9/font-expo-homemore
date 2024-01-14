@@ -29,7 +29,7 @@ const favoriteByUserQuery = gql`
 
 const addOrMoveListingToFavoriteMutation = gql`
   mutation Mutation(
-    $listingId: Int!
+    $listingId: String!
     $foldersToCreate: [String!]
     $foldersToDelete: [String!]
   ) {

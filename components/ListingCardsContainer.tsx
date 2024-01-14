@@ -42,16 +42,15 @@ function ListingCardsContainer() {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   const fetchMoreNew = debounce(() => {
-    if (
-      !isFetchingMore &&
-      data &&
-      data.allListings[data.allListings.length - 1].id
-    ) {
+    if (!isFetchingMore && data && data.allListings) {
       setIsFetchingMore(true);
       fetchMore({
         variables: {
           first: 10,
-          after: data.allListings[data.allListings.length - 1].id.toString(),
+          after:
+            data.allListings.length > 0
+              ? data.allListings[data.allListings.length - 1].id
+              : null,
           sortOrder: "desc",
         },
       }).then(() => {

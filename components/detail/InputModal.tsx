@@ -12,9 +12,9 @@ import { StyleSheet } from "react-native";
 
 const createReviewMutation = gql`
   mutation Mutation(
-    $listingId: Int!
+    $listingId: String!
     $text: String!
-    $parentId: Int
+    $parentId: String
     $receiverId: String
   ) {
     createReview(
@@ -52,7 +52,7 @@ function ReviewInputModal(data: any) {
   const [createReviewFunction] = useMutation(createReviewMutation, {
     errorPolicy: "all",
   });
-  const listingId = parseInt(data.listingId);
+  const listingId = data.listingId;
   const renderBackdrop = useCallback(
     (propsBackdrop) => (
       <BottomSheetBackdrop

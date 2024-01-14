@@ -24,7 +24,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
 
 const listingDetailQuery = gql`
-  query Query($ids: [Int]) {
+  query Query($ids: [String]) {
     allListings(ids: $ids) {
       id
       title
@@ -80,7 +80,7 @@ const listingDetailQuery = gql`
 
 const updateListingMutation = gql`
   mutation Mutation(
-    $updateListingId: Int!
+    $updateListingId: String!
     $title: String
     $description: String
     $images: [String]
@@ -130,7 +130,7 @@ function getKeyByValue(
 }
 
 const deleteListingMutation = gql`
-  mutation Mutation($deleteListingId: Int!) {
+  mutation Mutation($deleteListingId: String!) {
     deleteListing(id: $deleteListingId) {
       id
     }
@@ -145,7 +145,7 @@ const CreateListingScreen = () => {
   const [updateListingFunction] = useMutation(updateListingMutation);
   const [deleteListingFunction] = useMutation(deleteListingMutation);
   const { data: gqlData, loading } = useQuery(listingDetailQuery, {
-    variables: { ids: [parseInt(listingId)] },
+    variables: { ids: [listingId] },
     errorPolicy: "all",
   });
   console.log("gqlData:", gqlData);
@@ -408,7 +408,7 @@ const CreateListingScreen = () => {
   const saveHandler = () => {
     updateListingFunction({
       variables: {
-        updateListingId: parseInt(listingId),
+        updateListingId: listingId,
         title,
         description,
         images: s3Images,
@@ -441,7 +441,7 @@ const CreateListingScreen = () => {
   const publishHandler = () => {
     updateListingFunction({
       variables: {
-        updateListingId: parseInt(listingId),
+        updateListingId: listingId,
         title,
         description,
         images: s3Images,
@@ -593,7 +593,7 @@ const CreateListingScreen = () => {
   const handleDelete = () => {
     deleteListingFunction({
       variables: {
-        deleteListingId: parseInt(listingId),
+        deleteListingId: listingId,
       },
     });
     router.back();

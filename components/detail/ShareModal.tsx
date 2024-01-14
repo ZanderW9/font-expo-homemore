@@ -17,7 +17,7 @@ const meQuery = gql`
 `;
 
 const modifyPublishMutation = gql`
-  mutation Mutation($modifyPublishId: Int!, $published: Boolean!) {
+  mutation Mutation($modifyPublishId: String!, $published: Boolean!) {
     modifyPublish(id: $modifyPublishId, published: $published) {
       id
     }
@@ -34,7 +34,7 @@ function ShareModal(data: any) {
     data.bottomSheetModalRef.current?.close();
   };
 
-  const listingId = parseInt(data.listingId);
+  const listingId = data.listingId;
   const renderBackdrop = useCallback(
     (propsBackdrop) => (
       <BottomSheetBackdrop

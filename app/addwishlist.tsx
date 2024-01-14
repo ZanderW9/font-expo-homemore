@@ -17,7 +17,7 @@ import { StyleSheet, Pressable, ScrollView, Platform } from "react-native";
 import useCachedQuery from "../config/useCachedQuery";
 
 const favoriteByUserQuery = gql`
-  query Query($listingId: Int!) {
+  query Query($listingId: String!) {
     myFavorites {
       name
       id
@@ -32,7 +32,7 @@ const favoriteByUserQuery = gql`
 
 const addOrMoveListingToFavoriteMutation = gql`
   mutation Mutation(
-    $listingId: Int!
+    $listingId: String!
     $foldersToCreate: [String!]
     $foldersToDelete: [String!]
   ) {
@@ -51,7 +51,7 @@ function AddwishlistScreen() {
   const bottomSheetAddRef = useRef<BottomSheetModal>(null);
   bottomSheetAddRef.current?.present();
 
-  const listingId = parseInt(useLocalSearchParams().listingId);
+  const listingId = useLocalSearchParams().listingId;
 
   const { data: gqlData } = useCachedQuery(
     favoriteByUserQuery,
