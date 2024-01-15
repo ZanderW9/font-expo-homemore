@@ -1,4 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
+import { GlobalContext } from "@app/_layout";
 import { View, Text, SafeAreaView } from "@components/Themed";
 import DetailEnd from "@components/detail/DetailEnd";
 import DetailPart1 from "@components/detail/DetailPart1";
@@ -10,11 +11,12 @@ import DetailProvider from "@components/detail/DetailProvider";
 import ReviewInputModal from "@components/detail/InputModal";
 import MyCarousel from "@components/detail/MyCarousel";
 import ShareModal from "@components/detail/ShareModal";
+import AddModal from "@components/wishlist/AddModal";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Avatar } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -120,6 +122,7 @@ const CustomHeaderTitle = (data: any) => {
 };
 
 function ListingDetailScreen() {
+  const { isLoggedIn } = useContext(GlobalContext);
   const { listing } = useLocalSearchParams();
   const { data } = useQuery(listingDetailQuery, {
     variables: { ids: [listing] },
@@ -128,6 +131,7 @@ function ListingDetailScreen() {
 
   const inputRef = useRef(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const bottomSheetAddModalRef = useRef<BottomSheetModal>(null);
   const openBottomSheet = useCallback(() => {
     bottomSheetModalRef.current?.present();
     setTimeout(() => {
@@ -141,10 +145,11 @@ function ListingDetailScreen() {
   }, []);
 
   const toggleCheckboxHandler = () => {
-    router.push({
-      pathname: "/addwishlist",
-      params: { listingId: data.allListings[0].id },
-    });
+    if (!isLoggedIn) {
+      router.push("/signin");
+    } else {
+      bottomSheetAddModalRef.current?.present();
+    }
   };
 
   return (
@@ -220,6 +225,11 @@ function ListingDetailScreen() {
           bottomSheetModalRef={shareBottomSheetModalRef}
           listingId={data ? data.allListings[0]?.id : 0}
           userId={data ? data.allListings[0]?.owner.id : 0}
+        />
+        {/* AddBottomSheet */}
+        <AddModal
+          bottomSheetModalRef={bottomSheetAddModalRef}
+          listingId={data ? data.allListings[0]?.id : 0}
         />
         {/* Bottom */}
         <SafeAreaView style={styles.safeArea} edges={["bottom"]}>

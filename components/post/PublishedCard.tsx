@@ -1,10 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import { Text, View } from "@components/Themed";
+import AddModal from "@components/wishlist/AddModal";
 import { Ionicons } from "@expo/vector-icons";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
 
 type CardsComponentsProps = {
@@ -73,6 +75,7 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   const [modifyPublishFunction] = useMutation(modifyPublishMutation);
 
   const [showOptions, setShowOptions] = useState(false);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const imageData = data.images[0];
 
@@ -107,7 +110,7 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   };
 
   const toggleCheckboxHandler = () => {
-    router.push({ pathname: "/addwishlist", params: { listingId: data.id } });
+    bottomSheetModalRef.current?.present();
   };
 
   return (
@@ -168,6 +171,7 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
           )}
         </Card>
       </TouchableOpacity>
+      <AddModal bottomSheetModalRef={bottomSheetModalRef} listingId={data.id} />
     </View>
   );
 };

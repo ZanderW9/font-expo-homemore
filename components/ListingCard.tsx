@@ -39,10 +39,6 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
     if (!isLoggedIn) {
       router.push("/signin");
     } else {
-      // router.push({
-      //   pathname: "/addwishlist",
-      //   params: { listingId: data.id },
-      // });
       bottomSheetModalRef.current?.present();
     }
   };
