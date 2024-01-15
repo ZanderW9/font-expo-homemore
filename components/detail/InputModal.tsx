@@ -29,7 +29,7 @@ const createReviewMutation = gql`
 `;
 
 const listingDetailQuery = gql`
-  query Query($ids: [Int]) {
+  query Query($ids: [String]) {
     allListings(ids: $ids) {
       reviews {
         id
