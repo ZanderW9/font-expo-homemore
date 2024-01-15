@@ -10,9 +10,10 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
+import CustomSplashScreen from "@components/CustomSplashScreen";
 import { CHAT_QUERY, CHAT_SUBSCRIPTION } from "@config/gql/chat";
 import useUserLocation from "@config/hooks/useUserLocation";
-import { fetchDynamicUrl } from "@config/s3";
+// import { fetchDynamicUrl } from "@config/s3";
 import { getLocalItem } from "@config/storageManager";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -21,7 +22,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
+import * as Font from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { createClient } from "graphql-ws";
 import React, { useEffect, useState } from "react";
@@ -41,45 +42,7 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
-}
-
-export const GlobalContext = React.createContext({});
-
-const authLink = setContext(async (_, { headers }) => {
-  // Get the authentication token from local storage if it exists
-  const token = await getLocalItem("userToken");
-  // Return the headers to the context so HTTP link can read them
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    },
-  };
-});
-
-function offsetFromCursor(merged, incoming, readField) {
+const offsetFromCursor = (merged, incoming, readField) => {
   const mergedIds = merged.map((item) => readField("id", item));
   for (let i = incoming.length - 1; i >= 0; --i) {
     const item = incoming[i];
@@ -88,9 +51,9 @@ function offsetFromCursor(merged, incoming, readField) {
     }
   }
   return 0;
-}
+};
 
-const createApolloClient = (httpLink) => {
+const createApolloClient = (httpLink, authLink) => {
   return new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache({
@@ -114,122 +77,148 @@ const createApolloClient = (httpLink) => {
   });
 };
 
+export const GlobalContext = React.createContext({});
+
+export default function RootLayout() {
+  const [appIsReady, setAppIsReady] = useState(false);
+  const [token, setToken] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [httpLinkUrl] = useState(process.env.EXPO_PUBLIC_BACKEND_URL);
+  const [client, setClient] = useState(null);
+
+  useEffect(() => {
+    const prepare = async () => {
+      try {
+        await Font.loadAsync({
+          SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
+          ...FontAwesome.font,
+        });
+        const token = await getLocalItem("userToken");
+        if (token) {
+          setIsLoggedIn(true);
+        }
+        setToken(token);
+
+        const authLink = setContext(async (_, { headers }) => {
+          return {
+            headers: {
+              ...headers,
+              authorization: token ? `Bearer ${token}` : "",
+            },
+          };
+        });
+
+        const httpLink = new HttpLink({
+          uri: `${httpLinkUrl}/graphql`,
+        });
+
+        const wsLinkUrl = httpLinkUrl ? httpLinkUrl.replace("http", "ws") : "";
+
+        const wsLink = new GraphQLWsLink(
+          createClient({
+            url: `${wsLinkUrl}/graphql`,
+            connectionParams: {
+              Authorization: token,
+            },
+          }),
+        );
+
+        const splitLink = split(
+          ({ query }) => {
+            const definition = getMainDefinition(query);
+            return (
+              definition.kind === "OperationDefinition" &&
+              definition.operation === "subscription"
+            );
+          },
+          wsLink,
+          httpLink,
+        );
+
+        // createApolloClient(splitLink, authLink);
+        setClient(createApolloClient(splitLink, authLink));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    };
+    prepare();
+  }, []);
+
+  useEffect(() => {
+    if (appIsReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return <CustomSplashScreen />;
+  }
+
+  return (
+    <GlobalContext.Provider
+      value={{ httpLinkUrl, token, setToken, isLoggedIn, setIsLoggedIn }}
+    >
+      <ApolloProvider client={client}>
+        <RootLayoutNav />
+      </ApolloProvider>
+    </GlobalContext.Provider>
+  );
+}
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   useUserLocation();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [httpLinkUrl, setHttpLinkUrl] = useState(
-    process.env.EXPO_PUBLIC_BACKEND_URL,
-  );
-
-  const [token, setToken] = useState(null);
-
-  useEffect(() => {
-    const getToken = async () => {
-      const token = await getLocalItem("userToken");
-      setToken(token);
-    };
-    getToken();
-  }, []);
-  const httpLink = new HttpLink({
-    uri: `${httpLinkUrl}/graphql`,
-  });
-
-  const wsLinkUrl = httpLinkUrl ? httpLinkUrl.replace("http", "ws") : "";
-
-  const wsLink = new GraphQLWsLink(
-    createClient({
-      url: `${wsLinkUrl}/graphql`,
-      connectionParams: {
-        Authorization: token,
-      },
-    }),
-  );
-
-  const splitLink = split(
-    ({ query }) => {
-      const definition = getMainDefinition(query);
-      return (
-        definition.kind === "OperationDefinition" &&
-        definition.operation === "subscription"
-      );
-    },
-    wsLink,
-    httpLink,
-  );
-
-  useEffect(() => {
-    // use to get dynamic url for development
-    const fetch = async () => {
-      const data = await fetchDynamicUrl();
-      setHttpLinkUrl(data.url);
-    };
-    if (
-      process.env.EXPO_PUBLIC_DEVELOPER !== "production" &&
-      process.env.EXPO_PUBLIC_DEVELOPER !== "staging"
-    ) {
-      fetch();
-    }
-  }, []);
-
-  const client = createApolloClient(splitLink);
 
   return (
-    <ApolloProvider client={client}>
-      <GlobalContext.Provider
-        value={{ isLoggedIn, setIsLoggedIn, httpLinkUrl, token }}
-      >
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <BottomSheetModalProvider>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-              <Stack.Screen
-                name="search"
-                options={{
-                  presentation: "modal",
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="createwishlist"
-                options={{
-                  presentation: "transparentModal",
-                  animation: "slide_from_bottom",
-                  headerShown: false,
-                  animationDuration: 100,
-                }}
-              />
-              <Stack.Screen
-                name="map"
-                options={{
-                  presentation: "transparentModal",
-                  animation: "slide_from_bottom",
-                  headerShown: false,
-                  animationDuration: 100,
-                }}
-              />
-              <Stack.Screen
-                name="detailMap"
-                options={{
-                  presentation: "transparentModal",
-                  animation: "slide_from_bottom",
-                  headerShown: false,
-                  animationDuration: 100,
-                }}
-              />
-            </Stack>
-            <FlashMessage
-              position="top"
-              floating
-              statusBarHeight={Platform.OS === "ios" ? null : 35}
-            />
-          </BottomSheetModalProvider>
-        </ThemeProvider>
-      </GlobalContext.Provider>
-    </ApolloProvider>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <BottomSheetModalProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          <Stack.Screen
+            name="search"
+            options={{
+              presentation: "modal",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="createwishlist"
+            options={{
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+              headerShown: false,
+              animationDuration: 100,
+            }}
+          />
+          <Stack.Screen
+            name="map"
+            options={{
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+              headerShown: false,
+              animationDuration: 100,
+            }}
+          />
+          <Stack.Screen
+            name="detailMap"
+            options={{
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+              headerShown: false,
+              animationDuration: 100,
+            }}
+          />
+        </Stack>
+        <FlashMessage
+          position="top"
+          floating
+          statusBarHeight={Platform.OS === "ios" ? null : 35}
+        />
+      </BottomSheetModalProvider>
+    </ThemeProvider>
   );
 }
 
