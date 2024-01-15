@@ -194,15 +194,6 @@ function RootLayoutNav() {
                 }}
               />
               <Stack.Screen
-                name="addwishlist"
-                options={{
-                  presentation: "transparentModal",
-                  animation: "none",
-                  headerShown: false,
-                  animationDuration: 100,
-                }}
-              />
-              <Stack.Screen
                 name="createwishlist"
                 options={{
                   presentation: "transparentModal",
