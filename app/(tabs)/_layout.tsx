@@ -96,7 +96,6 @@ export default function () {
         options={{
           title: "Profile",
           headerTitleAlign: "center",
-          // headerShown: false,
           header: () => {
             return (
               <SafeAreaView

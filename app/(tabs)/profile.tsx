@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 64,
     height: 64,
-    borderRadius: 30,
+    borderRadius: 100,
     marginRight: 20,
     borderWidth: 0.5,
     borderColor: "gray",
