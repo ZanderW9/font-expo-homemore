@@ -143,7 +143,6 @@ function EditEmailScreen() {
             value={text}
             onChangeText={(text) => {
               setText(text);
-              console.log(text);
             }}
           />
 

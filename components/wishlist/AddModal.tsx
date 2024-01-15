@@ -11,12 +11,8 @@ import React, {
   useRef,
   useEffect,
 } from "react";
-import {
-  StyleSheet,
-  Platform,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const favoriteByUserQuery = gql`
   query Query($listingId: String!) {
@@ -131,123 +127,111 @@ function AddModal(data: any) {
   );
 
   return (
-    <View style={styles.container}>
-      <BottomSheetModal
-        ref={data.bottomSheetModalRef}
-        index={0}
-        snapPoints={snapPoints}
-        backdropComponent={renderBackdrop}
-        keyboardBehavior="interactive"
-        android_keyboardInputMode="adjustResize"
-        enablePanDownToClose
-        enableContentPanningGesture={false}
-      >
-        <View style={styles.content}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Add to wishlist</Text>
-            <TouchableOpacity
-              style={styles.modalSubTitle}
-              onPress={() => {
-                bottomSheetModalRef.current?.present();
-                setTimeout(() => {
-                  inputRef.current?.focus();
-                }, 100);
-              }}
-            >
-              <Ionicons name="add-outline" size={20} color="gray" />
-              <Text style={{ color: "gray" }}>New Wishlist</Text>
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={{ marginBottom: 50 }}
+    <BottomSheetModal
+      ref={data.bottomSheetModalRef}
+      index={0}
+      snapPoints={snapPoints}
+      backdropComponent={renderBackdrop}
+      keyboardBehavior="interactive"
+      android_keyboardInputMode="adjustResize"
+      enablePanDownToClose
+      enableContentPanningGesture={false}
+    >
+      {/* <View style={styles.content}> */}
+      <View style={styles.modalHeader}>
+        <Text style={styles.modalTitle}>Add to wishlist</Text>
+        <TouchableOpacity
+          style={styles.modalSubTitle}
+          onPress={() => {
+            bottomSheetModalRef.current?.present();
+            setTimeout(() => {
+              inputRef.current?.focus();
+            }, 100);
+          }}
+        >
+          <Ionicons name="add-outline" size={20} color="gray" />
+          <Text style={{ color: "gray" }}>New Wishlist</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {gqlData?.myFavorites?.map((favorite: any) => (
+          <ListItem
+            key={favorite.id}
+            bottomDivider
+            onPress={() => checkHandler(favorite.id)}
           >
-            {gqlData?.myFavorites?.map((favorite: any) => (
-              <ListItem
-                key={favorite.id}
-                bottomDivider
-                onPress={() => checkHandler(favorite.id)}
-              >
-                <ListItem.Content>
-                  <ListItem.Title>{favorite.name}</ListItem.Title>
-                  <ListItem.Subtitle>
-                    {favorite?.listings?.length} items ·{" "}
-                    {favorite.private ? "Private" : "Public"}
-                  </ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.CheckBox
-                  checkedColor="rgb(236, 76, 96)"
-                  checked={favoriteIds.includes(favorite.id)}
-                  onPress={() => checkHandler(favorite.id)}
-                />
-              </ListItem>
-            ))}
-          </ScrollView>
+            <ListItem.Content>
+              <ListItem.Title>{favorite.name}</ListItem.Title>
+              <ListItem.Subtitle>
+                {favorite?.listings?.length} items ·{" "}
+                {favorite.private ? "Private" : "Public"}
+              </ListItem.Subtitle>
+            </ListItem.Content>
+            <ListItem.CheckBox
+              checkedColor="rgb(236, 76, 96)"
+              checked={favoriteIds.includes(favorite.id)}
+              onPress={() => checkHandler(favorite.id)}
+            />
+          </ListItem>
+        ))}
+      </ScrollView>
 
-          <View
+      <SafeAreaView
+        edges={["bottom"]}
+        style={{
+          width: "100%",
+        }}
+      >
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+
+        <TouchableOpacity
+          onPress={() => {
+            addOrMoveListingToFavoriteFunction({
+              variables: {
+                listingId,
+                foldersToCreate,
+                foldersToDelete,
+              },
+              refetchQueries: [
+                {
+                  query: favoriteByUserQuery,
+                  variables: { listingId },
+                },
+              ],
+            });
+            data.bottomSheetModalRef.current?.close();
+            setFoldersToCreate([]);
+            setFoldersToDelete([]);
+          }}
+        >
+          <Text
             style={{
-              position: "absolute",
-              bottom: 30,
-              zIndex: 1,
-              width: "100%",
+              textAlign: "center",
+              padding: 15,
+              fontSize: 17,
             }}
           >
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-
-            <TouchableOpacity
-              onPress={() => {
-                addOrMoveListingToFavoriteFunction({
-                  variables: {
-                    listingId,
-                    foldersToCreate,
-                    foldersToDelete,
-                  },
-                  refetchQueries: [
-                    {
-                      query: favoriteByUserQuery,
-                      variables: { listingId },
-                    },
-                  ],
-                });
-                data.bottomSheetModalRef.current?.close();
-                setFoldersToCreate([]);
-                setFoldersToDelete([]);
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  margin: 15,
-                  fontSize: 17,
-                }}
-              >
-                Save
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <CreateModal
-            bottomSheetModalRef={bottomSheetModalRef}
-            inputRef={inputRef}
-          />
-        </View>
-      </BottomSheetModal>
-    </View>
+            Save
+          </Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+      <CreateModal
+        bottomSheetModalRef={bottomSheetModalRef}
+        inputRef={inputRef}
+      />
+    </BottomSheetModal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   content: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    marginBottom: Platform.OS === "ios" ? 0 : -35,
   },
   title: {
     fontSize: 20,
@@ -275,7 +259,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   separator: {
-    height: 5,
+    height: 1,
     width: "100%",
   },
 });

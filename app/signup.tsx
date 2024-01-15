@@ -57,12 +57,9 @@ function LoginScreen() {
     { errorPolicy: "all" },
   );
 
-  const [
-    sendVeriCodeFunction,
-    { VeriCodeData, VeriCodeLoading, VeriCodeError },
-  ] = useMutation(sendVeriCodeMutation, { errorPolicy: "all" });
-
-  console.log(VeriCodeData, VeriCodeLoading, VeriCodeError);
+  const [sendVeriCodeFunction] = useMutation(sendVeriCodeMutation, {
+    errorPolicy: "all",
+  });
 
   useEffect(() => {
     if (error) {
@@ -298,11 +295,9 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   validEmailIcon: {
-    // color: "green",
     color: "black",
   },
   invalidEmailIcon: {
-    // color: "red",
     color: "black",
   },
   verfication: {

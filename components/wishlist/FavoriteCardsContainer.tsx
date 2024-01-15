@@ -19,6 +19,7 @@ const FavoriteCardsContainer: React.FunctionComponent = (data: any) => {
           data?.data?.map((item, index) => (
             <ListItem
               key={index}
+              containerStyle={styles.card}
               onPress={() => {
                 router.push({
                   pathname: `/wishlist/${item.name}`,
@@ -103,6 +104,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 20,
     backgroundColor: "gray",
+  },
+  card: {
+    marginBottom: 4,
+    borderRadius: 9,
+    borderWidth: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
 });
 export default FavoriteCardsContainer;

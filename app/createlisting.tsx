@@ -139,8 +139,6 @@ const deleteListingMutation = gql`
 
 const CreateListingScreen = () => {
   const { httpLinkUrl } = useContext(GlobalContext);
-  // const { storedValue: initialLocation } = useGetLocalItem("userLocation");
-  // console.log(initialLocation);
   const { listingId } = useLocalSearchParams();
   const [updateListingFunction] = useMutation(updateListingMutation);
   const [deleteListingFunction] = useMutation(deleteListingMutation);
@@ -148,7 +146,6 @@ const CreateListingScreen = () => {
     variables: { ids: [listingId] },
     errorPolicy: "all",
   });
-  console.log("gqlData:", gqlData);
   const [expanded, setExpanded] = React.useState([0]);
   const [formComplete, setFormComplete] = useState(false);
   const [isChange, setIsChange] = useState(false);

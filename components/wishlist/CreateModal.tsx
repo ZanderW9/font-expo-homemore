@@ -75,69 +75,63 @@ function CreateModal(data: any) {
   );
 
   return (
-    <View style={styles.container}>
-      <BottomSheetModal
-        ref={data.bottomSheetModalRef}
-        index={0}
-        snapPoints={snapPoints}
-        backdropComponent={renderBackdrop}
-        keyboardBehavior="interactive"
-        android_keyboardInputMode="adjustResize"
-        enablePanDownToClose
-      >
-        <View style={styles.content}>
-          <BottomSheetTextInput
-            ref={data.inputRef}
-            placeholder="*Name"
-            value={folderName}
-            onChangeText={setFolderName}
-            style={styles.nameInput}
-          />
-        </View>
-
-        <View style={styles.content}>
-          <BottomSheetTextInput
-            placeholder="Description: (optional)"
-            value={description}
-            onChangeText={setDescription}
-            style={styles.descriptionInput}
-            multiline
-            textAlignVertical="top"
-            numberOfLines={4}
-          />
-        </View>
-
-        <View style={styles.switchContainer}>
-          <Text style={styles.text}>Public</Text>
-          <Switch
-            value={checked}
-            color="rgb(236, 76, 96)"
-            onValueChange={(value) => setChecked(value)}
-          />
-        </View>
-
-        <Button
-          title="Save"
-          size="md"
-          radius="sm"
-          type="solid"
-          color="rgb(236, 76, 96)"
-          containerStyle={{
-            width: 100,
-            alignSelf: "center",
-          }}
-          onPress={submitHandler}
+    <BottomSheetModal
+      ref={data.bottomSheetModalRef}
+      index={0}
+      snapPoints={snapPoints}
+      backdropComponent={renderBackdrop}
+      keyboardBehavior="interactive"
+      android_keyboardInputMode="adjustResize"
+      enablePanDownToClose
+    >
+      <View style={styles.content}>
+        <BottomSheetTextInput
+          ref={data.inputRef}
+          placeholder="*Name"
+          value={folderName}
+          onChangeText={setFolderName}
+          style={styles.nameInput}
         />
-      </BottomSheetModal>
-    </View>
+      </View>
+
+      <View style={styles.content}>
+        <BottomSheetTextInput
+          placeholder="Description: (optional)"
+          value={description}
+          onChangeText={setDescription}
+          style={styles.descriptionInput}
+          multiline
+          textAlignVertical="top"
+          numberOfLines={4}
+        />
+      </View>
+
+      <View style={styles.switchContainer}>
+        <Text style={styles.text}>Public</Text>
+        <Switch
+          value={checked}
+          color="rgb(236, 76, 96)"
+          onValueChange={(value) => setChecked(value)}
+        />
+      </View>
+
+      <Button
+        title="Save"
+        size="md"
+        radius="sm"
+        type="solid"
+        color="rgb(236, 76, 96)"
+        containerStyle={{
+          width: 100,
+          alignSelf: "center",
+        }}
+        onPress={submitHandler}
+      />
+    </BottomSheetModal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
   content: {
     display: "flex",
     flexDirection: "row",

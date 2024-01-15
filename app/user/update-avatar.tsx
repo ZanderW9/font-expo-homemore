@@ -67,7 +67,10 @@ function EditAvatarScreen() {
               gqlData?.me?.avatar,
             );
             if (!res.ok) {
-              console.log("delete image error", res.error);
+              showMessage({
+                message: res.data,
+                type: "danger",
+              });
             }
           }
 
@@ -87,8 +90,11 @@ function EditAvatarScreen() {
             });
         }
       }
-    } catch (error) {
-      console.log("Error picking image:", error);
+    } catch {
+      showMessage({
+        message: "Something went wrong",
+        type: "danger",
+      });
     }
   };
 

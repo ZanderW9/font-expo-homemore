@@ -116,7 +116,7 @@ function UpdateModal(data: any) {
   );
 
   return (
-    <View style={styles.container}>
+    <View>
       <BottomSheetModal
         ref={data.bottomSheetModalRef}
         index={0}
@@ -175,9 +175,6 @@ function UpdateModal(data: any) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-  },
   content: {
     display: "flex",
     flexDirection: "row",

@@ -246,7 +246,6 @@ function EditModal(data: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
   },
   separator: {
     height: 5,

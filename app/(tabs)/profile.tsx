@@ -6,13 +6,7 @@ import useCachedQuery from "@config/useCachedQuery";
 import { ListItem, Avatar } from "@rneui/themed";
 import { router, usePathname } from "expo-router";
 import React, { useEffect, useContext } from "react";
-import {
-  StyleSheet,
-  Platform,
-  ScrollView,
-  SafeAreaView,
-  Pressable,
-} from "react-native";
+import { StyleSheet, ScrollView, Pressable } from "react-native";
 
 const createListingMutation = gql`
   mutation Mutation {
@@ -94,7 +88,7 @@ function TabProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
+    <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         {!isLoggedIn && (
           <>
@@ -223,14 +217,14 @@ function TabProfileScreen() {
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? 70 : 20,
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 18,

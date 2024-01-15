@@ -39,7 +39,14 @@ function TabWishlistScreen() {
   const { isLoggedIn } = useContext(GlobalContext);
 
   return (
-    <View style={{ backgroundColor: "#f5f5f5", flex: 1 }}>
+    <View
+      style={{
+        backgroundColor: "#f5f5f5",
+        flex: 1,
+        paddingTop: 4,
+        paddingHorizontal: 4,
+      }}
+    >
       <Stack.Screen
         options={{
           title: "Wishlist",

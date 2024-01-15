@@ -3,6 +3,7 @@ import { View, Text } from "@components/Themed";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Platform } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import MapView, { Marker } from "react-native-maps";
 
 const mapViewQuery = gql`
@@ -61,8 +62,11 @@ function MapScreen(props) {
         const result = await mapRef.current.getMapBoundaries();
         setBoundaries(result);
       }
-    } catch (error) {
-      console.log("Error getting map boundaries:", error);
+    } catch {
+      showMessage({
+        message: "Error when getting map boundaries",
+        type: "danger",
+      });
     }
   };
 

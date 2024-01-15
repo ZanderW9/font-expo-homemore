@@ -4,6 +4,7 @@ import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs, router } from "expo-router";
 import React from "react";
 import { useColorScheme, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
@@ -95,7 +96,15 @@ export default function () {
         options={{
           title: "Profile",
           headerTitleAlign: "center",
-          headerShown: false,
+          // headerShown: false,
+          header: () => {
+            return (
+              <SafeAreaView
+                style={{ backgroundColor: "white" }}
+                edges={["top"]}
+              />
+            );
+          },
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />

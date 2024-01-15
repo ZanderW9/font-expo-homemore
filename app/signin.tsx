@@ -169,11 +169,9 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   validEmailIcon: {
-    // color: "green",
     color: "black",
   },
   invalidEmailIcon: {
-    // color: "red",
     color: "black",
   },
 });
