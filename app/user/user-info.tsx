@@ -62,12 +62,13 @@ function EditProfileScreen() {
           options={{
             title: "Personal Information",
             headerTitleAlign: "center",
+            headerBackTitleVisible: false,
           }}
         />
         <ListItem onPress={updateAvatarHandler}>
           <ListItem.Content style={styles.subtitleWrapper}>
             <ListItem.Title>Avatar</ListItem.Title>
-            <ListItem.Subtitle style={styles.avatar}>
+            <ListItem.Subtitle>
               {data?.me?.avatar ? (
                 <Avatar
                   size={64}
@@ -191,8 +192,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
   },
   avatar: {
-    width: 60,
-    height: 60,
+    width: 64,
+    height: 64,
     borderRadius: 30,
     backgroundColor: "#F3EED9",
   },

@@ -16,6 +16,7 @@ import PagerView from "react-native-pager-view";
 const meQuery = gql`
   query Query {
     me {
+      id
       myPublishedListings {
         id
         title
@@ -67,7 +68,8 @@ function MyPost() {
       <Stack.Screen
         options={{
           title: "My Post",
-          animation: "simple_push",
+          animation: "slide_from_right",
+          headerTitleAlign: "center",
         }}
       />
       <View style={styles.content}>
@@ -129,16 +131,13 @@ function MyPost() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   content: {
     flex: 1,
-    backgroundColor: "#fff",
     padding: 5,
   },
   safeArea: {
     width: "100%",
-    backgroundColor: "white",
     position: "absolute",
     bottom: 0,
     paddingBottom: 0,
@@ -152,11 +151,7 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: "row",
-    justifyContent: "space-around",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-    borderRadius: 20,
   },
   tabItem: {
     padding: 10,
@@ -167,7 +162,8 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: "rgba(0,0,0,1)",
-    fontSize: 15,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

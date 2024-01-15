@@ -58,6 +58,7 @@ function EditPhoneScreen() {
           options={{
             title: "Edit Phone Number",
             headerTitleAlign: "center",
+            headerBackTitleVisible: false,
             headerRight: () => (
               <Pressable onPress={updateHandler}>
                 <Text>Save</Text>

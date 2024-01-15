@@ -6,6 +6,7 @@ import React from "react";
 const inboxViewQuery = gql`
   query inboxViewQuery {
     me {
+      id
       chats {
         chat {
           id

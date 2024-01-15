@@ -17,8 +17,8 @@ const favoriteByUserQuery = gql`
 `;
 
 const deleteFavoriteMutation = gql`
-  mutation DeleteFavorite($favoriteId: String!) {
-    deleteFavorite(favoriteId: $favoriteId)
+  mutation Mutation($userId: String!, $favoriteId: String!) {
+    deleteFavorite(userId: $userId, favoriteId: $favoriteId)
   }
 `;
 
@@ -41,9 +41,9 @@ function EditModal(data: any) {
   const [deleteFavoriteFunction] = useMutation(deleteFavoriteMutation, {
     errorPolicy: "all",
   });
-  const deleteFavoriteHandler = (favoriteId: string) => () => {
+  const deleteFavoriteHandler = (userId: string, favoriteId: string) => () => {
     deleteFavoriteFunction({
-      variables: { favoriteId },
+      variables: { userId, favoriteId },
       refetchQueries: [
         {
           query: favoriteByUserQuery,
@@ -65,7 +65,9 @@ function EditModal(data: any) {
         enablePanDownToClose
       >
         <View>
-          <ListItem onPress={deleteFavoriteHandler(data.favoriteId)}>
+          <ListItem
+            onPress={deleteFavoriteHandler(data.userId, data.favoriteId)}
+          >
             <ListItem.Content>
               <View
                 style={{

@@ -58,6 +58,7 @@ function EditNameScreen() {
           options={{
             title: "Edit Name",
             headerTitleAlign: "center",
+            headerBackTitleVisible: false,
             headerRight: () => (
               <Pressable onPress={updateHandler}>
                 <Text>Save</Text>

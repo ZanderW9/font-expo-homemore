@@ -92,7 +92,7 @@ const CustomHeaderTitle = (data: any) => {
   return (
     <Pressable
       style={{ flexDirection: "row", alignItems: "center" }}
-      onPress={() => console.log("pressed")}
+      onPress={() => router.push(`/user/${owner?.id}`)}
     >
       {owner?.avatar ? (
         <Avatar
@@ -159,6 +159,9 @@ function ListingDetailScreen() {
           options={{
             headerTitle: () => CustomHeaderTitle(data),
             animation: "slide_from_right",
+            headerTitleAlign: "center",
+            headerBackTitleVisible: false,
+            headerBackButtonMenuEnabled: false,
             headerRight: () => (
               <TouchableOpacity
                 style={{

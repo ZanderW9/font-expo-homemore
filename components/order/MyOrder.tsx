@@ -9,6 +9,7 @@ import { StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
 const meQuery = gql`
   query Query {
     me {
+      id
       myRequests {
         booking {
           id

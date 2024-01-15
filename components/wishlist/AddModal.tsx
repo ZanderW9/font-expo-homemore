@@ -158,7 +158,10 @@ function AddModal(data: any) {
               <Text style={{ color: "gray" }}>New Wishlist</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ marginBottom: 50 }}
+          >
             {gqlData?.myFavorites?.map((favorite: any) => (
               <ListItem
                 key={favorite.id}

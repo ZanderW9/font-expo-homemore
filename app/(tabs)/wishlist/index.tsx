@@ -1,3 +1,4 @@
+import { gql, useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import NotLogIn from "@components/NotLogIn";
 import { View } from "@components/Themed";
@@ -8,9 +9,32 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
 import React, { useRef, useContext } from "react";
 
+const favoriteByUserQuery = gql`
+  query Query {
+    myFavorites {
+      id
+      name
+      description
+      private
+      owner {
+        id
+      }
+      listings {
+        listing {
+          images {
+            smallUrl
+            thumbhash
+          }
+        }
+      }
+    }
+  }
+`;
+
 function TabWishlistScreen() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const inputRef = useRef(null);
+  const { data } = useQuery(favoriteByUserQuery);
 
   const { isLoggedIn } = useContext(GlobalContext);
 
@@ -38,7 +62,7 @@ function TabWishlistScreen() {
         }}
       />
       {isLoggedIn ? (
-        <FavoriteCardContainer />
+        <FavoriteCardContainer data={data?.myFavorites} />
       ) : (
         <NotLogIn
           title="Sign in and view your wishlist"

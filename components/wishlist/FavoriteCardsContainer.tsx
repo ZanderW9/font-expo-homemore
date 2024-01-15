@@ -1,37 +1,14 @@
-import { gql } from "@apollo/client";
 import EditModal from "@components/wishlist/EditModal";
-import useCachedQuery from "@config/useCachedQuery";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ListItem, Avatar } from "@rneui/themed";
-import { usePathname, router } from "expo-router";
+import { router } from "expo-router";
 import React, { useRef } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 
-const favoriteByUserQuery = gql`
-  # Increments a back-end counter and gets its resulting value
-  query MyFavorites {
-    myFavorites {
-      id
-      name
-      description
-      private
-      listings {
-        listing {
-          id
-          images {
-            smallUrl
-            thumbhash
-          }
-        }
-      }
-    }
-  }
-`;
-
-const FavoriteCardsContainer: React.FunctionComponent = () => {
-  const { data } = useCachedQuery(favoriteByUserQuery, usePathname(), {});
+const FavoriteCardsContainer: React.FunctionComponent = (data: any) => {
   const [favoriteId, setFavoriteId] = React.useState("");
+  const [userId, setUserId] = React.useState("");
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -39,8 +16,7 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {data &&
-          data.myFavorites &&
-          data.myFavorites.map((item, index) => (
+          data?.data?.map((item, index) => (
             <ListItem
               key={index}
               onPress={() => {
@@ -100,6 +76,7 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
                 onPress={() => {
                   bottomSheetModalRef.current?.present();
                   setFavoriteId(item.id);
+                  setUserId(item.owner.id);
                 }}
               />
             </ListItem>
@@ -107,6 +84,7 @@ const FavoriteCardsContainer: React.FunctionComponent = () => {
         <EditModal
           bottomSheetModalRef={bottomSheetModalRef}
           favoriteId={favoriteId}
+          userId={userId}
         />
       </ScrollView>
     </View>

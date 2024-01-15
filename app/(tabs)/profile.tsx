@@ -266,8 +266,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
   },
   avatar: {
-    width: 60,
-    height: 60,
+    width: 64,
+    height: 64,
     borderRadius: 30,
     marginRight: 20,
     borderWidth: 0.5,

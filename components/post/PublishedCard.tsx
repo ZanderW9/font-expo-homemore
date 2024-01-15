@@ -40,6 +40,7 @@ const modifyPublishMutation = gql`
 const meQuery = gql`
   query Query {
     me {
+      id
       myPublishedListings {
         id
         title

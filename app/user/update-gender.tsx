@@ -51,6 +51,7 @@ function EditGenderScreen() {
           options={{
             title: "Edit Gender",
             headerTitleAlign: "center",
+            headerBackTitleVisible: false,
             headerRight: () => (
               <Pressable onPress={() => updateHandler()}>
                 <Text>Save</Text>

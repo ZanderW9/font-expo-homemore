@@ -10,8 +10,11 @@ import React, { useRef } from "react";
 import { StyleSheet } from "react-native";
 
 const favoriteListingsQuery = gql`
-  query Query($favoriteId: String) {
-    myFavorites(favoriteId: $favoriteId) {
+  query Query($favoriteId: String!) {
+    FavoritesById(favoriteId: $favoriteId) {
+      owner {
+        id
+      }
       listings {
         listing {
           id
@@ -31,6 +34,14 @@ const favoriteListingsQuery = gql`
   }
 `;
 
+const meQuery = gql`
+  query Query {
+    me {
+      id
+    }
+  }
+`;
+
 function MyFavoritesScreen() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const inputRef = useRef(null);
@@ -40,6 +51,8 @@ function MyFavoritesScreen() {
     variables: { favoriteId },
     errorPolicy: "all",
   });
+
+  const { data: meData } = useQuery(meQuery);
 
   const handleRefresh = () => {
     refetch();
@@ -51,6 +64,8 @@ function MyFavoritesScreen() {
         options={{
           title: favorites,
           headerTitleAlign: "center",
+          headerBackTitleVisible: false,
+          headerBackTitle: "Wishlist",
           headerRight: () => (
             <Ionicons
               name="ellipsis-vertical"
@@ -66,7 +81,7 @@ function MyFavoritesScreen() {
           ),
         }}
       />
-      {data?.myFavorites[0]?.listings?.length === 0 ? (
+      {data?.FavoritesById[0]?.listings?.length === 0 ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
@@ -80,8 +95,8 @@ function MyFavoritesScreen() {
           <MasonryList
             style={styles.container}
             data={
-              data?.myFavorites[0]?.listings
-                ? data?.myFavorites[0]?.listings?.map((item) => item.listing)
+              data?.FavoritesById[0]?.listings
+                ? data?.FavoritesById[0]?.listings?.map((item) => item.listing)
                 : []
             }
             numColumns={2}
@@ -91,11 +106,13 @@ function MyFavoritesScreen() {
           />
         </View>
       )}
-      <UpdateModal
-        bottomSheetModalRef={bottomSheetModalRef}
-        inputRef={inputRef}
-        favoriteId={favoriteId}
-      />
+      {meData?.me?.id === data?.FavoritesById[0]?.owner?.id && (
+        <UpdateModal
+          bottomSheetModalRef={bottomSheetModalRef}
+          inputRef={inputRef}
+          favoriteId={favoriteId}
+        />
+      )}
     </View>
   );
 }

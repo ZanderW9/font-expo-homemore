@@ -5,7 +5,6 @@ import { compressImage } from "@config/media";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
 import { Avatar } from "@rneui/themed";
-import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, router } from "expo-router";
 import { useContext, useState } from "react";
@@ -100,11 +99,17 @@ function EditAvatarScreen() {
           options={{
             title: "Edit Avatar",
             headerTitleAlign: "center",
+            headerBackTitleVisible: false,
           }}
         />
         <View style={styles.content}>
           {gqlData?.me?.avatar ? (
-            <Image source={{ uri: imageUri }} style={styles.avatar} />
+            <Avatar
+              size={64}
+              rounded
+              source={{ uri: imageUri }}
+              containerStyle={styles.avatar}
+            />
           ) : (
             <Avatar
               size={64}

@@ -125,6 +125,7 @@ function EditEmailScreen() {
           options={{
             title: "Edit Email",
             headerTitleAlign: "center",
+            headerBackTitleVisible: false,
             headerRight: () => (
               <Pressable onPress={updateHandler}>
                 <Text>Save</Text>
