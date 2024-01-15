@@ -1,10 +1,12 @@
 import { GlobalContext } from "@app/_layout";
 import { Text, View } from "@components/Themed";
+import AddModal from "@components/wishlist/AddModal";
 import { Ionicons } from "@expo/vector-icons";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import { StyleSheet, Pressable } from "react-native";
 
 type CardsComponentsProps = {
@@ -31,15 +33,17 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
   const { isLoggedIn } = useContext(GlobalContext);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const toggleCheckboxHandler = () => {
     if (!isLoggedIn) {
       router.push("/signin");
     } else {
-      router.push({
-        pathname: "/addwishlist",
-        params: { listingId: data.id },
-      });
+      // router.push({
+      //   pathname: "/addwishlist",
+      //   params: { listingId: data.id },
+      // });
+      bottomSheetModalRef.current?.present();
     }
   };
 
@@ -92,6 +96,8 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           </View>
         </Card>
       </Pressable>
+
+      <AddModal bottomSheetModalRef={bottomSheetModalRef} listingId={data.id} />
     </View>
   );
 };

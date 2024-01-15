@@ -3,7 +3,7 @@ import { Text, View } from "@components/Themed";
 import CreateModal from "@components/wishlist/CreateModal";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { Button, ListItem } from "@rneui/themed";
+import { ListItem } from "@rneui/themed";
 import React, {
   useState,
   useMemo,
@@ -11,10 +11,15 @@ import React, {
   useRef,
   useEffect,
 } from "react";
-import { StyleSheet, Platform, Pressable, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 
 const favoriteByUserQuery = gql`
-  query Query($listingId: Int!) {
+  query Query($listingId: String!) {
     myFavorites {
       id
       name
@@ -66,7 +71,7 @@ function AddModal(data: any) {
           .map((favorite: any) => favorite.id),
       );
     }
-  }, [gqlData]);
+  }, [gqlData?.myFavorites]);
 
   useEffect(() => {
     if (foldersToCreate.length + favoriteIds.length >= foldersToDelete.length) {
@@ -140,7 +145,7 @@ function AddModal(data: any) {
         <View style={styles.content}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Add to wishlist</Text>
-            <Pressable
+            <TouchableOpacity
               style={styles.modalSubTitle}
               onPress={() => {
                 bottomSheetModalRef.current?.present();
@@ -151,12 +156,9 @@ function AddModal(data: any) {
             >
               <Ionicons name="add-outline" size={20} color="gray" />
               <Text style={{ color: "gray" }}>New Wishlist</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
-          <ScrollView
-            // style={{ height: "100%" }}
-            showsVerticalScrollIndicator={false}
-          >
+          <ScrollView showsVerticalScrollIndicator={false}>
             {gqlData?.myFavorites?.map((favorite: any) => (
               <ListItem
                 key={favorite.id}
@@ -180,33 +182,50 @@ function AddModal(data: any) {
           </ScrollView>
 
           <View
-            style={styles.separator}
-            lightColor="#eee"
-            darkColor="rgba(255,255,255,0.1)"
-          />
+            style={{
+              position: "absolute",
+              bottom: 30,
+              zIndex: 1,
+              width: "100%",
+            }}
+          >
+            <View
+              style={styles.separator}
+              lightColor="#eee"
+              darkColor="rgba(255,255,255,0.1)"
+            />
 
-          <Button
-            title="Save"
-            size="md"
-            radius="sm"
-            type="outline"
-            buttonStyle={{
-              margin: 10,
-              borderWidth: 1,
-              borderColor: "rgb(236, 76, 96)",
-            }}
-            titleStyle={{ color: "rgb(236, 76, 96)" }}
-            onPress={() => {
-              addOrMoveListingToFavoriteFunction({
-                variables: {
-                  listingId,
-                  foldersToCreate,
-                  foldersToDelete,
-                },
-              });
-              data.bottomSheetModalRef.current?.close();
-            }}
-          />
+            <TouchableOpacity
+              onPress={() => {
+                addOrMoveListingToFavoriteFunction({
+                  variables: {
+                    listingId,
+                    foldersToCreate,
+                    foldersToDelete,
+                  },
+                  refetchQueries: [
+                    {
+                      query: favoriteByUserQuery,
+                      variables: { listingId },
+                    },
+                  ],
+                });
+                data.bottomSheetModalRef.current?.close();
+                setFoldersToCreate([]);
+                setFoldersToDelete([]);
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  margin: 15,
+                  fontSize: 17,
+                }}
+              >
+                Save
+              </Text>
+            </TouchableOpacity>
+          </View>
           <CreateModal
             bottomSheetModalRef={bottomSheetModalRef}
             inputRef={inputRef}
