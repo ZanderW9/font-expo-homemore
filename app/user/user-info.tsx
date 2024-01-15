@@ -63,6 +63,7 @@ function EditProfileScreen() {
             title: "Personal Information",
             headerTitleAlign: "center",
             headerBackTitleVisible: false,
+            animation: "slide_from_right",
           }}
         />
         <ListItem onPress={updateAvatarHandler}>

@@ -22,7 +22,7 @@ const FavoriteCardsContainer: React.FunctionComponent = (data: any) => {
               onPress={() => {
                 router.push({
                   pathname: `/wishlist/${item.name}`,
-                  params: { favoriteId: item.id },
+                  params: { favoriteId: item?.id },
                 });
               }}
             >
@@ -69,14 +69,16 @@ const FavoriteCardsContainer: React.FunctionComponent = (data: any) => {
                 color="gray"
                 style={{
                   alignSelf: "flex-end",
-                  paddingHorizontal: 10,
-                  paddingTop: 10,
+                  paddingRight: 10,
+                  paddingLeft: 15,
+                  paddingTop: 15,
+                  paddingBottom: 5,
                   borderRadius: 10,
                 }}
                 onPress={() => {
                   bottomSheetModalRef.current?.present();
-                  setFavoriteId(item.id);
-                  setUserId(item.owner.id);
+                  setFavoriteId(item?.id);
+                  setUserId(item?.owner?.id);
                 }}
               />
             </ListItem>

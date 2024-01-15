@@ -100,6 +100,7 @@ function EditAvatarScreen() {
             title: "Edit Avatar",
             headerTitleAlign: "center",
             headerBackTitleVisible: false,
+            animation: "slide_from_right",
           }}
         />
         <View style={styles.content}>

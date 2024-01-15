@@ -58,6 +58,8 @@ function MyFavoritesScreen() {
     refetch();
   };
 
+  refetch();
+
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -66,19 +68,7 @@ function MyFavoritesScreen() {
           headerTitleAlign: "center",
           headerBackTitleVisible: false,
           headerBackTitle: "Wishlist",
-          headerRight: () => (
-            <Ionicons
-              name="ellipsis-vertical"
-              size={24}
-              color="gray"
-              onPress={() => {
-                bottomSheetModalRef.current?.present();
-                setTimeout(() => {
-                  inputRef.current?.focus();
-                }, 100);
-              }}
-            />
-          ),
+          animation: "slide_from_right",
         }}
       />
       {data?.FavoritesById[0]?.listings?.length === 0 ? (

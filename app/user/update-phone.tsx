@@ -59,6 +59,7 @@ function EditPhoneScreen() {
             title: "Edit Phone Number",
             headerTitleAlign: "center",
             headerBackTitleVisible: false,
+            animation: "slide_from_right",
             headerRight: () => (
               <Pressable onPress={updateHandler}>
                 <Text>Save</Text>

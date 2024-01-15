@@ -25,7 +25,9 @@ const ChatScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Stack.Screen options={{ title: `chat` }} />
+      <Stack.Screen
+        options={{ title: `chat`, animation: "slide_from_right" }}
+      />
       <GiftedChat
         messageContainerRef={messageContainerRef}
         messagesContainerStyle={{ backgroundColor: "#f5f5f5" }}

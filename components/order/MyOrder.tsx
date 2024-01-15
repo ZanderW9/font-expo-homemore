@@ -65,7 +65,7 @@ function MyOrder() {
       <Stack.Screen
         options={{
           title: "My Order",
-          animation: "simple_push",
+          animation: "slide_from_right",
           headerRight: () => (
             <TouchableOpacity
               style={{

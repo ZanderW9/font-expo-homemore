@@ -61,7 +61,6 @@ function MyBooking() {
     variables: { ids: [listingId] },
     errorPolicy: "all",
   });
-  console.log(data?.allListings[0].images[0].smallUrl);
   refetch();
   const [createBookingFunction] = useMutation(createBookingMutation, {
     errorPolicy: "all",
@@ -99,7 +98,7 @@ function MyBooking() {
       <Stack.Screen
         options={{
           title: "Confirm your order",
-          animation: "simple_push",
+          animation: "slide_from_right",
         }}
       />
       <ScrollView showsVerticalScrollIndicator={false}>

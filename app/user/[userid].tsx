@@ -34,6 +34,9 @@ const meQuery = gql`
         id
         name
         description
+        owner {
+          id
+        }
         listings {
           listing {
             id

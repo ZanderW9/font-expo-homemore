@@ -59,6 +59,7 @@ function EditNameScreen() {
             title: "Edit Name",
             headerTitleAlign: "center",
             headerBackTitleVisible: false,
+            animation: "slide_from_right",
             headerRight: () => (
               <Pressable onPress={updateHandler}>
                 <Text>Save</Text>

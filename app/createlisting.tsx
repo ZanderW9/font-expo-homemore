@@ -622,6 +622,7 @@ const CreateListingScreen = () => {
       <Stack.Screen
         options={{
           title: "Create",
+          animation: "slide_from_right",
           headerLeft: () => (
             <Ionicons
               name="arrow-back-outline"
