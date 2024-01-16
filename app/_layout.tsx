@@ -21,12 +21,21 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import { Asset } from "expo-asset";
+import Constants from "expo-constants";
 import * as Font from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { createClient } from "graphql-ws";
 import React, { useEffect, useState } from "react";
-import { useColorScheme, Platform } from "react-native";
+import { useColorScheme, Platform, View, StyleSheet } from "react-native";
 import FlashMessage from "react-native-flash-message";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolate,
+  runOnJS,
+} from "react-native-reanimated";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -118,10 +127,18 @@ export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [httpLinkUrl] = useState(process.env.EXPO_PUBLIC_BACKEND_URL);
   const [client, setClient] = useState(null);
-
-  const setApolloClient = (token, httpLinkUrl) => {
+  const [splashImageUri, setSplashImageUri] = useState("");
+  const setApolloClient = (token: string, httpLinkUrl: string) => {
     setClient(createApolloClient(token, httpLinkUrl));
   };
+  const [isSplashAnimationComplete, setAnimationComplete] = useState(false);
+  const animation = useSharedValue(1);
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: animation.value,
+      transform: [{ scale: interpolate(animation.value, [0, 1], [2, 1]) }],
+    };
+  });
 
   useEffect(() => {
     const prepare = async () => {
@@ -137,8 +154,12 @@ export default function RootLayout() {
         setToken(token);
 
         setApolloClient(token, httpLinkUrl);
-      } catch (e) {
-        console.warn(e);
+        const [{ localUri }] = await Asset.loadAsync(
+          require("@assets/images/splash.png"),
+        );
+        setSplashImageUri(localUri);
+      } catch {
+        // do nothing
       } finally {
         setAppIsReady(true);
       }
@@ -149,6 +170,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (appIsReady) {
       SplashScreen.hideAsync();
+      animation.value = withTiming(0, { duration: 500 }, () => {
+        runOnJS(setAnimationComplete)(true);
+      });
     }
   }, [appIsReady]);
 
@@ -169,7 +193,33 @@ export default function RootLayout() {
       }}
     >
       <ApolloProvider client={client}>
-        <RootLayoutNav />
+        <View style={{ flex: 1 }}>
+          <RootLayoutNav />
+          {!isSplashAnimationComplete && (
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                {
+                  backgroundColor:
+                    Constants.expoConfig?.splash?.backgroundColor,
+                },
+                animatedStyle,
+              ]}
+            >
+              <Animated.Image
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  resizeMode:
+                    Constants.expoConfig?.splash?.resizeMode || "contain",
+                }}
+                source={{ uri: splashImageUri }}
+                fadeDuration={0}
+              />
+            </Animated.View>
+          )}
+        </View>
       </ApolloProvider>
     </GlobalContext.Provider>
   );
