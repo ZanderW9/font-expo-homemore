@@ -1,4 +1,4 @@
-import { gql, useMutation, useApolloClient } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View, Text } from "@components/Themed";
 import { clearLocalItems, getLocalItem } from "@config/storageManager";
@@ -28,8 +28,8 @@ const meQuery = gql`
 `;
 
 function TabProfileScreen() {
-  const client = useApolloClient();
-  const { setIsLoggedIn, isLoggedIn } = useContext(GlobalContext);
+  const { setIsLoggedIn, isLoggedIn, setToken, httpLinkUrl, setApolloClient } =
+    useContext(GlobalContext);
   const [createListingFunction, { data }] = useMutation(createListingMutation);
 
   const { data: gqlData } = useCachedQuery(meQuery, usePathname());
@@ -67,7 +67,8 @@ function TabProfileScreen() {
   const logOutHandler = async () => {
     await clearLocalItems();
     setIsLoggedIn(false);
-    client.resetStore();
+    setToken(null);
+    setApolloClient("", httpLinkUrl);
     router.replace("/profile");
   };
 

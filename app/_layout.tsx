@@ -13,7 +13,6 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import CustomSplashScreen from "@components/CustomSplashScreen";
 import { CHAT_QUERY, CHAT_SUBSCRIPTION } from "@config/gql/chat";
 import useUserLocation from "@config/hooks/useUserLocation";
-// import { fetchDynamicUrl } from "@config/s3";
 import { getLocalItem } from "@config/storageManager";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -53,9 +52,43 @@ const offsetFromCursor = (merged, incoming, readField) => {
   return 0;
 };
 
-const createApolloClient = (httpLink, authLink) => {
+const createApolloClient = (token: string, httpLinkUrl: string) => {
+  const authLink = setContext(async (_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+      },
+    };
+  });
+  const httpLink = new HttpLink({
+    uri: `${httpLinkUrl}/graphql`,
+  });
+
+  const wsLinkUrl = httpLinkUrl ? httpLinkUrl.replace("http", "ws") : "";
+
+  const wsLink = new GraphQLWsLink(
+    createClient({
+      url: `${wsLinkUrl}/graphql`,
+      connectionParams: {
+        Authorization: token,
+      },
+    }),
+  );
+
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
+    },
+    wsLink,
+    httpLink,
+  );
   return new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: authLink.concat(splitLink),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
@@ -86,6 +119,10 @@ export default function RootLayout() {
   const [httpLinkUrl] = useState(process.env.EXPO_PUBLIC_BACKEND_URL);
   const [client, setClient] = useState(null);
 
+  const setApolloClient = (token, httpLinkUrl) => {
+    setClient(createApolloClient(token, httpLinkUrl));
+  };
+
   useEffect(() => {
     const prepare = async () => {
       try {
@@ -99,44 +136,7 @@ export default function RootLayout() {
         }
         setToken(token);
 
-        const authLink = setContext(async (_, { headers }) => {
-          return {
-            headers: {
-              ...headers,
-              authorization: token ? `Bearer ${token}` : "",
-            },
-          };
-        });
-
-        const httpLink = new HttpLink({
-          uri: `${httpLinkUrl}/graphql`,
-        });
-
-        const wsLinkUrl = httpLinkUrl ? httpLinkUrl.replace("http", "ws") : "";
-
-        const wsLink = new GraphQLWsLink(
-          createClient({
-            url: `${wsLinkUrl}/graphql`,
-            connectionParams: {
-              Authorization: token,
-            },
-          }),
-        );
-
-        const splitLink = split(
-          ({ query }) => {
-            const definition = getMainDefinition(query);
-            return (
-              definition.kind === "OperationDefinition" &&
-              definition.operation === "subscription"
-            );
-          },
-          wsLink,
-          httpLink,
-        );
-
-        // createApolloClient(splitLink, authLink);
-        setClient(createApolloClient(splitLink, authLink));
+        setApolloClient(token, httpLinkUrl);
       } catch (e) {
         console.warn(e);
       } finally {
@@ -158,7 +158,15 @@ export default function RootLayout() {
 
   return (
     <GlobalContext.Provider
-      value={{ httpLinkUrl, token, setToken, isLoggedIn, setIsLoggedIn }}
+      value={{
+        httpLinkUrl,
+        token,
+        setToken,
+        isLoggedIn,
+        setIsLoggedIn,
+        client,
+        setApolloClient,
+      }}
     >
       <ApolloProvider client={client}>
         <RootLayoutNav />
