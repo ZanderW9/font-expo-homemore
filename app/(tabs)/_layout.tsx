@@ -1,8 +1,9 @@
+import { GlobalContext } from "@app/_layout";
 import { View, Text } from "@components/Themed";
 import Colors from "@constants/Colors";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs, router } from "expo-router";
-import React from "react";
+import React, { useContext } from "react";
 import { useColorScheme, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -15,6 +16,7 @@ function TabBarIcon(props: {
 
 export default function () {
   const colorScheme = useColorScheme();
+  const { isLoggedIn } = useContext(GlobalContext);
 
   return (
     <Tabs
@@ -99,11 +101,12 @@ export default function () {
           header: () => {
             return (
               <SafeAreaView
-                style={{ backgroundColor: "white" }}
+                style={{ backgroundColor: isLoggedIn ? "white" : "#f5f5f5" }}
                 edges={["top"]}
               />
             );
           },
+          // headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />

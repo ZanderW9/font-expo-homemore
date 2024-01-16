@@ -73,7 +73,7 @@ function TabWishlistScreen() {
       ) : (
         <NotLogIn
           title="Sign in and view your wishlist"
-          subtitle="You can create, view, and edit your wishlist after signing in"
+          subtitle="You can create, view, and edit your wishlist here"
         />
       )}
       <CreateModal

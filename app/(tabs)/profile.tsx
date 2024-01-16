@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
-import { View, Text } from "@components/Themed";
+import NotLogIn from "@components/NotLogIn";
+import { View, Text, SafeAreaView } from "@components/Themed";
 import { clearLocalItems, getLocalItem } from "@config/storageManager";
 import useCachedQuery from "@config/useCachedQuery";
 import { ListItem, Avatar } from "@rneui/themed";
@@ -56,14 +57,6 @@ function TabProfileScreen() {
     checkLoginStatus();
   }, []);
 
-  const signInHandler = async () => {
-    router.push("/signin");
-  };
-
-  const signUpHandler = async () => {
-    router.push("/signup");
-  };
-
   const logOutHandler = async () => {
     await clearLocalItems();
     setIsLoggedIn(false);
@@ -90,32 +83,17 @@ function TabProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-        {!isLoggedIn && (
-          <>
-            <ListItem onPress={signUpHandler}>
-              <ListItem.Content>
-                <ListItem.Title>Sign Up</ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
+      {!isLoggedIn && (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+          <NotLogIn
+            title="Find your next home from here!"
+            subtitle="Sign in to publish or order a listing"
+          />
+        </SafeAreaView>
+      )}
 
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-
-            <ListItem onPress={signInHandler}>
-              <ListItem.Content>
-                <ListItem.Title>Sign In</ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-          </>
-        )}
-
-        {isLoggedIn && (
+      {isLoggedIn && (
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
           <View>
             <Pressable
               style={styles.userInfo}
@@ -216,8 +194,8 @@ function TabProfileScreen() {
               <ListItem.Chevron />
             </ListItem>
           </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -226,6 +204,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+    paddingTop: 0,
   },
   title: {
     fontSize: 18,

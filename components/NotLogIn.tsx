@@ -1,24 +1,58 @@
 import { View, Text } from "@components/Themed";
+import { Button } from "@rneui/themed";
 import { router } from "expo-router";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
+
+export const signInHandler = async () => {
+  router.push("/signin");
+};
+
+export const signUpHandler = async () => {
+  router.push("/signup");
+};
 
 function NotLogIn(data: any) {
-  const gotoSigninHandler = () => {
-    router.push("/signin");
-  };
-
   return (
     <View style={styles.container}>
-      <View style={styles.textWrapper}>
-        <Text style={styles.title}>{data.title}</Text>
-        <Text style={styles.subtitle}>{data.subtitle}</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.reserveButton}
-        onPress={gotoSigninHandler}
+      <Text style={styles.title}>{data.title}</Text>
+      <Text style={styles.subtitle}>{data.subtitle}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          width: "80%",
+          backgroundColor: "#f5f5f5",
+        }}
       >
-        <Text style={styles.reserveButtonText}>Sign In</Text>
-      </TouchableOpacity>
+        <Button
+          title="Sign In"
+          onPress={signInHandler}
+          buttonStyle={{
+            backgroundColor: "rgb(236, 76, 96)",
+            padding: 15,
+            paddingHorizontal: 16,
+            borderRadius: 7,
+            marginTop: 40,
+          }}
+        />
+        <Button
+          title="Sign Up"
+          type="outline"
+          onPress={signUpHandler}
+          buttonStyle={{
+            borderColor: "rgb(236, 76, 96)",
+            padding: 15,
+            borderRadius: 7,
+            marginTop: 40,
+          }}
+          titleStyle={{
+            color: "rgb(236, 76, 96)",
+            fontSize: 18,
+            alignSelf: "center",
+            justifyContent: "center",
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -27,31 +61,16 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
+    backgroundColor: "#f5f5f5",
+    flex: 0.6,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "50%",
   },
-  reserveButton: {
-    backgroundColor: "rgb(236, 76, 96)",
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 5,
-  },
-  reserveButtonText: {
-    color: "white",
-    fontSize: 18,
-    alignSelf: "center",
-    justifyContent: "center",
-  },
-  textWrapper: {
-    marginTop: 30,
-    marginBottom: 10,
-  },
   title: {
-    fontSize: 22,
+    fontSize: 25,
     marginBottom: 10,
   },
   subtitle: {
