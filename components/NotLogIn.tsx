@@ -29,10 +29,10 @@ function NotLogIn(data: any) {
           onPress={signInHandler}
           buttonStyle={{
             backgroundColor: "rgb(236, 76, 96)",
-            padding: 15,
-            paddingHorizontal: 16,
+            height: 50,
+            width: 100,
             borderRadius: 7,
-            marginTop: 40,
+            marginVertical: 40,
           }}
         />
         <Button
@@ -41,13 +41,13 @@ function NotLogIn(data: any) {
           onPress={signUpHandler}
           buttonStyle={{
             borderColor: "rgb(236, 76, 96)",
-            padding: 15,
+            height: 50,
+            width: 100,
             borderRadius: 7,
-            marginTop: 40,
+            marginVertical: 40,
           }}
           titleStyle={{
             color: "rgb(236, 76, 96)",
-            fontSize: 18,
             alignSelf: "center",
             justifyContent: "center",
           }}
