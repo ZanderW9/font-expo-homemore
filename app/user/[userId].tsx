@@ -88,9 +88,9 @@ const CustomHeaderTitle = (data: any) => {
 };
 
 function UserScreen() {
-  const { userid } = useLocalSearchParams();
+  const { userId } = useLocalSearchParams();
   const { data } = useQuery(meQuery, {
-    variables: { userId: userid },
+    variables: { userId },
   });
 
   const pagerRef = useRef(null);
