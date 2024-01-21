@@ -37,7 +37,7 @@ const listingDetailQuery = gql`
 
 const createBookingMutation = gql`
   mutation Mutation(
-    $listingId: Int!
+    $listingId: String!
     $guestType: Json!
     $dataRange: [String!]!
     $status: String!
