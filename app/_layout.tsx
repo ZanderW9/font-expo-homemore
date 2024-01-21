@@ -18,6 +18,9 @@ import {
 } from "@config/gql/chat";
 import useUserLocation from "@config/hooks/useUserLocation";
 import { getLocalItem } from "@config/storageManager";
+import { useApolloClientDevTools } from "@dev-plugins/apollo-client";
+import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
+import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import {
@@ -28,11 +31,12 @@ import {
 import { Asset } from "expo-asset";
 import Constants from "expo-constants";
 import * as Font from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { useNavigationContainerRef, SplashScreen, Stack } from "expo-router";
 import { createClient } from "graphql-ws";
 import React, { useEffect, useState } from "react";
 import { useColorScheme, Platform, View, StyleSheet } from "react-native";
 import FlashMessage from "react-native-flash-message";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -134,6 +138,9 @@ export const GlobalContext = React.createContext({
 });
 
 export default function RootLayout() {
+  const navigationRef = useNavigationContainerRef();
+  useReactNavigationDevTools(navigationRef);
+  useAsyncStorageDevTools();
   const [appIsReady, setAppIsReady] = useState(false);
   const [token, setToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -276,56 +283,59 @@ export const ChatProvider = ({ children }) => {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   useUserLocation();
-
+  const client = useApolloClient();
+  useApolloClientDevTools(client);
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <BottomSheetModalProvider>
-        <ChatProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            <Stack.Screen
-              name="search"
-              options={{
-                presentation: "modal",
-                headerShown: false,
-              }}
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <ChatProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+              <Stack.Screen
+                name="search"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="createwishlist"
+                options={{
+                  presentation: "transparentModal",
+                  animation: "slide_from_bottom",
+                  headerShown: false,
+                  animationDuration: 100,
+                }}
+              />
+              <Stack.Screen
+                name="map"
+                options={{
+                  presentation: "transparentModal",
+                  animation: "slide_from_bottom",
+                  headerShown: false,
+                  animationDuration: 100,
+                }}
+              />
+              <Stack.Screen
+                name="detailMap"
+                options={{
+                  presentation: "transparentModal",
+                  animation: "slide_from_bottom",
+                  headerShown: false,
+                  animationDuration: 100,
+                }}
+              />
+            </Stack>
+            <FlashMessage
+              position="top"
+              floating
+              statusBarHeight={Platform.OS === "ios" ? null : 35}
             />
-            <Stack.Screen
-              name="createwishlist"
-              options={{
-                presentation: "transparentModal",
-                animation: "slide_from_bottom",
-                headerShown: false,
-                animationDuration: 100,
-              }}
-            />
-            <Stack.Screen
-              name="map"
-              options={{
-                presentation: "transparentModal",
-                animation: "slide_from_bottom",
-                headerShown: false,
-                animationDuration: 100,
-              }}
-            />
-            <Stack.Screen
-              name="detailMap"
-              options={{
-                presentation: "transparentModal",
-                animation: "slide_from_bottom",
-                headerShown: false,
-                animationDuration: 100,
-              }}
-            />
-          </Stack>
-          <FlashMessage
-            position="top"
-            floating
-            statusBarHeight={Platform.OS === "ios" ? null : 35}
-          />
-        </ChatProvider>
-      </BottomSheetModalProvider>
+          </ChatProvider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }

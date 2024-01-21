@@ -39,7 +39,7 @@ function TabExploreScreen() {
         style={{ position: "absolute", bottom: 20 }}
         icon={
           <Ionicons
-            name="ios-map-outline"
+            name="map-outline"
             size={24}
             color="white"
             style={{ paddingLeft: 7 }}

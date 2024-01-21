@@ -110,7 +110,7 @@ function UserScreen() {
           headerBackTitle: "Details",
           headerRight: () => (
             <Ionicons
-              name="md-chatbubble-ellipses-outline"
+              name="chatbubble-ellipses-outline"
               size={26}
               color="black"
               onPress={() => {

@@ -168,7 +168,7 @@ function DetailPart5(data: any) {
       <Text style={styles.title}>{data.reviews.length} Reviews</Text>
       <Pressable style={styles.inputWrapper} onPress={openModalHandler}>
         <Ionicons
-          name="md-document-text-outline"
+          name="document-text-outline"
           size={24}
           color="rgba(0, 0, 0, 0.5)"
         />

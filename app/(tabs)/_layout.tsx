@@ -63,7 +63,7 @@ export default function () {
                 <Text>Explore here~</Text>
               </Pressable>
               <Ionicons
-                name="ios-options-outline"
+                name="options-outline"
                 size={24}
                 color="gray"
                 style={{ marginLeft: 10 }}

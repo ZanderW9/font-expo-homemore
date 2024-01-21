@@ -286,7 +286,7 @@ function ListingDetailScreen() {
               }}
             >
               <Ionicons
-                name="md-chatbubble-ellipses-outline"
+                name="chatbubble-ellipses-outline"
                 size={32}
                 color="black"
               />
@@ -312,7 +312,7 @@ function ListingDetailScreen() {
             >
               {data && data?.allListings[0]?.favorited ? (
                 <Ionicons
-                  name="md-heart"
+                  name="heart"
                   size={32}
                   color="rgb(236, 76, 96)"
                   onPress={() => {
@@ -321,7 +321,7 @@ function ListingDetailScreen() {
                 />
               ) : (
                 <Ionicons
-                  name="md-heart-outline"
+                  name="heart-outline"
                   size={32}
                   color="black"
                   onPress={() => {

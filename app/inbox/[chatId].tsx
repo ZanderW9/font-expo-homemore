@@ -71,6 +71,9 @@ const ChatScreen = () => {
                 name: messageText ? "send" : "add",
                 type: "material",
                 onPress: () => {
+                  if (!messageText) {
+                    return;
+                  }
                   setMessageText("");
                   sendMessage({
                     variables: {

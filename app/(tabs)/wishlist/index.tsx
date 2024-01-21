@@ -53,7 +53,7 @@ function TabWishlistScreen() {
           headerTitleAlign: "center",
           headerRight: () => (
             <Ionicons
-              name="md-add-outline"
+              name="add-outline"
               size={30}
               color="gray"
               onPress={() => {
