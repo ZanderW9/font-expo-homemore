@@ -1,4 +1,4 @@
-import { ChatProvider, GlobalContext } from "@app/_layout";
+import { GlobalContext } from "@app/_layout";
 import NotLogIn from "@components/NotLogIn";
 import { View } from "@components/Themed";
 import InboxView from "@components/inbox/InboxView";
@@ -10,9 +10,7 @@ export default function TabInboxScreen() {
   return (
     <View style={styles.container}>
       {isLoggedIn ? (
-        <ChatProvider>
-          <InboxView />
-        </ChatProvider>
+        <InboxView />
       ) : (
         <NotLogIn
           title="Sign in and check your inbox"
@@ -27,8 +25,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    paddingTop: 4,
-    paddingHorizontal: 4,
   },
   title: {
     fontSize: 20,

@@ -4,13 +4,17 @@ import Published from "@components/post/Published";
 import FavoriteCardsContainer from "@components/wishlist/FavoriteCardsContainer";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
-import { useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useState, useRef } from "react";
 import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import PagerView from "react-native-pager-view";
 
 const meQuery = gql`
   query Query($userId: String) {
+    myself: me {
+      id
+    }
+
     me(userId: $userId) {
       id
       userName
@@ -109,7 +113,19 @@ function UserScreen() {
               name="md-chatbubble-ellipses-outline"
               size={26}
               color="black"
-              onPress={() => console.log("Chat")}
+              onPress={() => {
+                const chatId = [data?.myself?.id, data?.me?.id]
+                  .sort()
+                  .join("__");
+                router.push({
+                  pathname: "/inbox/[chatId]",
+                  params: {
+                    chatId,
+                    userId: data?.me?.id,
+                    userName: data?.me?.userName,
+                  },
+                });
+              }}
             />
           ),
         }}

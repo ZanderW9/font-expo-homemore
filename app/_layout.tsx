@@ -11,7 +11,11 @@ import { setContext } from "@apollo/client/link/context";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import CustomSplashScreen from "@components/CustomSplashScreen";
-import { CHAT_QUERY, CHAT_SUBSCRIPTION } from "@config/gql/chat";
+import {
+  CHAT_QUERY,
+  CHAT_SUBSCRIPTION,
+  updateChatsWithNewMessage,
+} from "@config/gql/chat";
 import useUserLocation from "@config/hooks/useUserLocation";
 import { getLocalItem } from "@config/storageManager";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -119,7 +123,15 @@ const createApolloClient = (token: string, httpLinkUrl: string) => {
   });
 };
 
-export const GlobalContext = React.createContext({});
+export const GlobalContext = React.createContext({
+  isLoggedIn: false,
+  setIsLoggedIn: () => {},
+  token: null,
+  setToken: () => {},
+  httpLinkUrl: "",
+  client: null,
+  setApolloClient: () => {},
+});
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -225,91 +237,24 @@ export default function RootLayout() {
   );
 }
 
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-  useUserLocation();
-
-  return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <BottomSheetModalProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          <Stack.Screen
-            name="search"
-            options={{
-              presentation: "modal",
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="createwishlist"
-            options={{
-              presentation: "transparentModal",
-              animation: "slide_from_bottom",
-              headerShown: false,
-              animationDuration: 100,
-            }}
-          />
-          <Stack.Screen
-            name="map"
-            options={{
-              presentation: "transparentModal",
-              animation: "slide_from_bottom",
-              headerShown: false,
-              animationDuration: 100,
-            }}
-          />
-          <Stack.Screen
-            name="detailMap"
-            options={{
-              presentation: "transparentModal",
-              animation: "slide_from_bottom",
-              headerShown: false,
-              animationDuration: 100,
-            }}
-          />
-        </Stack>
-        <FlashMessage
-          position="top"
-          floating
-          statusBarHeight={Platform.OS === "ios" ? null : 35}
-        />
-      </BottomSheetModalProvider>
-    </ThemeProvider>
-  );
-}
-
 export const ChatContext = React.createContext({});
 
 export const ChatProvider = ({ children }) => {
   const client = useApolloClient();
-  const { data, loading } = useSubscription(CHAT_SUBSCRIPTION, {
+  const { loading } = useSubscription(CHAT_SUBSCRIPTION, {
     onData: ({ data }) => {
       if (data.data) {
         const newMessage = data.data.newMessage;
-        const chatId = newMessage.chat.id;
-        // Read the current query result from the cache
-        const existingChats = client.readQuery({
+        const existingData = client.readQuery({
           query: CHAT_QUERY,
-          variables: {
-            chatId,
-          },
         });
-        if (existingChats) {
+        if (existingData) {
           // Update the cache with the new message
           client.writeQuery({
             query: CHAT_QUERY,
-            variables: {},
             data: {
-              ...existingChats,
-              me: {
-                ...existingChats.me,
-                chats: updateChatsWithNewMessage(
-                  existingChats.me.chats,
-                  newMessage,
-                ),
-              },
+              allChats: updateChatsWithNewMessage(existingData, newMessage),
+              me: existingData.me,
             },
           });
         }
@@ -320,7 +265,6 @@ export const ChatProvider = ({ children }) => {
   return (
     <ChatContext.Provider
       value={{
-        data,
         loading,
       }}
     >
@@ -329,27 +273,59 @@ export const ChatProvider = ({ children }) => {
   );
 };
 
-const updateChatsWithNewMessage = (chats, newMessage) => {
-  const chatId = newMessage.chatId;
+function RootLayoutNav() {
+  const colorScheme = useColorScheme();
+  useUserLocation();
 
-  return chats.map((chatOnUser) => {
-    if (chatOnUser.id === chatId) {
-      const messageExists = chatOnUser.chat.messages.some(
-        (message) => message._id === newMessage.id,
-      );
-
-      if (!messageExists) {
-        newMessage._id = newMessage.id;
-        newMessage.user._id = newMessage.user.id;
-        return {
-          ...chatOnUser,
-          chat: {
-            ...chatOnUser.chat,
-            messages: [...chatOnUser.chat.messages, newMessage],
-          }, // Append new message
-        };
-      }
-    }
-    return chatOnUser;
-  });
-};
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <BottomSheetModalProvider>
+        <ChatProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+            <Stack.Screen
+              name="search"
+              options={{
+                presentation: "modal",
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="createwishlist"
+              options={{
+                presentation: "transparentModal",
+                animation: "slide_from_bottom",
+                headerShown: false,
+                animationDuration: 100,
+              }}
+            />
+            <Stack.Screen
+              name="map"
+              options={{
+                presentation: "transparentModal",
+                animation: "slide_from_bottom",
+                headerShown: false,
+                animationDuration: 100,
+              }}
+            />
+            <Stack.Screen
+              name="detailMap"
+              options={{
+                presentation: "transparentModal",
+                animation: "slide_from_bottom",
+                headerShown: false,
+                animationDuration: 100,
+              }}
+            />
+          </Stack>
+          <FlashMessage
+            position="top"
+            floating
+            statusBarHeight={Platform.OS === "ios" ? null : 35}
+          />
+        </ChatProvider>
+      </BottomSheetModalProvider>
+    </ThemeProvider>
+  );
+}

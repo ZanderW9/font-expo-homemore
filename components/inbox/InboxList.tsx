@@ -5,43 +5,65 @@ import { router } from "expo-router";
 import { StyleSheet } from "react-native";
 
 export default function InboxList(props: any) {
-  const { data, refetch, loading } = props;
-  const chatData = data.me.chats.map((item) => item.chat);
+  const { data, refetch } = props;
   return (
     <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
       <FlashList
         estimatedItemSize={60}
-        data={chatData}
+        data={data?.allChats || []}
         onRefresh={() => refetch()}
-        refreshing={loading}
+        refreshing={false}
         renderItem={({ item }) => (
           <ListItem
             onPress={() =>
               router.push({
-                pathname: `/inbox/[chatId]`,
-                params: { chatId: item.id },
+                pathname: "/inbox/[chatId]",
+                params: {
+                  chatId: item.id,
+                  userId: item.chatMeta?.id,
+                  userName: item.chatMeta?.userName,
+                },
               })
             }
             bottomDivider
           >
-            {item.users[0].user.avatar ? (
+            {item.chatMeta.avatar ? (
               <Avatar
-                size={64}
+                size={50}
                 rounded
                 containerStyle={styles.avatar}
-                source={{ uri: item.users[0].user.avatar }}
+                source={{ uri: item.chatMeta.avatar }}
               />
             ) : (
               <Avatar
-                size={64}
+                size={50}
                 rounded
                 containerStyle={styles.avatar}
-                title={item.users[0].user.userName?.slice(0, 2) ?? ""}
+                title={item.chatMeta.userName?.slice(0, 2) ?? ""}
               />
             )}
             <ListItem.Content>
-              <ListItem.Title>{item.users[0].user.userName}</ListItem.Title>
-              <ListItem.Subtitle>{item.users[0].user.email}</ListItem.Subtitle>
+              <ListItem.Title
+                numberOfLines={1}
+                style={{ maxWidth: "100%", paddingBottom: 3 }}
+                ellipsizeMode="tail"
+              >
+                {item.chatMeta.userName}
+              </ListItem.Title>
+              <ListItem.Subtitle
+                numberOfLines={1}
+                style={{ color: "gray", maxWidth: "100%", paddingTop: 3 }}
+                ellipsizeMode="tail"
+              >
+                {item.messages.length === 0
+                  ? ""
+                  : `${
+                      item.messages[item.messages.length - 1].user.id ===
+                      data?.me.id
+                        ? "You"
+                        : item.messages[item.messages.length - 1].user.userName
+                    }: ${item.messages[item.messages.length - 1].text}`}
+              </ListItem.Subtitle>
             </ListItem.Content>
           </ListItem>
         )}
@@ -52,9 +74,7 @@ export default function InboxList(props: any) {
 
 const styles = StyleSheet.create({
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    borderRadius: 32,
     borderWidth: 0.5,
     borderColor: "gray",
     borderStyle: "dashed",

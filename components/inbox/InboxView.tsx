@@ -1,37 +1,16 @@
-import { gql, useQuery } from "@apollo/client";
 import { View } from "@components/Themed";
 import InboxList from "@components/inbox/InboxList";
+import { CHAT_QUERY } from "@config/gql/chat";
+import useCachedQuery from "@config/useCachedQuery";
+import { usePathname } from "expo-router";
 import React from "react";
 
-const inboxViewQuery = gql`
-  query inboxViewQuery {
-    me {
-      id
-      chats {
-        chat {
-          id
-          users {
-            user {
-              avatar
-              id
-              userName
-              email
-            }
-          }
-          messages {
-            text
-          }
-        }
-      }
-    }
-  }
-`;
-
 export default function InboxView() {
-  const { loading, data, refetch } = useQuery(inboxViewQuery);
+  const { data, refetch } = useCachedQuery(CHAT_QUERY, usePathname());
+
   return (
     <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
-      {data && <InboxList data={data} refetch={refetch} loading={loading} />}
+      {data && <InboxList data={data} refetch={refetch} />}
     </View>
   );
 }
