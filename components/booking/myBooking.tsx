@@ -90,7 +90,7 @@ function MyBooking() {
       type: "success",
       message: "Successfully sent booking request.",
     });
-    router.push("/");
+    router.navigate("/");
   };
 
   return (

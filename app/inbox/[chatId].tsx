@@ -26,7 +26,7 @@ const ChatScreen = () => {
   }, [data]);
 
   const onPressAvatar = (user: { id: string }) => {
-    router.push(`/user/${user.id}`);
+    router.navigate(`/user/${user.id}`);
   };
 
   return (

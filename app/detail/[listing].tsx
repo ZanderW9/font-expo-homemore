@@ -92,7 +92,7 @@ const CustomHeaderTitle = (data: any) => {
   return (
     <Pressable
       style={{ flexDirection: "row", alignItems: "center" }}
-      onPress={() => router.push(`/user/${owner?.id}`)}
+      onPress={() => router.navigate(`/user/${owner?.id}`)}
     >
       {owner?.avatar ? (
         <Avatar
@@ -146,7 +146,7 @@ function ListingDetailScreen() {
 
   const toggleCheckboxHandler = () => {
     if (!isLoggedIn) {
-      router.push("/signin");
+      router.navigate("/signin");
     } else {
       bottomSheetAddModalRef.current?.present();
     }
@@ -352,7 +352,7 @@ function ListingDetailScreen() {
               <TouchableOpacity
                 style={styles.reserveButton}
                 onPress={() => {
-                  router.push({
+                  router.navigate({
                     pathname: "/booking",
                     params: { listingId: data.allListings[0].id },
                   });

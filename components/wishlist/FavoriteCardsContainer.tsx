@@ -21,7 +21,7 @@ const FavoriteCardsContainer: React.FunctionComponent = (data: any) => {
               key={index}
               containerStyle={styles.card}
               onPress={() => {
-                router.push({
+                router.navigate({
                   pathname: `/wishlist/${item.name}`,
                   params: { favoriteId: item?.id },
                 });

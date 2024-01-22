@@ -46,7 +46,7 @@ function TabExploreScreen() {
           />
         }
         onPress={() =>
-          router.push({ pathname: "/map", params: { center: {} } })
+          router.navigate({ pathname: "/map", params: { center: {} } })
         }
         color="rgba(0,0,0,0.4)"
       />

@@ -37,7 +37,7 @@ function TabProfileScreen() {
 
   useEffect(() => {
     if (data?.createListing.id) {
-      router.push({
+      router.navigate({
         pathname: "/createlisting",
         params: { listingId: data?.createListing.id },
       });
@@ -70,15 +70,15 @@ function TabProfileScreen() {
   };
 
   const myPostHandler = async () => {
-    router.push("/managepost");
+    router.navigate("/managepost");
   };
 
   const myOrderHandler = async () => {
-    router.push("/manageorder");
+    router.navigate("/manageorder");
   };
 
   const AccountHandler = async () => {
-    router.push("/user/accountsecurity");
+    router.navigate("/user/accountsecurity");
   };
 
   return (
@@ -98,7 +98,7 @@ function TabProfileScreen() {
             <Pressable
               style={styles.userInfo}
               onPress={() => {
-                router.push("/user/user-info");
+                router.navigate("/user/user-info");
               }}
             >
               {gqlData?.me?.avatar ? (

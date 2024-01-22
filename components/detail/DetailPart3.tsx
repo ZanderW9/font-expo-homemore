@@ -10,7 +10,7 @@ function DetailPart3(data: any) {
       <Pressable
         style={styles.mapWrapper}
         onPress={() =>
-          router.push({
+          router.navigate({
             pathname: "/detailMap",
             params: { lat: data.lat, lng: data.lng },
           })

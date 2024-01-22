@@ -37,14 +37,14 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   const toggleCheckboxHandler = () => {
     if (!isLoggedIn) {
-      router.push("/signin");
+      router.navigate("/signin");
     } else {
       bottomSheetModalRef.current?.present();
     }
   };
 
   const pressHandler = () => {
-    router.push({
+    router.navigate({
       pathname: `/detail/${data.id}`,
     });
   };

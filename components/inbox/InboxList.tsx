@@ -16,7 +16,7 @@ export default function InboxList(props: any) {
         renderItem={({ item }) => (
           <ListItem
             onPress={() =>
-              router.push({
+              router.navigate({
                 pathname: "/inbox/[chatId]",
                 params: {
                   chatId: item.id,

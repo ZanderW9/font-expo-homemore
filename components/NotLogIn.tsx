@@ -4,11 +4,11 @@ import { router } from "expo-router";
 import { StyleSheet } from "react-native";
 
 export const signInHandler = async () => {
-  router.push("/signin");
+  router.navigate("/signin");
 };
 
 export const signUpHandler = async () => {
-  router.push("/signup");
+  router.navigate("/signup");
 };
 
 function NotLogIn(data: any) {

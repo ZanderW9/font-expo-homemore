@@ -40,7 +40,7 @@ export default function () {
               }}
             >
               <Pressable
-                onPress={() => router.push("/search")}
+                onPress={() => router.navigate("/search")}
                 style={{
                   width: "92%",
                   minWidth: 260,

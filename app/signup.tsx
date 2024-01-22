@@ -149,7 +149,7 @@ function LoginScreen() {
   };
 
   const gotoSigninHandler = () => {
-    router.push("/signin");
+    router.navigate("/signin");
   };
 
   const togglePasswordVisibility = () => {

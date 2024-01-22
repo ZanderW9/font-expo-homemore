@@ -95,7 +95,7 @@ function ShareModal(data: any) {
   };
 
   const editHandler = () => {
-    router.push({ pathname: "/createlisting", params: { listingId } });
+    router.navigate({ pathname: "/createlisting", params: { listingId } });
     data.bottomSheetModalRef.current?.close();
   };
 

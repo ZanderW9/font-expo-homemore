@@ -21,35 +21,35 @@ function EditProfileScreen() {
   const { data } = useQuery(meQuery);
 
   const updateAvatarHandler = () => {
-    router.push({
+    router.navigate({
       pathname: "/user/update-avatar",
       params: { userId: data?.me?.id },
     });
   };
 
   const updateNameHandler = () => {
-    router.push({
+    router.navigate({
       pathname: "/user/update-name",
       params: { userId: data?.me?.id },
     });
   };
 
   const updateEmailHandler = () => {
-    router.push({
+    router.navigate({
       pathname: "/user/update-email",
       params: { userId: data?.me?.id },
     });
   };
 
   const updatePhoneHandler = () => {
-    router.push({
+    router.navigate({
       pathname: "/user/update-phone",
       params: { userId: data?.me?.id },
     });
   };
 
   const updateGenderHandler = () => {
-    router.push({
+    router.navigate({
       pathname: "/user/update-gender",
       params: { userId: data?.me?.id },
     });
