@@ -77,8 +77,8 @@ function TabProfileScreen() {
     router.push("/manageorder");
   };
 
-  const changePasswordHandler = async () => {
-    router.push("/changepassword");
+  const AccountHandler = async () => {
+    router.push("/user/accountsecurity");
   };
 
   return (
@@ -124,7 +124,7 @@ function TabProfileScreen() {
               <View style={styles.usernameWrapper}>
                 <Text style={styles.username}>{gqlData?.me?.userName}</Text>
                 <Text style={{ color: "gray", fontSize: 12 }}>
-                  Joined on {gqlData?.me?.createdAt.slice(0, 10)}
+                  Joined on {gqlData?.me?.createdAt?.slice(0, 10)}
                 </Text>
               </View>
             </Pressable>
@@ -174,9 +174,9 @@ function TabProfileScreen() {
               darkColor="rgba(255,255,255,0.1)"
             />
 
-            <ListItem onPress={changePasswordHandler}>
+            <ListItem onPress={AccountHandler}>
               <ListItem.Content>
-                <ListItem.Title>Change Password</ListItem.Title>
+                <ListItem.Title>Account and Security</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
