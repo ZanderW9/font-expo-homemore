@@ -117,7 +117,7 @@ function UserScreen() {
                 const chatId = [data?.myself?.id, data?.me?.id]
                   .sort()
                   .join("__");
-                router.push({
+                router.navigate({
                   pathname: "/inbox/[chatId]",
                   params: {
                     chatId,
