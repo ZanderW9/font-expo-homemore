@@ -87,8 +87,7 @@ function ReviewInputModal(data: any) {
             placeholder={
               receiverName ? `Reply to @${receiverName}` : "Leave a review"
             }
-            value={reviewText}
-            onChangeText={setReviewText}
+            onChangeText={(text) => setReviewText(text)}
           />
           <Button
             title="Send"
