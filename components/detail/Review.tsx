@@ -2,6 +2,7 @@ import { Text, View } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
+import { router } from "expo-router";
 import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
 
 function formatTime(timestamp) {
@@ -44,6 +45,9 @@ function renderReviw(
                 source={{
                   uri: subReview?.sender?.avatar,
                 }}
+                onPress={() =>
+                  router.navigate(`/user/${subReview?.sender?.id}`)
+                }
               />
             ) : (
               <Avatar
@@ -56,6 +60,9 @@ function renderReviw(
                 size={20}
                 rounded
                 containerStyle={styles.Avatar}
+                onPress={() =>
+                  router.navigate(`/user/${subReview?.sender?.id}`)
+                }
               />
             )}
             <TouchableOpacity
@@ -105,6 +112,7 @@ function renderReviw(
           source={{
             uri: review?.sender?.avatar,
           }}
+          onPress={() => router.navigate(`/user/${review?.sender?.id}`)}
         />
       ) : (
         <Avatar
@@ -117,6 +125,7 @@ function renderReviw(
           size={35}
           rounded
           containerStyle={styles.Avatar}
+          onPress={() => router.navigate(`/user/${review?.sender?.id}`)}
         />
       )}
 
@@ -157,7 +166,7 @@ function renderReviw(
   );
 }
 
-function DetailPart5(data: any) {
+function Review(data: any) {
   const openModalHandler = () => {
     data.openBottomSheet();
   };
@@ -265,4 +274,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailPart5;
+export default Review;

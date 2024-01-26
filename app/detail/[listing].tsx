@@ -1,15 +1,15 @@
 import { gql, useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View, Text, SafeAreaView } from "@components/Themed";
+import BasicInfo from "@components/detail/BasicInfo";
 import DetailEnd from "@components/detail/DetailEnd";
-import DetailPart1 from "@components/detail/DetailPart1";
-import DetailPart2 from "@components/detail/DetailPart2";
-import DetailPart3 from "@components/detail/DetailPart3";
-import DetailPart4 from "@components/detail/DetailPart4";
-import DetailPart5 from "@components/detail/DetailPart5";
 import DetailProvider from "@components/detail/DetailProvider";
+import Facility from "@components/detail/Facility";
 import ReviewInputModal from "@components/detail/InputModal";
+import Location from "@components/detail/Location";
 import MyCarousel from "@components/detail/MyCarousel";
+import OverView from "@components/detail/OverView";
+import Review from "@components/detail/Review";
 import ShareModal from "@components/detail/ShareModal";
 import AddModal from "@components/wishlist/AddModal";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
@@ -184,9 +184,9 @@ function ListingDetailScreen() {
           {/* Carousel */}
           <MyCarousel images={data ? data.allListings[0]?.images : []} />
           {/* Part1 */}
-          <DetailPart1 data={data ? data.allListings[0] : {}} />
+          <BasicInfo data={data ? data.allListings[0] : {}} />
           {/* Part2 */}
-          <DetailPart2
+          <OverView
             bathRooms={data ? data.allListings[0]?.roomDetails.Bathrooms : 0}
             bedRooms={data ? data.allListings[0]?.roomDetails.Bedrooms : 0}
             bed={data ? data.allListings[0]?.roomDetails.Bed : 0}
@@ -197,19 +197,20 @@ function ListingDetailScreen() {
             guestType={data ? data.allListings[0]?.guestType : []}
           />
           {/* Part3 */}
-          <DetailPart3
+          <Location
             lat={data ? data.allListings[0]?.coordinate.lat : 0}
             lng={data ? data.allListings[0]?.coordinate.lng : 0}
+            address={data ? data.allListings[0]?.address : ""}
           />
           {/* Part4 */}
-          <DetailPart4
+          <Facility
             deviceType={data ? data.allListings[0]?.deviceType : []}
             standoutType={data ? data.allListings[0]?.standoutType : []}
             safetyDeviceType={data ? data.allListings[0]?.safetyDeviceType : []}
           />
 
           {/* Part5 */}
-          <DetailPart5
+          <Review
             reviews={data ? data.allListings[0]?.reviews : []}
             openBottomSheet={openBottomSheet}
           />
@@ -257,6 +258,7 @@ function ListingDetailScreen() {
                 marginStart: 10,
                 marginVertical: 5,
                 backgroundColor: "rgba(0, 0, 0, 0.1)",
+                paddingHorizontal: 5,
                 borderRadius: 20,
                 flex: 1,
               }}
@@ -283,6 +285,7 @@ function ListingDetailScreen() {
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 alignItems: "center",
+                paddingHorizontal: 5,
               }}
             >
               <Ionicons
@@ -290,16 +293,6 @@ function ListingDetailScreen() {
                 size={32}
                 color="black"
               />
-              <Text
-                style={{
-                  fontSize: 13,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                }}
-              >
-                {data ? data.allListings[0]?.reviews.length : 0}
-              </Text>
             </View>
 
             <View
@@ -308,6 +301,7 @@ function ListingDetailScreen() {
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 alignItems: "center",
+                paddingHorizontal: 5,
               }}
             >
               {data && data?.allListings[0]?.favorited ? (
@@ -329,16 +323,6 @@ function ListingDetailScreen() {
                   }}
                 />
               )}
-              {/* <Text
-              style={{
-                fontSize: 13,
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              Save
-            </Text> */}
             </View>
             <View
               style={{
@@ -358,7 +342,7 @@ function ListingDetailScreen() {
                   });
                 }}
               >
-                <Text style={styles.reserveButtonText}>Booking</Text>
+                <Text style={styles.reserveButtonText}>Request</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -1,12 +1,38 @@
 import { Text, View } from "@components/Themed";
 import MapScreen from "@components/map/MapView";
+import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
+import React, { useState } from "react";
 import { StyleSheet, Pressable } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
-function DetailPart3(data: any) {
+function Location(data: any) {
+  const [copyAddress, setCopyAddress] = useState(
+    `${data?.address?.city} ${data?.address?.postCode}, ${data?.address
+      ?.state} ${data?.address?.country?.toUpperCase()}`,
+  );
+
+  const copyHandler = async () => {
+    setCopyAddress(
+      `${data?.address?.city} ${data?.address?.postCode}, ${data?.address
+        ?.state} ${data?.address?.country?.toUpperCase()}`,
+    );
+    await Clipboard.setStringAsync(copyAddress);
+    showMessage({
+      message: "Address Copied",
+      type: "success",
+      duration: 2000,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Location</Text>
+      <Text style={styles.address} onPress={copyHandler}>
+        {data?.address?.city} {data?.address?.postCode}, {data?.address?.state}{" "}
+        {data?.address?.country?.toUpperCase()}
+      </Text>
+
       <Pressable
         style={styles.mapWrapper}
         onPress={() =>
@@ -62,6 +88,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.1)",
     borderRadius: 10,
   },
+  address: {
+    fontSize: 15,
+    color: "rgba(0, 0, 0, 0.5)",
+    paddingVertical: 5,
+  },
 });
 
-export default DetailPart3;
+export default Location;

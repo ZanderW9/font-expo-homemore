@@ -2,7 +2,7 @@ import { Text, View } from "@components/Themed";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import { StyleSheet, Dimensions } from "react-native";
 
-function DetailPart2(data: any) {
+function OverView(data: any) {
   const PAGE_WIDTH = Dimensions.get("window").width * 0.95;
 
   let rentType = "";
@@ -162,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailPart2;
+export default OverView;

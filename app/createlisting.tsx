@@ -710,7 +710,7 @@ const CreateListingScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Add a title"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 value={title}
@@ -726,7 +726,7 @@ const CreateListingScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Add a description"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={{
@@ -751,7 +751,7 @@ const CreateListingScreen = () => {
               <Input
                 placeholder="$0"
                 label="Add a price / day"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 keyboardType="numeric"
@@ -818,7 +818,7 @@ const CreateListingScreen = () => {
               <Input
                 label="Unit / Building"
                 placeholder="Unit, level, etc. (if applicable)"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 value={unit}
@@ -834,7 +834,7 @@ const CreateListingScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Street address"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 value={streetAddress}
@@ -850,7 +850,7 @@ const CreateListingScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="City / Suburb"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 value={citySuburb}
@@ -866,7 +866,7 @@ const CreateListingScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="State / Province / Region"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
                 value={stateProvince}
@@ -882,7 +882,7 @@ const CreateListingScreen = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Postcode"
-                labelStyle={{ color: "gray" }}
+                labelStyle={{ color: "gray", fontWeight: "normal" }}
                 keyboardType="numeric"
                 containerStyle={styles.inputWrapper}
                 inputContainerStyle={styles.inputContainer}
@@ -937,6 +937,7 @@ const CreateListingScreen = () => {
             buttonStyle={styles.buttonStyle}
             containerStyle={styles.houseTypeContainer}
             textStyle={{ fontSize: 13 }}
+            selectedButtonStyle={{ backgroundColor: "rgb(236, 76, 96)" }}
           />
           <Text style={styles.title}>What type of place will guests have?</Text>
           <ButtonGroup
@@ -950,6 +951,7 @@ const CreateListingScreen = () => {
             buttonStyle={styles.buttonStyle}
             containerStyle={styles.houseTypeContainer}
             textStyle={{ fontSize: 13 }}
+            selectedButtonStyle={{ backgroundColor: "rgb(236, 76, 96)" }}
           />
           <Text style={styles.title}>Room information</Text>
 
@@ -1132,6 +1134,7 @@ const CreateListingScreen = () => {
             buttonStyle={styles.buttonStyle}
             containerStyle={styles.houseTypeContainer}
             textStyle={{ fontSize: 13 }}
+            selectedButtonStyle={{ backgroundColor: "rgb(236, 76, 96)" }}
           />
           <Text style={styles.title}>Do you have any standout amenities? </Text>
           <ButtonGroup
@@ -1146,6 +1149,7 @@ const CreateListingScreen = () => {
             buttonStyle={styles.buttonStyle}
             containerStyle={styles.houseTypeContainer}
             textStyle={{ fontSize: 13 }}
+            selectedButtonStyle={{ backgroundColor: "rgb(236, 76, 96)" }}
           />
           <Text style={styles.title}>
             Do you have any of these safety items?{" "}
@@ -1162,6 +1166,7 @@ const CreateListingScreen = () => {
             buttonStyle={styles.buttonStyle}
             containerStyle={styles.houseTypeContainer}
             textStyle={{ fontSize: 13 }}
+            selectedButtonStyle={{ backgroundColor: "rgb(236, 76, 96)" }}
           />
           <Text style={styles.title}>Acceptable guests? </Text>
           <ButtonGroup
@@ -1176,6 +1181,7 @@ const CreateListingScreen = () => {
             buttonStyle={styles.buttonStyle}
             containerStyle={styles.houseTypeContainer}
             textStyle={{ fontSize: 13 }}
+            selectedButtonStyle={{ backgroundColor: "rgb(236, 76, 96)" }}
           />
         </ListItem.Accordion>
       </View>
@@ -1262,7 +1268,7 @@ const CreateListingScreen = () => {
               ...selectedDates?.reduce((result, date, index) => {
                 result[date] = {
                   selected: true,
-                  color: "#2f95dc",
+                  color: "rgb(236, 76, 96)",
                   ...(index === 0 && { startingDay: true }),
                   ...(index === selectedDates.length - 1 && {
                     endingDay: true,
@@ -1277,21 +1283,19 @@ const CreateListingScreen = () => {
       </View>
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
           justifyContent: "center",
-          alignItems: "center",
-          margin: 20,
+          backgroundColor: "#f5f5f5",
         }}
       >
         <Button
           title="Publish"
-          size="lg"
-          radius="sm"
-          type="solid"
-          containerStyle={{
-            width: 150,
-            alignSelf: "center",
+          buttonStyle={{
+            backgroundColor: "rgb(236, 76, 96)",
+            height: 50,
+            width: 100,
+            borderRadius: 7,
+            marginVertical: 40,
           }}
           disabled={!formComplete}
           onPress={handleSubmit(publishHandler)}
@@ -1336,7 +1340,7 @@ const CreateListingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
   },
   imagesContainer: {
     justifyContent: "flex-start",
@@ -1399,7 +1403,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   buttonStyle: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
     borderRadius: 5,
   },
   title: {

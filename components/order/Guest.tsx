@@ -56,7 +56,7 @@ function OwnerContent(data: any) {
         onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
         ref={pagerRef}
       >
-        <View key="1">
+        <View key="1" style={{ backgroundColor: "#f5f5f5" }}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
@@ -77,7 +77,7 @@ function OwnerContent(data: any) {
             ))}
           </ScrollView>
         </View>
-        <View key="2">
+        <View key="2" style={{ backgroundColor: "#f5f5f5" }}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
@@ -108,7 +108,7 @@ function OwnerContent(data: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
     padding: 10,
   },
   pagerView: {
@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   tabItem: {
     padding: 10,

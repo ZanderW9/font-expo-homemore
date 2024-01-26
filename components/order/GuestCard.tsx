@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: 10,
+    paddingTop: 5,
+    backgroundColor: "#f5f5f5",
   },
   separator: {
     marginBottom: 3,

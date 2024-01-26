@@ -1,7 +1,7 @@
 import { Text, View } from "@components/Themed";
 import { StyleSheet } from "react-native";
 
-function DetailPart4(data: any) {
+function Facility(data: any) {
   const deviceType = data.deviceType;
   const standoutType = data.standoutType;
   const safetyDeviceType = data.safetyDeviceType;
@@ -34,7 +34,8 @@ function DetailPart4(data: any) {
                   borderColor: "rgba(0, 0, 0, 0.1)",
                   borderRadius: 15,
                   marginRight: 5,
-                  width: "auto",
+                  minWidth: 50,
+                  alignItems: "center",
                 }}
               >
                 <Text style={{ fontSize: 14, color: "gray" }}>{amenity}</Text>
@@ -72,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailPart4;
+export default Facility;

@@ -2,7 +2,6 @@ import { gql, useQuery } from "@apollo/client";
 import { View, Text } from "@components/Themed";
 import Published from "@components/post/Published";
 import FavoriteCardsContainer from "@components/wishlist/FavoriteCardsContainer";
-import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useState, useRef } from "react";
@@ -59,7 +58,12 @@ const CustomHeaderTitle = (data: any) => {
   const owner = data ? data?.me : null;
 
   return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
       {owner?.avatar ? (
         <Avatar
           size={35}
@@ -109,10 +113,17 @@ function UserScreen() {
           headerBackTitleVisible: false,
           headerBackTitle: "Details",
           headerRight: () => (
-            <Ionicons
-              name="chatbubble-ellipses-outline"
-              size={26}
-              color="black"
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                borderRadius: 20,
+                backgroundColor: "#f5f5f5",
+                borderWidth: 1,
+                borderColor: "#e3e3e3",
+                paddingHorizontal: 8,
+                paddingVertical: 3,
+              }}
               onPress={() => {
                 const chatId = [data?.myself?.id, data?.me?.id]
                   .sort()
@@ -126,7 +137,9 @@ function UserScreen() {
                   },
                 });
               }}
-            />
+            >
+              <Text style={{ fontSize: 14 }}>Chat</Text>
+            </TouchableOpacity>
           ),
         }}
       />
@@ -160,12 +173,12 @@ function UserScreen() {
           onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
           ref={pagerRef}
         >
-          <View key="1">
+          <View key="1" style={{ backgroundColor: "#f5f5f5" }}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <Published published={data?.me.myPublishedListings} />
             </ScrollView>
           </View>
-          <View key="2">
+          <View key="2" style={{ backgroundColor: "#f5f5f5" }}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <FavoriteCardsContainer data={data?.me?.favorites} />
             </ScrollView>
@@ -183,6 +196,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 5,
+    backgroundColor: "#f5f5f5",
   },
   safeArea: {
     width: "100%",
@@ -200,6 +214,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   tabItem: {
     padding: 10,

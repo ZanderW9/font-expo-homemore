@@ -6,7 +6,7 @@ import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import React, { useMemo, useCallback } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 
 const meQuery = gql`
   query Query {
@@ -124,7 +124,7 @@ function ShareModal(data: any) {
           <Text style={styles.title}>Share to</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.iconContainer}>
-              <View style={styles.iconWrapper}>
+              <TouchableOpacity style={styles.iconWrapper}>
                 <AntDesign
                   name="wechat"
                   size={40}
@@ -132,12 +132,12 @@ function ShareModal(data: any) {
                   onPress={openWeChat}
                 />
                 <Text style={styles.title}>WeChat</Text>
-              </View>
-              <View style={styles.iconWrapper}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconWrapper}>
                 <AntDesign name="QQ" size={40} color="black" onPress={openQQ} />
                 <Text style={styles.title}>QQ</Text>
-              </View>
-              <View style={styles.iconWrapper}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconWrapper}>
                 <AntDesign
                   name="facebook-square"
                   size={40}
@@ -145,9 +145,9 @@ function ShareModal(data: any) {
                   onPress={openFacebook}
                 />
                 <Text style={styles.title}>Facebook</Text>
-              </View>
+              </TouchableOpacity>
 
-              <View style={styles.iconWrapper}>
+              <TouchableOpacity style={styles.iconWrapper}>
                 <AntDesign
                   name="weibo"
                   size={40}
@@ -155,7 +155,7 @@ function ShareModal(data: any) {
                   onPress={openWeibo}
                 />
                 <Text style={styles.title}>WeiBo</Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </ScrollView>
 
@@ -167,7 +167,7 @@ function ShareModal(data: any) {
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.iconContainer}>
-              <View style={styles.iconWrapper}>
+              <TouchableOpacity style={styles.iconWrapper}>
                 <Ionicons
                   name="copy-outline"
                   size={40}
@@ -175,10 +175,10 @@ function ShareModal(data: any) {
                   onPress={copyLinkHandler}
                 />
                 <Text style={styles.title}>Copy Link</Text>
-              </View>
+              </TouchableOpacity>
 
               {gqlData?.me?.id === data.userId && (
-                <View style={styles.iconWrapper}>
+                <TouchableOpacity style={styles.iconWrapper}>
                   <Ionicons
                     name="create-outline"
                     size={40}
@@ -186,11 +186,11 @@ function ShareModal(data: any) {
                     onPress={editHandler}
                   />
                   <Text style={styles.title}>Edit</Text>
-                </View>
+                </TouchableOpacity>
               )}
 
               {gqlData?.me?.id === data.userId && (
-                <View style={styles.iconWrapper}>
+                <TouchableOpacity style={styles.iconWrapper}>
                   <Ionicons
                     name="trash-outline"
                     size={40}
@@ -198,14 +198,14 @@ function ShareModal(data: any) {
                     onPress={unpublishHandler}
                   />
                   <Text style={styles.title}>Unpublish</Text>
-                </View>
+                </TouchableOpacity>
               )}
 
               {gqlData?.me?.id !== data.userId && (
-                <View style={styles.iconWrapper}>
+                <TouchableOpacity style={styles.iconWrapper}>
                   <Ionicons name="warning-outline" size={40} color="black" />
                   <Text style={styles.title}>Report</Text>
-                </View>
+                </TouchableOpacity>
               )}
             </View>
           </ScrollView>

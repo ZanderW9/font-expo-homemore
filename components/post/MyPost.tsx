@@ -102,7 +102,7 @@ function MyPost() {
           onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
           ref={pagerRef}
         >
-          <View key="1">
+          <View key="1" style={{ backgroundColor: "#f5f5f5" }}>
             <ScrollView
               showsVerticalScrollIndicator={false}
               refreshControl={
@@ -112,7 +112,7 @@ function MyPost() {
               <Published published={data?.me.myPublishedListings} />
             </ScrollView>
           </View>
-          <View key="2">
+          <View key="2" style={{ backgroundColor: "#f5f5f5" }}>
             <ScrollView
               showsVerticalScrollIndicator={false}
               refreshControl={
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 5,
+    backgroundColor: "#f5f5f5",
   },
   safeArea: {
     width: "100%",
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   tabItem: {
     padding: 10,

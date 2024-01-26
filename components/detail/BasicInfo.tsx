@@ -1,7 +1,7 @@
 import { Text, View } from "@components/Themed";
 import { StyleSheet } from "react-native";
 
-function DetailPart1(data: any) {
+function BasicInfo(data: any) {
   let rentType = "";
   if (data.data.rentType === "ARoom") {
     rentType = "A Separate Room";
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailPart1;
+export default BasicInfo;
