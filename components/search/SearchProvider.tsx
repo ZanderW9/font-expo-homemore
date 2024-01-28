@@ -1,49 +1,55 @@
 import { useQuery } from "@apollo/client";
 import { SEARCH_LISTINGS_QUERY } from "@config/gql/search";
 import { router } from "expo-router";
-import React, { ReactNode, useContext, useState, useReducer } from "react";
+import React, { ReactNode, useContext, useReducer } from "react";
 import { Keyboard } from "react-native";
 
-const SearchContext = React.createContext({
+type SearchState = {
+  text?: string;
+  price?: { gte: string; lte: string };
+  boundary?: object;
+};
+
+const initialState: SearchState = {
   text: "",
-  setText: (text: string) => {},
-  filters: { price: { gte: "100", lte: "1000" } },
-  dispatchFilters: ({ price }: { price: object }) => {},
+  price: { gte: "100", lte: "1000" },
   boundary: {},
-  setBoundary: (boundary: object) => {},
+};
+
+interface SearchContextType {
+  filters: SearchState;
+  dispatchFilters: (newState: SearchState) => void;
+  onSearch: () => void;
+  data: object;
+  loading: boolean;
+  fetchMore: Function;
+  refetch: () => void;
+}
+const SearchContext = React.createContext<SearchContextType>({
+  filters: initialState,
+  dispatchFilters: () => {},
   onSearch: () => {},
-  onClearText: () => {},
   data: {},
   loading: false,
-  // fetchMore: () => {},
+  fetchMore: () => {},
   refetch: () => {},
 });
 
 const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [text, setText] = useState("");
   const [filters, dispatchFilters] = useReducer(
     (state: object, newState: object) => ({ ...state, ...newState }),
-    {
-      price: { gte: "100", lte: "1000" },
-    },
+    initialState,
   );
-  const [boundary, setBoundary] = useState({});
 
   const { data, loading, refetch, fetchMore } = useQuery(
     SEARCH_LISTINGS_QUERY,
     {
       variables: {
-        text,
         filters,
       },
       errorPolicy: "all",
     },
   );
-
-  const onClearText = () => {
-    setText("");
-    refetch({ text: "", filters });
-  };
 
   const onSearch = () => {
     refetch();
@@ -55,18 +61,13 @@ const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <SearchContext.Provider
       value={{
+        filters,
+        dispatchFilters,
         data,
         loading,
         fetchMore,
         refetch,
-        text,
-        setText,
-        filters,
-        dispatchFilters,
-        boundary,
-        setBoundary,
         onSearch,
-        onClearText,
       }}
     >
       {children}

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const SEARCH_LISTINGS_QUERY = gql`
-  query searchListingsQuery($text: String, $filters: Json) {
-    searchListings(text: $text, filters: $filters) {
+  query searchListingsQuery($filters: Json) {
+    searchListings(filters: $filters) {
       id
       title
       description

@@ -8,8 +8,7 @@ import React, { useState } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 
 export default function SearchView() {
-  const { text, setText, filters, onSearch, dispatchFilters } =
-    useSearchContext();
+  const { filters, onSearch, dispatchFilters } = useSearchContext();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   return (
     <View style={styles.container}>
@@ -20,12 +19,13 @@ export default function SearchView() {
           containerStyle={styles.searchContainer}
           inputStyle={styles.searchInput}
           inputContainerStyle={styles.searchInputContainer}
-          onChangeText={(text) => setText(text)}
-          value={text}
+          onChangeText={(text) => {
+            dispatchFilters({ text });
+          }}
+          value={filters.text || ""}
           searchIcon={<Ionicons name="search" size={22} color="gray" />}
           onSubmitEditing={onSearch}
           returnKeyType="search"
-          // autoFocus
         />
         <Button title="Cancel" type="clear" onPress={() => router.back()} />
       </SafeAreaView>
@@ -51,8 +51,8 @@ export default function SearchView() {
           <RangeSlider
             inboundColor="rgb(236, 76, 96)"
             range={[
-              parseInt(filters.price.gte || "0", 10),
-              parseInt(filters.price.lte || "1500", 10),
+              parseInt(filters.price?.gte || "0", 10),
+              parseInt(filters.price?.lte || "1500", 10),
             ]}
             onSlidingStart={() => setScrollEnabled(false)}
             onSlidingComplete={() => setScrollEnabled(true)}
@@ -62,7 +62,7 @@ export default function SearchView() {
             step={1}
             onValueChange={(range) => {
               dispatchFilters({
-                price: { gte: range[0], lte: range[1] },
+                price: { gte: range[0].toString(), lte: range[1].toString() },
               });
             }}
             thumbTintColor="white"
@@ -99,11 +99,11 @@ export default function SearchView() {
                   dispatchFilters({
                     price: {
                       gte: text,
-                      lte: filters.price.lte,
+                      lte: filters.price?.lte.toString() || "1500",
                     },
                   });
                 }}
-                value={filters.price.gte.toString()}
+                value={filters.price?.gte.toString()}
                 inputContainerStyle={{
                   margin: 0,
                   padding: 0,
@@ -128,11 +128,11 @@ export default function SearchView() {
               </Text>
               <Input
                 keyboardType="numeric"
-                value={filters.price.lte.toString()}
+                value={filters.price?.lte.toString()}
                 onChangeText={(text) => {
                   dispatchFilters({
                     price: {
-                      gte: filters.price.gte,
+                      gte: filters.price?.gte.toString() || "0",
                       lte: text,
                     },
                   });

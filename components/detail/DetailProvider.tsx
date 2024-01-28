@@ -9,12 +9,6 @@ type ReviewState = {
   longPressReviewId?: string;
 };
 
-interface DetailContextType {
-  reviewData: ReviewState;
-  dispatchReviewData: (newState: ReviewState) => void;
-  resetReviewData: () => void;
-}
-
 const initialState: ReviewState = {
   reviewId: null,
   receiverId: null,
@@ -23,6 +17,12 @@ const initialState: ReviewState = {
   reviewText: "",
   longPressReviewId: "",
 };
+
+interface DetailContextType {
+  reviewData: ReviewState;
+  dispatchReviewData: (newState: ReviewState) => void;
+  resetReviewData: () => void;
+}
 
 const DetailContext = React.createContext<DetailContextType>({
   reviewData: initialState,
