@@ -2,6 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View } from "@components/Themed";
 // import { useGetLocalItem } from "@config/hooks/storage";
+import { CREATE_LISTING_PAGE_QUERY } from "@config/gql/listing";
 import { compressImage } from "@config/media";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
@@ -22,61 +23,6 @@ import {
 import { CalendarList } from "react-native-calendars";
 import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
-
-const listingDetailQuery = gql`
-  query Query($ids: [String]) {
-    allListings(ids: $ids) {
-      id
-      title
-      description
-      images {
-        url
-        smallUrl
-        thumbhash
-        ratio
-        width
-        height
-      }
-      price
-      address
-      coordinate
-      favorited
-      availability
-      unavailability
-      createdAt
-      publishAt
-      placeType
-      rentType
-      roomDetails
-      deviceType
-      standoutType
-      safetyDeviceType
-      guestType
-      meta
-      owner {
-        userName
-      }
-      reviews {
-        id
-        text
-        createdAt
-        sender {
-          id
-          userName
-        }
-        subReviews {
-          text
-          id
-          createdAt
-          sender {
-            id
-            userName
-          }
-        }
-      }
-    }
-  }
-`;
 
 const updateListingMutation = gql`
   mutation Mutation(
@@ -142,8 +88,8 @@ const CreateListingScreen = () => {
   const { listingId } = useLocalSearchParams();
   const [updateListingFunction] = useMutation(updateListingMutation);
   const [deleteListingFunction] = useMutation(deleteListingMutation);
-  const { data: gqlData, loading } = useQuery(listingDetailQuery, {
-    variables: { ids: [listingId] },
+  const { data: gqlData, loading } = useQuery(CREATE_LISTING_PAGE_QUERY, {
+    variables: { listingId },
     errorPolicy: "all",
   });
   const [expanded, setExpanded] = React.useState([0]);
@@ -470,63 +416,61 @@ const CreateListingScreen = () => {
 
   useEffect(() => {
     // 这里的if可以改为lodash的方法
-    if (!loading && gqlData && gqlData?.allListings[0]) {
-      const images = gqlData?.allListings[0]?.images.map((image) => image.url);
+    if (!loading && gqlData && gqlData?.listingById) {
+      const images = gqlData?.listingById?.images.map((image) => image.url);
       setS3Images(images);
       setOldS3Images(images);
-      setTitle(gqlData?.allListings[0]?.title);
-      setOldTitle(gqlData?.allListings[0]?.title);
-      setDescription(gqlData?.allListings[0]?.description);
-      setOldDescription(gqlData?.allListings[0]?.description);
-      setPrice(gqlData?.allListings[0]?.price);
-      setOldPrice(gqlData?.allListings[0]?.price);
-      setUnit(gqlData?.allListings[0]?.address.unit);
-      setOldUnit(gqlData?.allListings[0]?.address.unit);
-      setStreetAddress(gqlData?.allListings[0]?.address.street);
-      setOldStreetAddress(gqlData?.allListings[0]?.address.street);
-      setCitySuburb(gqlData?.allListings[0]?.address.city);
-      setOldCitySuburb(gqlData?.allListings[0]?.address.city);
-      setStateProvince(gqlData?.allListings[0]?.address.state);
-      setOldStateProvince(gqlData?.allListings[0]?.address.state);
-      setPostCode(gqlData?.allListings[0]?.address.postCode);
-      setOldPostCode(gqlData?.allListings[0]?.address.postCode);
-      setSelectedCountry(gqlData?.allListings[0]?.address.country);
-      setGuestNum(gqlData?.allListings[0]?.roomDetails.Guests);
-      setOldGuestNum(gqlData?.allListings[0]?.roomDetails.Guests);
-      setBedroomNum(gqlData?.allListings[0]?.roomDetails.Bedrooms);
-      setOldBedroomNum(gqlData?.allListings[0]?.roomDetails.Bedrooms);
-      setBedNum(gqlData?.allListings[0]?.roomDetails.Bed);
-      setOldBedNum(gqlData?.allListings[0]?.roomDetails.Bed);
-      setBathroomNum(gqlData?.allListings[0]?.roomDetails.Bathrooms);
-      setOldBathroomNum(gqlData?.allListings[0]?.roomDetails.Bathrooms);
+      setTitle(gqlData?.listingById?.title);
+      setOldTitle(gqlData?.listingById?.title);
+      setDescription(gqlData?.listingById?.description);
+      setOldDescription(gqlData?.listingById?.description);
+      setPrice(gqlData?.listingById?.price);
+      setOldPrice(gqlData?.listingById?.price);
+      setUnit(gqlData?.listingById?.address.unit);
+      setOldUnit(gqlData?.listingById?.address.unit);
+      setStreetAddress(gqlData?.listingById?.address.street);
+      setOldStreetAddress(gqlData?.listingById?.address.street);
+      setCitySuburb(gqlData?.listingById?.address.city);
+      setOldCitySuburb(gqlData?.listingById?.address.city);
+      setStateProvince(gqlData?.listingById?.address.state);
+      setOldStateProvince(gqlData?.listingById?.address.state);
+      setPostCode(gqlData?.listingById?.address.postCode);
+      setOldPostCode(gqlData?.listingById?.address.postCode);
+      setSelectedCountry(gqlData?.listingById?.address.country);
+      setGuestNum(gqlData?.listingById?.roomDetails.Guests);
+      setOldGuestNum(gqlData?.listingById?.roomDetails.Guests);
+      setBedroomNum(gqlData?.listingById?.roomDetails.Bedrooms);
+      setOldBedroomNum(gqlData?.listingById?.roomDetails.Bedrooms);
+      setBedNum(gqlData?.listingById?.roomDetails.Bed);
+      setOldBedNum(gqlData?.listingById?.roomDetails.Bed);
+      setBathroomNum(gqlData?.listingById?.roomDetails.Bathrooms);
+      setOldBathroomNum(gqlData?.listingById?.roomDetails.Bathrooms);
       setPlaceType(
-        getKeyByValue(placeTypeDict, gqlData?.allListings[0]?.placeType),
+        getKeyByValue(placeTypeDict, gqlData?.listingById?.placeType),
       );
-      setRentType(
-        getKeyByValue(rentTypeDict, gqlData?.allListings[0]?.rentType),
-      );
+      setRentType(getKeyByValue(rentTypeDict, gqlData?.listingById?.rentType));
       setDeviceType(
-        gqlData?.allListings[0]?.deviceType.map((item) =>
+        gqlData?.listingById?.deviceType.map((item) =>
           getKeyByValue(deviceTypeDict, item),
         ),
       );
       setStandoutType(
-        gqlData?.allListings[0]?.standoutType.map((item) =>
+        gqlData?.listingById?.standoutType.map((item) =>
           getKeyByValue(standoutTypeDict, item),
         ),
       );
       setSafetyDeviceType(
-        gqlData?.allListings[0]?.safetyDeviceType.map((item) =>
+        gqlData?.listingById?.safetyDeviceType.map((item) =>
           getKeyByValue(safetyDeviceTypeDict, item),
         ),
       );
       setGuestType(
-        gqlData?.allListings[0]?.guestType.map((item) =>
+        gqlData?.listingById?.guestType.map((item) =>
           getKeyByValue(guestTypeDict, item),
         ),
       );
-      setSelectedDates(gqlData?.allListings[0]?.availability);
-      setOldSelectedDates(gqlData?.allListings[0]?.availability);
+      setSelectedDates(gqlData?.listingById?.availability);
+      setOldSelectedDates(gqlData?.listingById?.availability);
     }
   }, [loading, gqlData]);
 

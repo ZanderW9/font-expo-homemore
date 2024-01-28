@@ -1,30 +1,58 @@
-import React, { useContext, useState } from "react";
+import React, { ReactNode, useContext, useReducer } from "react";
 
-const DetailContext = React.createContext({});
+type ReviewState = {
+  reviewId?: string | null;
+  receiverId?: string | null;
+  receiverName?: string;
+  reviewOwner?: string;
+  reviewText?: string;
+  longPressReviewId?: string;
+};
 
-const DetailProvider = ({ children }) => {
-  const [reviewId, setReviewId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
-  const [receiverName, setReceiverName] = useState("");
-  const [reviewOwner, setReviewOwner] = useState("");
-  const [reviewText, setReviewText] = useState("");
-  const [longPressReviewId, setLongPressReviewId] = useState("");
+interface DetailContextType {
+  reviewData: ReviewState;
+  dispatchReviewData: (newState: ReviewState) => void;
+  resetReviewData: () => void;
+}
+
+const initialState: ReviewState = {
+  reviewId: null,
+  receiverId: null,
+  receiverName: "",
+  reviewOwner: "",
+  reviewText: "",
+  longPressReviewId: "",
+};
+
+const DetailContext = React.createContext<DetailContextType>({
+  reviewData: initialState,
+  dispatchReviewData: () => {},
+  resetReviewData: () => {},
+});
+
+const DetailProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [reviewData, dispatchReviewData] = useReducer(
+    (state: ReviewState, newState: ReviewState) => ({ ...state, ...newState }),
+    initialState,
+  );
+
+  const resetReviewData = () => {
+    dispatchReviewData({
+      reviewId: null,
+      receiverId: null,
+      receiverName: "",
+      reviewOwner: "",
+      reviewText: "",
+      longPressReviewId: "",
+    });
+  };
 
   return (
     <DetailContext.Provider
       value={{
-        reviewId,
-        setReviewId,
-        receiverId,
-        setReceiverId,
-        receiverName,
-        setReceiverName,
-        reviewOwner,
-        setReviewOwner,
-        reviewText,
-        setReviewText,
-        longPressReviewId,
-        setLongPressReviewId,
+        reviewData,
+        dispatchReviewData,
+        resetReviewData,
       }}
     >
       {children}

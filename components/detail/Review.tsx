@@ -5,7 +5,7 @@ import { Avatar } from "@rneui/themed";
 import { router } from "expo-router";
 import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
 
-function formatTime(timestamp) {
+const formatTime = (timestamp) => {
   const now = new Date();
   const createdAt = new Date(timestamp);
   const timeDiff = now.getTime() - createdAt.getTime();
@@ -19,18 +19,9 @@ function formatTime(timestamp) {
   } else {
     return `${Math.floor(timeDiff / 86400000)} days ago`;
   }
-}
+};
 
-function renderReviw(
-  data: any,
-  review: any,
-  setReviewId: any,
-  setReceiverId: any,
-  setReceiverName: any,
-  setReviewOwner: any,
-  setReviewText: any,
-  setLongPressReviewId: any,
-) {
+const renderReviw = (props: any, review: any, dispatchReviewData: Function) => {
   const renderSubReview = (subReview: any) => {
     if (!subReview || !subReview.length) {
       return;
@@ -71,19 +62,23 @@ function renderReviw(
             <TouchableOpacity
               style={styles.reviewContent}
               onPress={() => {
-                data.openBottomSheet();
-                setReviewId(review.id);
-                setReceiverId(subReview.sender.id);
-                setReceiverName(subReview.sender.userName);
+                props.openBottomSheet();
+                dispatchReviewData({
+                  receiverName: subReview.sender.userName,
+                  receiverId: subReview.sender.id,
+                  reviewId: subReview.id,
+                });
               }}
               onLongPress={() => {
-                data.openEditBottomSheet();
-                setReviewOwner(subReview.sender.id);
-                setReviewId(review.id);
-                setReceiverId(subReview.sender.id);
-                setReceiverName(subReview.sender.userName);
-                setReviewText(subReview.text);
-                setLongPressReviewId(subReview.id);
+                props.openEditBottomSheet();
+                dispatchReviewData({
+                  receiverName: subReview.sender.userName,
+                  receiverId: subReview.sender.id,
+                  reviewId: subReview.id,
+                  reviewOwner: subReview.sender.id,
+                  reviewText: subReview.text,
+                  longPressReviewId: subReview.id,
+                });
               }}
             >
               <Text style={styles.senderName}>
@@ -97,10 +92,12 @@ function renderReviw(
                 </Text>
                 <Pressable
                   onPress={() => {
-                    data.openBottomSheet();
-                    setReviewId(review.id);
-                    setReceiverId(subReview.sender.id);
-                    setReceiverName(subReview.sender.userName);
+                    props.openBottomSheet();
+                    dispatchReviewData({
+                      receiverName: subReview.sender.userName,
+                      receiverId: subReview.sender.id,
+                      reviewId: subReview.id,
+                    });
                   }}
                 >
                   <Text style={styles.reviewEnd}>Reply</Text>
@@ -142,19 +139,23 @@ function renderReviw(
       <View style={styles.reviewContent}>
         <TouchableOpacity
           onPress={() => {
-            data.openBottomSheet();
-            setReviewId(review.id);
-            setReceiverId(review.sender.id);
-            setReceiverName(review.sender.userName);
+            props.openBottomSheet();
+            dispatchReviewData({
+              receiverName: review.sender.userName,
+              receiverId: review.sender.id,
+              reviewId: review.id,
+            });
           }}
           onLongPress={() => {
-            data.openEditBottomSheet();
-            setReviewOwner(review.sender.id);
-            setReviewId(review.id);
-            setReceiverId(review.sender.id);
-            setReceiverName(review.sender.userName);
-            setReviewText(review.text);
-            setLongPressReviewId(review.id);
+            props.openEditBottomSheet();
+            dispatchReviewData({
+              receiverName: review.sender.userName,
+              receiverId: review.sender.id,
+              reviewId: review.id,
+              reviewOwner: review.sender.id,
+              reviewText: review.text,
+              longPressReviewId: review.id,
+            });
           }}
         >
           <Text style={styles.senderName}>{review.sender.userName}</Text>
@@ -164,10 +165,12 @@ function renderReviw(
             {/* 一个回复按钮，点击回复消息 */}
             <Pressable
               onPress={() => {
-                data.openBottomSheet();
-                setReviewId(review.id);
-                setReceiverId(review.sender.id);
-                setReceiverName(review.sender.userName);
+                props.openBottomSheet();
+                dispatchReviewData({
+                  receiverName: review.sender.userName,
+                  receiverId: review.sender.id,
+                  reviewId: review.id,
+                });
               }}
             >
               <Text style={styles.reviewEnd}>Reply</Text>
@@ -183,25 +186,18 @@ function renderReviw(
       </View>
     </View>
   );
-}
+};
 
-function Review(data: any) {
+function Review(props: { openBottomSheet: Function; reviews: any[] }) {
   const openModalHandler = () => {
-    data.openBottomSheet();
+    props.openBottomSheet();
   };
 
-  const {
-    setReviewId,
-    setReceiverId,
-    setReceiverName,
-    setReviewOwner,
-    setReviewText,
-    setLongPressReviewId,
-  } = useDetailContext();
+  const { dispatchReviewData } = useDetailContext();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{data.reviews.length} Reviews</Text>
+      <Text style={styles.title}>{props.reviews.length} Reviews</Text>
       <Pressable style={styles.inputWrapper} onPress={openModalHandler}>
         <Ionicons
           name="document-text-outline"
@@ -218,17 +214,8 @@ function Review(data: any) {
           Leave a review ···
         </Text>
       </Pressable>
-      {data.reviews.map((review: any) =>
-        renderReviw(
-          data,
-          review,
-          setReviewId,
-          setReceiverId,
-          setReceiverName,
-          setReviewOwner,
-          setReviewText,
-          setLongPressReviewId,
-        ),
+      {props.reviews.map((review: any) =>
+        renderReviw(props, review, dispatchReviewData),
       )}
     </View>
   );

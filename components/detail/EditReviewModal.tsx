@@ -50,27 +50,28 @@ const listingDetailQuery = gql`
   }
 `;
 
-function EditReviewModal(data: any) {
+function EditReviewModal(props: any) {
   const [showDialog, setShowDialog] = useState(false);
 
-  const { reviewOwner, reviewText, longPressReviewId } = useDetailContext();
+  const { reviewData, resetReviewData } = useDetailContext();
   const [deleteReviewFunction] = useMutation(deleteReviewMutation);
 
   const deleteHandler = async () => {
     await deleteReviewFunction({
       variables: {
-        deleteReviewId: longPressReviewId,
+        deleteReviewId: reviewData.longPressReviewId,
       },
       refetchQueries: [
         {
           query: listingDetailQuery,
           variables: {
-            ids: [data.listingId],
+            ids: [props.listingId],
           },
         },
       ],
     });
     setShowDialog(false);
+    resetReviewData();
   };
 
   const snapPoints = useMemo(() => [200], []);
@@ -83,26 +84,27 @@ function EditReviewModal(data: any) {
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         pressBehavior="close"
+        onPress={resetReviewData}
       />
     ),
     [],
   );
 
   const copyHandler = async () => {
-    await Clipboard.setStringAsync(reviewText);
-    data.bottomSheetModalRef.current?.close();
+    await Clipboard.setStringAsync(reviewData.reviewText || "");
+    props.bottomSheetModalRef.current?.close();
   };
 
-  const { data: meData } = useQuery(listingDetailQuery, {
+  const { data } = useQuery(listingDetailQuery, {
     variables: {
-      ids: [data.listingId],
+      ids: [props.listingId],
     },
   });
 
   return (
     <View style={styles.container}>
       <BottomSheetModal
-        ref={data.bottomSheetModalRef}
+        ref={props.bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
@@ -111,7 +113,7 @@ function EditReviewModal(data: any) {
         enablePanDownToClose
       >
         <View>
-          {meData?.me?.id === reviewOwner ? (
+          {data?.me?.id === reviewData.reviewOwner ? (
             <View>
               <ListItem onPress={copyHandler}>
                 <ListItem.Content>
@@ -136,7 +138,7 @@ function EditReviewModal(data: any) {
 
               <ListItem
                 onPress={() => {
-                  data.bottomSheetModalRef.current?.close();
+                  props.bottomSheetModalRef.current?.close();
                   setShowDialog(true);
                 }}
               >
@@ -214,7 +216,7 @@ function EditReviewModal(data: any) {
 
           <ListItem
             onPress={() => {
-              data.bottomSheetModalRef.current?.close();
+              props.bottomSheetModalRef.current?.close();
             }}
           >
             <ListItem.Content

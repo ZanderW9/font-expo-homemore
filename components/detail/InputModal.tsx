@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { View } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
+import { LISTING_REVIEW_QUERY } from "@config/gql/listing";
 import {
   BottomSheetModal,
   BottomSheetTextInput,
@@ -9,7 +10,6 @@ import {
 import { Button } from "@rneui/themed";
 import React, { useState, useMemo, useCallback } from "react";
 import { StyleSheet } from "react-native";
-
 const createReviewMutation = gql`
   mutation Mutation(
     $listingId: String!
@@ -28,31 +28,14 @@ const createReviewMutation = gql`
   }
 `;
 
-const listingDetailQuery = gql`
-  query Query($ids: [String]) {
-    allListings(ids: $ids) {
-      reviews {
-        id
-        text
-        createdAt
-        sender {
-          id
-          userName
-        }
-      }
-    }
-  }
-`;
-
-function ReviewInputModal(data: any) {
-  const { reviewId, setReviewId, receiverId, receiverName, setReceiverName } =
-    useDetailContext();
+function ReviewInputModal(props: any) {
+  const { reviewData, dispatchReviewData } = useDetailContext();
   const snapPoints = useMemo(() => [80], []);
   const [reviewText, setReviewText] = useState("");
   const [createReviewFunction] = useMutation(createReviewMutation, {
     errorPolicy: "all",
   });
-  const listingId = data.listingId;
+  const listingId = props.listingId;
   const renderBackdrop = useCallback(
     (propsBackdrop) => (
       <BottomSheetBackdrop
@@ -62,7 +45,9 @@ function ReviewInputModal(data: any) {
         disappearsOnIndex={-1}
         pressBehavior="close"
         onPress={() => {
-          setReceiverName("");
+          dispatchReviewData({
+            receiverName: "",
+          });
         }}
       />
     ),
@@ -72,7 +57,7 @@ function ReviewInputModal(data: any) {
   return (
     <View style={styles.container}>
       <BottomSheetModal
-        ref={data.bottomSheetModalRef}
+        ref={props.bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
@@ -82,10 +67,12 @@ function ReviewInputModal(data: any) {
       >
         <View style={styles.contentContainer}>
           <BottomSheetTextInput
-            ref={data.inputRef}
+            ref={props.inputRef}
             style={styles.input}
             placeholder={
-              receiverName ? `Reply to @${receiverName}` : "Leave a review"
+              reviewData.receiverName
+                ? `Reply to @${reviewData.receiverName}`
+                : "Leave a review"
             }
             onChangeText={(text) => setReviewText(text)}
           />
@@ -104,21 +91,23 @@ function ReviewInputModal(data: any) {
               createReviewFunction({
                 variables: {
                   listingId,
-                  parentId: reviewId ? reviewId : null,
+                  parentId: reviewData.reviewId || null,
                   text: reviewText,
-                  receiverId: receiverId ? receiverId : null,
+                  receiverId: reviewData.receiverId || null,
                 },
                 refetchQueries: [
                   {
-                    query: listingDetailQuery,
-                    variables: { ids: [listingId] },
+                    query: LISTING_REVIEW_QUERY,
+                    variables: { listingId },
                   },
                 ],
               });
               setReviewText("");
-              setReviewId(null);
-              data.bottomSheetModalRef.current?.close();
-              setReceiverName("");
+              dispatchReviewData({
+                receiverName: "",
+                reviewId: null,
+              });
+              props.bottomSheetModalRef.current?.close();
             }}
           />
         </View>

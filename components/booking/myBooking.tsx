@@ -4,36 +4,10 @@ import BaseInfo from "@components/booking/baseInformation";
 import { useBookingContext } from "@components/booking/bookingProvider";
 import CheckIn from "@components/booking/checkIn";
 import PriceInfo from "@components/booking/priceInfo";
+import { BOOKING_PAGE_LISTING_QUERY } from "@config/gql/listing";
 import { Stack, useLocalSearchParams, router } from "expo-router";
 import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { showMessage } from "react-native-flash-message";
-
-const listingDetailQuery = gql`
-  query Query($ids: [String]) {
-    allListings(ids: $ids) {
-      id
-      title
-      images {
-        smallUrl
-        thumbhash
-      }
-      price
-      address
-      coordinate
-      availability
-      unavailability
-      placeType
-      rentType
-      roomDetails
-      roomDetails
-      deviceType
-      standoutType
-      owner {
-        userName
-      }
-    }
-  }
-`;
 
 const createBookingMutation = gql`
   mutation Mutation(
@@ -57,8 +31,8 @@ function MyBooking() {
   const { adultNum, childNum, infantNum, selectedDates } = useBookingContext();
 
   const { listingId } = useLocalSearchParams();
-  const { data, refetch } = useQuery(listingDetailQuery, {
-    variables: { ids: [listingId] },
+  const { data, refetch } = useQuery(BOOKING_PAGE_LISTING_QUERY, {
+    variables: { listingId },
     errorPolicy: "all",
   });
   refetch();
@@ -103,18 +77,18 @@ function MyBooking() {
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <BaseInfo
-          title={data?.allListings[0].title}
-          price={data?.allListings[0].price}
-          placeType={data?.allListings[0].placeType}
-          rentType={data?.allListings[0].rentType}
-          image={data?.allListings[0].images[0]}
+          title={data?.listingById.title}
+          price={data?.listingById.price}
+          placeType={data?.listingById.placeType}
+          rentType={data?.listingById.rentType}
+          image={data?.listingById.images[0]}
         />
         <CheckIn
-          availability={data?.allListings[0].availability}
-          unavailability={data?.allListings[0].unavailability}
-          guestCount={data?.allListings[0].roomDetails.Guests}
+          availability={data?.listingById.availability}
+          unavailability={data?.listingById.unavailability}
+          guestCount={data?.listingById.roomDetails.Guests}
         />
-        <PriceInfo price={data?.allListings[0].price} />
+        <PriceInfo price={data?.listingById.price} />
       </ScrollView>
 
       <SafeAreaView style={styles.safeArea} edges={["bottom"]}>

@@ -11,6 +11,7 @@ import { setContext } from "@apollo/client/link/context";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import CustomSplashScreen from "@components/CustomSplashScreen";
+import SearchProvider from "@components/search/SearchProvider";
 import {
   CHAT_QUERY,
   CHAT_SUBSCRIPTION,
@@ -111,7 +112,16 @@ const createApolloClient = (token: string, httpLinkUrl: string) => {
         Query: {
           fields: {
             allListings: {
-              keyArgs: true,
+              merge(existing, incoming, { args, readField }) {
+                const merged = existing ? existing.slice(0) : [];
+                const offset = offsetFromCursor(merged, incoming, readField);
+                if (offset >= incoming.length) return merged;
+                const newmerged = [...merged, ...incoming.slice(offset)];
+                return newmerged;
+              },
+            },
+            searchListings: {
+              keyArgs: false,
               merge(existing, incoming, { args, readField }) {
                 const merged = existing ? existing.slice(0) : [];
                 const offset = offsetFromCursor(merged, incoming, readField);
@@ -290,49 +300,63 @@ function RootLayoutNav() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <ChatProvider>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-              <Stack.Screen
-                name="search"
-                options={{
-                  presentation: "modal",
-                  headerShown: false,
-                }}
+            <SearchProvider>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: "modal" }}
+                />
+                <Stack.Screen
+                  name="search"
+                  options={{
+                    animation: "fade",
+                    animationDuration: 100,
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="search-result"
+                  options={{
+                    animation: "fade",
+                    animationDuration: 100,
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="createwishlist"
+                  options={{
+                    presentation: "transparentModal",
+                    animation: "slide_from_bottom",
+                    headerShown: false,
+                    animationDuration: 100,
+                  }}
+                />
+                <Stack.Screen
+                  name="map"
+                  options={{
+                    presentation: "transparentModal",
+                    animation: "slide_from_bottom",
+                    headerShown: false,
+                    animationDuration: 100,
+                  }}
+                />
+                <Stack.Screen
+                  name="detailMap"
+                  options={{
+                    presentation: "transparentModal",
+                    animation: "slide_from_bottom",
+                    headerShown: false,
+                    animationDuration: 100,
+                  }}
+                />
+              </Stack>
+              <FlashMessage
+                position="top"
+                floating
+                statusBarHeight={Platform.OS === "ios" ? null : 35}
               />
-              <Stack.Screen
-                name="createwishlist"
-                options={{
-                  presentation: "transparentModal",
-                  animation: "slide_from_bottom",
-                  headerShown: false,
-                  animationDuration: 100,
-                }}
-              />
-              <Stack.Screen
-                name="map"
-                options={{
-                  presentation: "transparentModal",
-                  animation: "slide_from_bottom",
-                  headerShown: false,
-                  animationDuration: 100,
-                }}
-              />
-              <Stack.Screen
-                name="detailMap"
-                options={{
-                  presentation: "transparentModal",
-                  animation: "slide_from_bottom",
-                  headerShown: false,
-                  animationDuration: 100,
-                }}
-              />
-            </Stack>
-            <FlashMessage
-              position="top"
-              floating
-              statusBarHeight={Platform.OS === "ios" ? null : 35}
-            />
+            </SearchProvider>
           </ChatProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>

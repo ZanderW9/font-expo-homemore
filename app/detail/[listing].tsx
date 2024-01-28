@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View, Text, SafeAreaView } from "@components/Themed";
 import BasicInfo from "@components/detail/BasicInfo";
@@ -13,6 +13,7 @@ import OverView from "@components/detail/OverView";
 import Review from "@components/detail/Review";
 import ShareModal from "@components/detail/ShareModal";
 import AddModal from "@components/wishlist/AddModal";
+import { DETAIL_PAGE_LISTING_QUERY } from "@config/gql/listing";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Avatar } from "@rneui/themed";
@@ -25,70 +26,8 @@ import {
   Pressable,
 } from "react-native";
 
-const listingDetailQuery = gql`
-  query Query($ids: [String]) {
-    allListings(ids: $ids) {
-      id
-      title
-      description
-      images {
-        url
-        smallUrl
-        thumbhash
-        width
-        height
-      }
-      price
-      address
-      coordinate
-      favorited
-      availability
-      unavailability
-      createdAt
-      publishAt
-      placeType
-      rentType
-      roomDetails
-      deviceType
-      standoutType
-      safetyDeviceType
-      guestType
-      owner {
-        userName
-        avatar
-        id
-      }
-      reviews {
-        id
-        text
-        createdAt
-        sender {
-          id
-          userName
-          avatar
-        }
-        subReviews {
-          text
-          id
-          createdAt
-          sender {
-            id
-            userName
-            avatar
-          }
-          receiver {
-            id
-            userName
-            avatar
-          }
-        }
-      }
-    }
-  }
-`;
-
 const CustomHeaderTitle = (data: any) => {
-  const owner = data ? data?.allListings[0]?.owner : null;
+  const owner = data ? data?.listingById?.owner : null;
 
   return (
     <Pressable
@@ -125,8 +64,8 @@ const CustomHeaderTitle = (data: any) => {
 function ListingDetailScreen() {
   const { isLoggedIn } = useContext(GlobalContext);
   const { listing } = useLocalSearchParams();
-  const { data } = useQuery(listingDetailQuery, {
-    variables: { ids: [listing] },
+  const { data } = useQuery(DETAIL_PAGE_LISTING_QUERY, {
+    variables: { listingId: listing },
     errorPolicy: "all",
   });
 
@@ -188,36 +127,36 @@ function ListingDetailScreen() {
 
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Carousel */}
-          <MyCarousel images={data ? data.allListings[0]?.images : []} />
+          <MyCarousel images={data ? data.listingById?.images : []} />
           {/* Part1 */}
-          <BasicInfo data={data ? data.allListings[0] : {}} />
+          <BasicInfo data={data ? data.listingById : {}} />
           {/* Part2 */}
           <OverView
-            bathRooms={data ? data.allListings[0]?.roomDetails.Bathrooms : 0}
-            bedRooms={data ? data.allListings[0]?.roomDetails.Bedrooms : 0}
-            bed={data ? data.allListings[0]?.roomDetails.Bed : 0}
-            guests={data ? data.allListings[0]?.roomDetails.Guests : 0}
-            placeType={data ? data.allListings[0]?.placeType : ""}
-            rentType={data ? data.allListings[0]?.rentType : ""}
-            price={data ? data.allListings[0]?.price : 0}
-            guestType={data ? data.allListings[0]?.guestType : []}
+            bathRooms={data ? data.listingById?.roomDetails.Bathrooms : 0}
+            bedRooms={data ? data.listingById?.roomDetails.Bedrooms : 0}
+            bed={data ? data.listingById?.roomDetails.Bed : 0}
+            guests={data ? data.listingById?.roomDetails.Guests : 0}
+            placeType={data ? data.listingById?.placeType : ""}
+            rentType={data ? data.listingById?.rentType : ""}
+            price={data ? data.listingById?.price : 0}
+            guestType={data ? data.listingById?.guestType : []}
           />
           {/* Part3 */}
           <Location
-            lat={data ? data.allListings[0]?.coordinate.lat : 0}
-            lng={data ? data.allListings[0]?.coordinate.lng : 0}
-            address={data ? data.allListings[0]?.address : ""}
+            lat={data ? data.listingById?.coordinate.lat : 0}
+            lng={data ? data.listingById?.coordinate.lng : 0}
+            address={data ? data.listingById?.address : ""}
           />
           {/* Part4 */}
           <Facility
-            deviceType={data ? data.allListings[0]?.deviceType : []}
-            standoutType={data ? data.allListings[0]?.standoutType : []}
-            safetyDeviceType={data ? data.allListings[0]?.safetyDeviceType : []}
+            deviceType={data ? data.listingById?.deviceType : []}
+            standoutType={data ? data.listingById?.standoutType : []}
+            safetyDeviceType={data ? data.listingById?.safetyDeviceType : []}
           />
 
           {/* Part5 */}
           <Review
-            reviews={data ? data.allListings[0]?.reviews : []}
+            reviews={data ? data.listingById?.reviews : []}
             openBottomSheet={openBottomSheet}
             openEditBottomSheet={openEditBottomSheet}
           />
@@ -226,7 +165,7 @@ function ListingDetailScreen() {
         </ScrollView>
         {/* BottomSheet */}
         <ReviewInputModal
-          listingId={data ? data.allListings[0]?.id : null}
+          listingId={data ? data.listingById?.id : null}
           // receiverId={data ?
           bottomSheetModalRef={bottomSheetModalRef}
           inputRef={inputRef}
@@ -234,18 +173,18 @@ function ListingDetailScreen() {
         {/* EditBottomSheet */}
         <EditReviewModal
           bottomSheetModalRef={bottomSheetEditModalRef}
-          listingId={data ? data.allListings[0]?.id : null}
+          listingId={data ? data.listingById?.id : null}
         />
         {/* ShareBottomSheet */}
         <ShareModal
           bottomSheetModalRef={shareBottomSheetModalRef}
-          listingId={data ? data.allListings[0]?.id : 0}
-          userId={data ? data.allListings[0]?.owner.id : 0}
+          listingId={data ? data.listingById?.id : 0}
+          userId={data ? data.listingById?.owner.id : 0}
         />
         {/* AddBottomSheet */}
         <AddModal
           bottomSheetModalRef={bottomSheetAddModalRef}
-          listingId={data ? data.allListings[0]?.id : 0}
+          listingId={data ? data.listingById?.id : 0}
         />
         {/* Bottom */}
         <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
@@ -316,7 +255,7 @@ function ListingDetailScreen() {
                 paddingHorizontal: 5,
               }}
             >
-              {data && data?.allListings[0]?.favorited ? (
+              {data && data?.listingById?.favorited ? (
                 <Ionicons
                   name="heart"
                   size={32}
@@ -350,7 +289,7 @@ function ListingDetailScreen() {
                 onPress={() => {
                   router.navigate({
                     pathname: "/booking",
-                    params: { listingId: data.allListings[0].id },
+                    params: { listingId: data.listingById.id },
                   });
                 }}
               >

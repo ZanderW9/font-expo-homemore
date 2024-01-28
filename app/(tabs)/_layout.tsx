@@ -1,10 +1,9 @@
 import { GlobalContext } from "@app/_layout";
-import { View, Text } from "@components/Themed";
 import Colors from "@constants/Colors";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
-import { Tabs, router } from "expo-router";
+import { Tabs } from "expo-router";
 import React, { useContext } from "react";
-import { useColorScheme, Pressable } from "react-native";
+import { useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function TabBarIcon(props: {
@@ -30,46 +29,7 @@ export default function () {
           headerShadowVisible: false,
           title: "Explore",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerTitleAlign: "center",
-          headerTitle: () => (
-            <View
-              style={{
-                alignItems: "center",
-                flexDirection: "row",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Pressable
-                onPress={() => router.navigate("/search")}
-                style={{
-                  width: "92%",
-                  minWidth: 260,
-                  maxWidth: 400,
-                  height: 35,
-                  borderRadius: 20,
-                  borderWidth: 1,
-                  borderColor: Colors[colorScheme ?? "light"].tint,
-                  alignItems: "center",
-                  flexDirection: "row",
-                  paddingHorizontal: 10,
-                }}
-              >
-                <Ionicons
-                  name="search"
-                  size={24}
-                  color="gray"
-                  style={{ marginRight: 10 }}
-                />
-                <Text>Explore here~</Text>
-              </Pressable>
-              <Ionicons
-                name="options-outline"
-                size={24}
-                color="gray"
-                style={{ marginLeft: 10 }}
-              />
-            </View>
-          ),
+          headerShown: false,
         }}
       />
 
