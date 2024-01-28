@@ -4,6 +4,7 @@ import { View, Text, SafeAreaView } from "@components/Themed";
 import BasicInfo from "@components/detail/BasicInfo";
 import DetailEnd from "@components/detail/DetailEnd";
 import DetailProvider from "@components/detail/DetailProvider";
+import EditReviewModal from "@components/detail/EditReviewModal";
 import Facility from "@components/detail/Facility";
 import ReviewInputModal from "@components/detail/InputModal";
 import Location from "@components/detail/Location";
@@ -132,11 +133,16 @@ function ListingDetailScreen() {
   const inputRef = useRef(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetAddModalRef = useRef<BottomSheetModal>(null);
+  const bottomSheetEditModalRef = useRef<BottomSheetModal>(null);
   const openBottomSheet = useCallback(() => {
     bottomSheetModalRef.current?.present();
     setTimeout(() => {
       inputRef.current?.focus();
     }, 100);
+  }, []);
+
+  const openEditBottomSheet = useCallback(() => {
+    bottomSheetEditModalRef.current?.present();
   }, []);
 
   const shareBottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -213,6 +219,7 @@ function ListingDetailScreen() {
           <Review
             reviews={data ? data.allListings[0]?.reviews : []}
             openBottomSheet={openBottomSheet}
+            openEditBottomSheet={openEditBottomSheet}
           />
           {/* End */}
           <DetailEnd />
@@ -223,6 +230,11 @@ function ListingDetailScreen() {
           // receiverId={data ?
           bottomSheetModalRef={bottomSheetModalRef}
           inputRef={inputRef}
+        />
+        {/* EditBottomSheet */}
+        <EditReviewModal
+          bottomSheetModalRef={bottomSheetEditModalRef}
+          listingId={data ? data.allListings[0]?.id : null}
         />
         {/* ShareBottomSheet */}
         <ShareModal

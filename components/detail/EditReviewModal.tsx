@@ -1,47 +1,78 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { View, Text } from "@components/Themed";
-import UpdateModal from "@components/wishlist/UpdateModal";
+import { useDetailContext } from "@components/detail/DetailProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { ListItem, Dialog } from "@rneui/themed";
-import React, { useMemo, useCallback, useRef, useState } from "react";
+import * as Clipboard from "expo-clipboard";
+import React, { useMemo, useCallback, useState } from "react";
 import { StyleSheet } from "react-native";
 
-const favoriteByUserQuery = gql`
-  query MyFavorites {
-    myFavorites {
-      id
-      name
-      private
-      owner {
-        id
-      }
-    }
+const deleteReviewMutation = gql`
+  mutation Mutation($deleteReviewId: String!) {
+    deleteReview(id: $deleteReviewId)
   }
 `;
 
-const meQuery = gql`
-  query Me {
+const listingDetailQuery = gql`
+  query Query($ids: [String]) {
+    allListings(ids: $ids) {
+      id
+      reviews {
+        id
+        text
+        createdAt
+        sender {
+          id
+          userName
+          avatar
+        }
+        subReviews {
+          text
+          id
+          createdAt
+          sender {
+            id
+            userName
+            avatar
+          }
+          receiver {
+            id
+            userName
+            avatar
+          }
+        }
+      }
+    }
     me {
       id
     }
   }
 `;
 
-const copyFavoriteMutation = gql`
-  mutation Mutation($favoriteId: String!) {
-    copyWishlist(favoriteId: $favoriteId)
-  }
-`;
-
-const deleteFavoriteMutation = gql`
-  mutation Mutation($favoriteId: String!) {
-    deleteFavorite(favoriteId: $favoriteId)
-  }
-`;
-
-function EditModal(data: any) {
+function EditReviewModal(data: any) {
   const [showDialog, setShowDialog] = useState(false);
+
+  const { reviewOwner, reviewText, longPressReviewId } = useDetailContext();
+  const [deleteReviewFunction] = useMutation(deleteReviewMutation);
+
+  const deleteHandler = async () => {
+    await deleteReviewFunction({
+      variables: {
+        deleteReviewId: longPressReviewId,
+      },
+      refetchQueries: [
+        {
+          query: listingDetailQuery,
+          variables: {
+            ids: [data.listingId],
+          },
+        },
+      ],
+    });
+    setShowDialog(false);
+  };
+
   const snapPoints = useMemo(() => [200], []);
 
   const renderBackdrop = useCallback(
@@ -57,28 +88,16 @@ function EditModal(data: any) {
     [],
   );
 
-  const { data: meData } = useQuery(meQuery);
-  const [deleteFavoriteFunction] = useMutation(deleteFavoriteMutation, {
-    errorPolicy: "all",
-  });
-  const deleteFavoriteHandler = (favoriteId: string) => () => {
-    deleteFavoriteFunction({
-      variables: { favoriteId },
-      refetchQueries: [
-        {
-          query: favoriteByUserQuery,
-        },
-      ],
-    });
-    setShowDialog(false);
+  const copyHandler = async () => {
+    await Clipboard.setStringAsync(reviewText);
+    data.bottomSheetModalRef.current?.close();
   };
 
-  const [copyFavoriteFunction] = useMutation(copyFavoriteMutation, {
-    errorPolicy: "all",
+  const { data: meData } = useQuery(listingDetailQuery, {
+    variables: {
+      ids: [data.listingId],
+    },
   });
-
-  const bottomSheetUpdateModalRef = useRef<BottomSheetModal>(null);
-  const inputRef = useRef(null);
 
   return (
     <View style={styles.container}>
@@ -92,17 +111,9 @@ function EditModal(data: any) {
         enablePanDownToClose
       >
         <View>
-          {meData?.me?.id === data.userId ? (
+          {meData?.me?.id === reviewOwner ? (
             <View>
-              <ListItem
-                onPress={() => {
-                  data.bottomSheetModalRef.current?.close();
-                  bottomSheetUpdateModalRef.current?.present();
-                  setTimeout(() => {
-                    inputRef.current?.focus();
-                  }, 100);
-                }}
-              >
+              <ListItem onPress={copyHandler}>
                 <ListItem.Content>
                   <View
                     style={{
@@ -113,12 +124,12 @@ function EditModal(data: any) {
                     }}
                   >
                     <Ionicons
-                      name="create-outline"
+                      name="copy-outline"
                       size={24}
                       color="black"
                       style={{ marginRight: 15 }}
                     />
-                    <ListItem.Title>Edit</ListItem.Title>
+                    <ListItem.Title>Copy</ListItem.Title>
                   </View>
                 </ListItem.Content>
               </ListItem>
@@ -144,26 +155,14 @@ function EditModal(data: any) {
                       color="red"
                       style={{ marginRight: 15 }}
                     />
-                    <ListItem.Title>Delete the wishlist</ListItem.Title>
+                    <ListItem.Title>Delete</ListItem.Title>
                   </View>
                 </ListItem.Content>
               </ListItem>
             </View>
           ) : (
             <View>
-              <ListItem
-                onPress={() => {
-                  copyFavoriteFunction({
-                    variables: { favoriteId: data.favoriteId },
-                    refetchQueries: [
-                      {
-                        query: favoriteByUserQuery,
-                      },
-                    ],
-                  });
-                  data.bottomSheetModalRef.current?.close();
-                }}
-              >
+              <ListItem onPress={copyHandler}>
                 <ListItem.Content>
                   <View
                     style={{
@@ -174,21 +173,17 @@ function EditModal(data: any) {
                     }}
                   >
                     <Ionicons
-                      name="heart-outline"
+                      name="copy-outline"
                       size={24}
                       color="black"
                       style={{ marginRight: 15 }}
                     />
-                    <ListItem.Title>Add to my wishlist</ListItem.Title>
+                    <ListItem.Title>Copy</ListItem.Title>
                   </View>
                 </ListItem.Content>
               </ListItem>
 
-              <ListItem
-                onPress={() => {
-                  data.bottomSheetModalRef.current?.close();
-                }}
-              >
+              <ListItem>
                 <ListItem.Content>
                   <View
                     style={{
@@ -199,9 +194,9 @@ function EditModal(data: any) {
                     }}
                   >
                     <Ionicons
-                      name="alert-circle-outline"
+                      name="warning-outline"
                       size={24}
-                      color="black"
+                      color="red"
                       style={{ marginRight: 15 }}
                     />
                     <ListItem.Title>Report</ListItem.Title>
@@ -236,20 +231,12 @@ function EditModal(data: any) {
         </View>
       </BottomSheetModal>
 
-      {meData?.me?.id === data.userId && (
-        <UpdateModal
-          bottomSheetModalRef={bottomSheetUpdateModalRef}
-          inputRef={inputRef}
-          favoriteId={data.favoriteId}
-        />
-      )}
-
       <Dialog
         isVisible={showDialog}
         onBackdropPress={() => setShowDialog(false)}
         overlayStyle={{ borderRadius: 10 }}
       >
-        <Text>Are you sure you want to delete the wishlist?</Text>
+        <Text>Are you sure you want to delete this review?</Text>
         <View
           style={{
             display: "flex",
@@ -262,7 +249,7 @@ function EditModal(data: any) {
           <Dialog.Button
             title="Delete"
             titleStyle={{ color: "red" }}
-            onPress={deleteFavoriteHandler(data.favoriteId)}
+            onPress={deleteHandler}
           />
           <Dialog.Button
             title="Cancel"
@@ -286,4 +273,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditModal;
+export default EditReviewModal;

@@ -27,6 +27,9 @@ function renderReviw(
   setReviewId: any,
   setReceiverId: any,
   setReceiverName: any,
+  setReviewOwner: any,
+  setReviewText: any,
+  setLongPressReviewId: any,
 ) {
   const renderSubReview = (subReview: any) => {
     if (!subReview || !subReview.length) {
@@ -73,6 +76,15 @@ function renderReviw(
                 setReceiverId(subReview.sender.id);
                 setReceiverName(subReview.sender.userName);
               }}
+              onLongPress={() => {
+                data.openEditBottomSheet();
+                setReviewOwner(subReview.sender.id);
+                setReviewId(review.id);
+                setReceiverId(subReview.sender.id);
+                setReceiverName(subReview.sender.userName);
+                setReviewText(subReview.text);
+                setLongPressReviewId(subReview.id);
+              }}
             >
               <Text style={styles.senderName}>
                 {subReview?.sender?.userName} {">"}{" "}
@@ -83,7 +95,6 @@ function renderReviw(
                 <Text style={styles.reviewEnd}>
                   {formatTime(subReview.createdAt)}
                 </Text>
-                {/* 一个回复按钮，点击回复消息 */}
                 <Pressable
                   onPress={() => {
                     data.openBottomSheet();
@@ -128,7 +139,6 @@ function renderReviw(
           onPress={() => router.navigate(`/user/${review?.sender?.id}`)}
         />
       )}
-
       <View style={styles.reviewContent}>
         <TouchableOpacity
           onPress={() => {
@@ -136,6 +146,15 @@ function renderReviw(
             setReviewId(review.id);
             setReceiverId(review.sender.id);
             setReceiverName(review.sender.userName);
+          }}
+          onLongPress={() => {
+            data.openEditBottomSheet();
+            setReviewOwner(review.sender.id);
+            setReviewId(review.id);
+            setReceiverId(review.sender.id);
+            setReceiverName(review.sender.userName);
+            setReviewText(review.text);
+            setLongPressReviewId(review.id);
           }}
         >
           <Text style={styles.senderName}>{review.sender.userName}</Text>
@@ -170,7 +189,15 @@ function Review(data: any) {
   const openModalHandler = () => {
     data.openBottomSheet();
   };
-  const { setReviewId, setReceiverId, setReceiverName } = useDetailContext();
+
+  const {
+    setReviewId,
+    setReceiverId,
+    setReceiverName,
+    setReviewOwner,
+    setReviewText,
+    setLongPressReviewId,
+  } = useDetailContext();
 
   return (
     <View style={styles.container}>
@@ -192,7 +219,16 @@ function Review(data: any) {
         </Text>
       </Pressable>
       {data.reviews.map((review: any) =>
-        renderReviw(data, review, setReviewId, setReceiverId, setReceiverName),
+        renderReviw(
+          data,
+          review,
+          setReviewId,
+          setReceiverId,
+          setReceiverName,
+          setReviewOwner,
+          setReviewText,
+          setLongPressReviewId,
+        ),
       )}
     </View>
   );
