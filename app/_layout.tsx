@@ -36,8 +36,10 @@ import { useNavigationContainerRef, SplashScreen, Stack } from "expo-router";
 import { createClient } from "graphql-ws";
 import React, { useEffect, useState } from "react";
 import { useColorScheme, Platform, View, StyleSheet } from "react-native";
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import FlashMessage from "react-native-flash-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { EventProvider } from "react-native-outside-press";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -301,61 +303,66 @@ function RootLayoutNav() {
         <BottomSheetModalProvider>
           <ChatProvider>
             <SearchProvider>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="modal"
-                  options={{ presentation: "modal" }}
-                />
-                <Stack.Screen
-                  name="search"
-                  options={{
-                    animation: "fade",
-                    animationDuration: 100,
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="search-result"
-                  options={{
-                    animation: "fade",
-                    animationDuration: 100,
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="createwishlist"
-                  options={{
-                    presentation: "transparentModal",
-                    animation: "slide_from_bottom",
-                    headerShown: false,
-                    animationDuration: 100,
-                  }}
-                />
-                <Stack.Screen
-                  name="map"
-                  options={{
-                    presentation: "transparentModal",
-                    animation: "slide_from_bottom",
-                    headerShown: false,
-                    animationDuration: 100,
-                  }}
-                />
-                <Stack.Screen
-                  name="detailMap"
-                  options={{
-                    presentation: "transparentModal",
-                    animation: "slide_from_bottom",
-                    headerShown: false,
-                    animationDuration: 100,
-                  }}
-                />
-              </Stack>
-              <FlashMessage
-                position="top"
-                floating
-                statusBarHeight={Platform.OS === "ios" ? null : 35}
-              />
+              <EventProvider>
+                <AutocompleteDropdownContextProvider>
+                  <Stack>
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="modal"
+                      options={{ presentation: "modal" }}
+                    />
+                    <Stack.Screen
+                      name="search"
+                      options={{
+                        animation: "slide_from_right",
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="search-result"
+                      options={{
+                        animation: "slide_from_right",
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="createwishlist"
+                      options={{
+                        presentation: "transparentModal",
+                        animation: "slide_from_bottom",
+                        headerShown: false,
+                        animationDuration: 100,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="map"
+                      options={{
+                        presentation: "transparentModal",
+                        animation: "slide_from_bottom",
+                        headerShown: false,
+                        animationDuration: 100,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="detailMap"
+                      options={{
+                        presentation: "transparentModal",
+                        animation: "slide_from_bottom",
+                        headerShown: false,
+                        animationDuration: 100,
+                      }}
+                    />
+                  </Stack>
+                  <FlashMessage
+                    position="top"
+                    floating
+                    statusBarHeight={Platform.OS === "ios" ? null : 35}
+                  />
+                </AutocompleteDropdownContextProvider>
+              </EventProvider>
             </SearchProvider>
           </ChatProvider>
         </BottomSheetModalProvider>

@@ -6,14 +6,24 @@ import { Keyboard } from "react-native";
 
 type SearchState = {
   text?: string;
-  price?: { gte: string; lte: string };
+  price?: { gte: number; lte: number };
   boundary?: object;
+  // priceBy?: string;
+  propertyType?: string;
+  placeType?: string;
+  serviceType?: string;
+  amenities?: string[];
 };
 
 const initialState: SearchState = {
   text: "",
-  price: { gte: "100", lte: "1000" },
+  price: { gte: 0, lte: 1500 },
   boundary: {},
+  // priceBy: "week",
+  placeType: "room",
+  propertyType: "apartment",
+  serviceType: "rent",
+  amenities: [],
 };
 
 interface SearchContextType {
@@ -24,6 +34,7 @@ interface SearchContextType {
   loading: boolean;
   fetchMore: Function;
   refetch: () => void;
+  clearFilters: () => void;
 }
 const SearchContext = React.createContext<SearchContextType>({
   filters: initialState,
@@ -33,6 +44,7 @@ const SearchContext = React.createContext<SearchContextType>({
   loading: false,
   fetchMore: () => {},
   refetch: () => {},
+  clearFilters: () => {},
 });
 
 const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -51,6 +63,10 @@ const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
   );
 
+  const clearFilters = () => {
+    dispatchFilters(initialState);
+  };
+
   const onSearch = () => {
     refetch();
     Keyboard.dismiss();
@@ -68,6 +84,7 @@ const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         fetchMore,
         refetch,
         onSearch,
+        clearFilters,
       }}
     >
       {children}
