@@ -1,6 +1,13 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { Text, View } from "@components/Themed";
+import {
+  Text,
+  View,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+} from "@components/Themed";
 import CreateModal from "@components/wishlist/CreateModal";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { ListItem } from "@rneui/themed";
@@ -11,8 +18,7 @@ import React, {
   useRef,
   useEffect,
 } from "react";
-import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
 
 const favoriteByUserQuery = gql`
   query Query($listingId: String!) {
@@ -43,6 +49,7 @@ const addOrMoveListingToFavoriteMutation = gql`
 `;
 
 function AddModal(data: any) {
+  const colors = useThemedColors();
   const snapPoints = useMemo(() => ["50%"], []);
 
   const listingId = data.listingId;
@@ -130,6 +137,7 @@ function AddModal(data: any) {
     <BottomSheetModal
       ref={data.bottomSheetModalRef}
       index={0}
+      backgroundStyle={{ backgroundColor: colors.back1 }}
       snapPoints={snapPoints}
       backdropComponent={renderBackdrop}
       keyboardBehavior="interactive"
@@ -153,22 +161,35 @@ function AddModal(data: any) {
           <Text style={{ color: "gray" }}>New Wishlist</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        theme={{ background: "back2" }}
+      >
         {gqlData?.myFavorites?.map((favorite: any) => (
           <ListItem
             key={favorite.id}
-            bottomDivider
+            // bottomDivider
             onPress={() => checkHandler(favorite.id)}
+            containerStyle={{
+              backgroundColor: colors.back1,
+              borderColor: colors.border1,
+              borderBottomWidth: 0.25,
+            }}
           >
             <ListItem.Content>
-              <ListItem.Title>{favorite.name}</ListItem.Title>
+              <ListItem.Title>
+                <Text>{favorite.name}</Text>
+              </ListItem.Title>
               <ListItem.Subtitle>
-                {favorite?.listings?.length} items ·{" "}
-                {favorite.private ? "Private" : "Public"}
+                <Text>
+                  {favorite?.listings?.length} items ·{" "}
+                  {favorite.private ? "Private" : "Public"}
+                </Text>
               </ListItem.Subtitle>
             </ListItem.Content>
             <ListItem.CheckBox
               checkedColor="rgb(236, 76, 96)"
+              containerStyle={{ backgroundColor: "transparent" }}
               checked={favoriteIds.includes(favorite.id)}
               onPress={() => checkHandler(favorite.id)}
             />
@@ -180,14 +201,10 @@ function AddModal(data: any) {
         edges={["bottom"]}
         style={{
           width: "100%",
+          borderTopWidth: 0.25,
         }}
+        theme={{ border: "border1" }}
       >
-        <View
-          style={styles.separator}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
-
         <TouchableOpacity
           onPress={() => {
             addOrMoveListingToFavoriteFunction({
@@ -212,6 +229,7 @@ function AddModal(data: any) {
             style={{
               textAlign: "center",
               padding: 15,
+              paddingBottom: 0,
               fontSize: 17,
             }}
           >
@@ -257,10 +275,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  separator: {
-    height: 1,
-    width: "100%",
+    borderBottomWidth: 0.5,
   },
 });
 

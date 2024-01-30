@@ -1,6 +1,7 @@
 import { GlobalContext } from "@app/_layout";
 import { Text, View } from "@components/Themed";
 import AddModal from "@components/wishlist/AddModal";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Card, CheckBox } from "@rneui/themed";
@@ -34,6 +35,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 }) => {
   const { isLoggedIn } = useContext(GlobalContext);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const colors = useThemedColors();
 
   const toggleCheckboxHandler = () => {
     if (!isLoggedIn) {
@@ -54,14 +56,21 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   return (
     <View style={styles.container}>
       <Pressable onPress={pressHandler}>
-        <Card containerStyle={styles.cardContainer}>
+        <Card
+          containerStyle={{
+            ...styles.cardContainer,
+            backgroundColor: colors.back1,
+          }}
+        >
           <Image
             style={{ ...styles.image, aspectRatio: imageData.ratio || 1 }}
             placeholder={{ thumbhash: imageData.thumbhash }}
             source={{ uri: imageData.smallUrl }}
           />
           <View style={styles.cardContent}>
-            <Card.Title style={styles.price}>${data.price}</Card.Title>
+            <Card.Title style={styles.price}>
+              <Text>${data.price}</Text>
+            </Card.Title>
             <View style={styles.titleAndIconContainer}>
               <Ionicons
                 name="location"
@@ -70,11 +79,11 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
                 style={styles.icon}
               />
               <Card.Title style={styles.address}>
-                {data.address.city + ", " + data.address.state}
+                <Text>{data.address.city + ", " + data.address.state}</Text>
               </Card.Title>
             </View>
             <Card.Title style={styles.title} numberOfLines={2}>
-              {data.title}
+              <Text> {data.title}</Text>
             </Card.Title>
             <Text style={styles.description} numberOfLines={3}>
               {data.description}
@@ -141,7 +150,6 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 15,
-    color: "black",
     fontWeight: "400",
     marginBottom: 3,
     marginTop: 4,
@@ -149,17 +157,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 13,
-    color: "black",
     fontWeight: "400",
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,
-    marginLeft: 2,
     textAlign: "left",
   },
   description: {
     fontSize: 12,
-    color: "black",
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,

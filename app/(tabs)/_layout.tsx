@@ -1,10 +1,8 @@
-import { GlobalContext } from "@app/_layout";
-import Colors from "@constants/Colors";
+import { SafeAreaView } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React, { useContext } from "react";
-import { useColorScheme } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from "react";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
@@ -14,13 +12,16 @@ function TabBarIcon(props: {
 }
 
 export default function () {
-  const colorScheme = useColorScheme();
-  const { isLoggedIn } = useContext(GlobalContext);
+  const colors = useThemedColors();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: colors.tint,
+        tabBarStyle: {
+          backgroundColor: colors.back1,
+          borderTopColor: colors.border1,
+        },
       }}
     >
       <Tabs.Screen
@@ -59,12 +60,7 @@ export default function () {
           title: "Profile",
           headerTitleAlign: "center",
           header: () => {
-            return (
-              <SafeAreaView
-                style={{ backgroundColor: isLoggedIn ? "white" : "#f5f5f5" }}
-                edges={["top"]}
-              />
-            );
+            return <SafeAreaView edges={["top"]} />;
           },
           // headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,

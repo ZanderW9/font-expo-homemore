@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import ListingCard from "@components/ListingCard";
 import { View, Text } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { useLocalSearchParams, Stack } from "expo-router";
@@ -33,6 +34,7 @@ const favoriteListingsQuery = gql`
 `;
 
 function MyFavoritesScreen() {
+  const colors = useThemedColors();
   const { favorites } = useLocalSearchParams();
   const favoriteId = useLocalSearchParams().favoriteId;
   const { data, refetch } = useQuery(favoriteListingsQuery, {
@@ -47,7 +49,7 @@ function MyFavoritesScreen() {
   refetch();
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
           title: favorites,
@@ -55,6 +57,12 @@ function MyFavoritesScreen() {
           headerBackTitleVisible: false,
           headerBackTitle: "Wishlist",
           animation: "slide_from_right",
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
         }}
       />
       {data?.FavoritesById[0]?.listings?.length === 0 ? (
@@ -86,7 +94,6 @@ function MyFavoritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
     padding: 1,
   },
 });

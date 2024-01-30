@@ -1,5 +1,6 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { View, Text } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import * as Clipboard from "expo-clipboard";
@@ -25,6 +26,7 @@ const modifyPublishMutation = gql`
 `;
 
 function ShareModal(data: any) {
+  const colors = useThemedColors();
   const snapPoints = useMemo(() => ["30%"], []);
   const copyLink = `https://192.168.50.242:8081/detail/${data.listingId}`;
   const [modifyPublishFunction] = useMutation(modifyPublishMutation);
@@ -117,6 +119,7 @@ function ShareModal(data: any) {
         ref={data.bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
+        backgroundStyle={{ backgroundColor: colors.back1 }}
         backdropComponent={renderBackdrop}
         enableContentPanningGesture={false}
       >
@@ -128,20 +131,25 @@ function ShareModal(data: any) {
                 <AntDesign
                   name="wechat"
                   size={40}
-                  color="black"
+                  color={colors.text}
                   onPress={openWeChat}
                 />
                 <Text style={styles.title}>WeChat</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconWrapper}>
-                <AntDesign name="QQ" size={40} color="black" onPress={openQQ} />
+                <AntDesign
+                  name="QQ"
+                  size={40}
+                  color={colors.text}
+                  onPress={openQQ}
+                />
                 <Text style={styles.title}>QQ</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconWrapper}>
                 <AntDesign
                   name="facebook-square"
                   size={40}
-                  color="black"
+                  color={colors.text}
                   onPress={openFacebook}
                 />
                 <Text style={styles.title}>Facebook</Text>
@@ -151,7 +159,7 @@ function ShareModal(data: any) {
                 <AntDesign
                   name="weibo"
                   size={40}
-                  color="black"
+                  color={colors.text}
                   onPress={openWeibo}
                 />
                 <Text style={styles.title}>WeiBo</Text>
@@ -171,7 +179,7 @@ function ShareModal(data: any) {
                 <Ionicons
                   name="copy-outline"
                   size={40}
-                  color="black"
+                  color={colors.text}
                   onPress={copyLinkHandler}
                 />
                 <Text style={styles.title}>Copy Link</Text>
@@ -182,7 +190,7 @@ function ShareModal(data: any) {
                   <Ionicons
                     name="create-outline"
                     size={40}
-                    color="black"
+                    color={colors.text}
                     onPress={editHandler}
                   />
                   <Text style={styles.title}>Edit</Text>
@@ -194,7 +202,7 @@ function ShareModal(data: any) {
                   <Ionicons
                     name="trash-outline"
                     size={40}
-                    color="black"
+                    color={colors.text}
                     onPress={unpublishHandler}
                   />
                   <Text style={styles.title}>Unpublish</Text>
@@ -203,7 +211,11 @@ function ShareModal(data: any) {
 
               {gqlData?.me?.id !== data.userId && (
                 <TouchableOpacity style={styles.iconWrapper}>
-                  <Ionicons name="warning-outline" size={40} color="black" />
+                  <Ionicons
+                    name="warning-outline"
+                    size={40}
+                    color={colors.text}
+                  />
                   <Text style={styles.title}>Report</Text>
                 </TouchableOpacity>
               )}

@@ -1,10 +1,13 @@
-import { SafeAreaView } from "@components/Themed";
+import {
+  SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "@components/Themed";
 import { useSearchContext } from "@components/search/SearchProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, SearchBar } from "@rneui/themed";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, KeyboardAvoidingView } from "react-native";
 
 import AmenitiesFilters from "./filters/AmenitiesFilters";
 import PriceRange from "./filters/PriceRange";
@@ -41,7 +44,8 @@ export default function SearchView() {
       </SafeAreaView>
 
       <ScrollView
-        style={{ ...styles.container, padding: 5, backgroundColor: "#f5f5f5" }}
+        style={{ ...styles.container, padding: 5 }}
+        theme={{ background: "back2" }}
         scrollEnabled={scrollEnabled}
       >
         <PropertyTypeFilters />
@@ -58,13 +62,13 @@ export default function SearchView() {
           justifyContent: "space-between",
           padding: 10,
           paddingTop: 5,
-          backgroundColor: "white",
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
             height: -10,
           },
           shadowOpacity: 0.03,
+          borderTopWidth: 0.25,
         }}
       >
         <Button

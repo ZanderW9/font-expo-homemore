@@ -1,11 +1,13 @@
 import { View, Text } from "@components/Themed";
 import { useSearchContext } from "@components/search/SearchProvider";
 import { styles } from "@components/search/styles";
+import { useThemedColors } from "@constants/theme";
 import { RangeSlider } from "@react-native-assets/slider";
 import { Input } from "@rneui/themed";
 import React from "react";
 
 const PriceRange = (props: { setScrollEnabled: Function }) => {
+  const colors = useThemedColors();
   const { filters, dispatchFilters } = useSearchContext();
   const { setScrollEnabled } = props;
   return (
@@ -87,6 +89,9 @@ const PriceRange = (props: { setScrollEnabled: Function }) => {
               padding: 0,
               borderBottomWidth: 0,
             }}
+            inputStyle={{
+              color: colors.text,
+            }}
             containerStyle={{
               padding: 0,
               margin: 0,
@@ -123,6 +128,9 @@ const PriceRange = (props: { setScrollEnabled: Function }) => {
               padding: 0,
               borderBottomWidth: 0,
               width: 65,
+            }}
+            inputStyle={{
+              color: colors.text,
             }}
             containerStyle={{
               padding: 0,

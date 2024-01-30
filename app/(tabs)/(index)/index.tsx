@@ -9,8 +9,8 @@ import { StyleSheet } from "react-native";
 
 function TabExploreScreen() {
   return (
-    <View style={styles.container}>
-      <SearchEntry />
+    <View style={styles.container} theme={{ background: "back2" }}>
+      <SearchEntry text="" />
       <ListingCardsContainer />
       <FAB
         size="small"
@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f5f5f5",
   },
   map: {
     width: "100%",
@@ -50,10 +49,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
   },
 });

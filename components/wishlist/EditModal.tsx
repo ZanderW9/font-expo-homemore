@@ -1,6 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { View, Text } from "@components/Themed";
 import UpdateModal from "@components/wishlist/UpdateModal";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { ListItem, Dialog } from "@rneui/themed";
@@ -41,6 +42,7 @@ const deleteFavoriteMutation = gql`
 `;
 
 function EditModal(data: any) {
+  const colors = useThemedColors();
   const [showDialog, setShowDialog] = useState(false);
   const snapPoints = useMemo(() => [200], []);
 
@@ -85,6 +87,7 @@ function EditModal(data: any) {
       <BottomSheetModal
         ref={data.bottomSheetModalRef}
         index={0}
+        backgroundStyle={{ backgroundColor: colors.back1 }}
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
         keyboardBehavior="interactive"
@@ -95,6 +98,9 @@ function EditModal(data: any) {
           {meData?.me?.id === data.userId ? (
             <View>
               <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                }}
                 onPress={() => {
                   data.bottomSheetModalRef.current?.close();
                   bottomSheetUpdateModalRef.current?.present();
@@ -115,15 +121,20 @@ function EditModal(data: any) {
                     <Ionicons
                       name="create-outline"
                       size={24}
-                      color="black"
+                      color={colors.text}
                       style={{ marginRight: 15 }}
                     />
-                    <ListItem.Title>Edit</ListItem.Title>
+                    <ListItem.Title>
+                      <Text>Edit</Text>
+                    </ListItem.Title>
                   </View>
                 </ListItem.Content>
               </ListItem>
 
               <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                }}
                 onPress={() => {
                   data.bottomSheetModalRef.current?.close();
                   setShowDialog(true);
@@ -144,7 +155,9 @@ function EditModal(data: any) {
                       color="red"
                       style={{ marginRight: 15 }}
                     />
-                    <ListItem.Title>Delete the wishlist</ListItem.Title>
+                    <ListItem.Title>
+                      <Text>Delete the wishlist</Text>
+                    </ListItem.Title>
                   </View>
                 </ListItem.Content>
               </ListItem>
@@ -211,13 +224,10 @@ function EditModal(data: any) {
             </View>
           )}
 
-          <View
-            style={styles.separator}
-            lightColor="#eee"
-            darkColor="rgba(255,255,255,0.1)"
-          />
-
           <ListItem
+            containerStyle={{
+              backgroundColor: colors.back1,
+            }}
             onPress={() => {
               data.bottomSheetModalRef.current?.close();
             }}
@@ -230,7 +240,9 @@ function EditModal(data: any) {
                 justifyContent: "center",
               }}
             >
-              <ListItem.Title>Cancel</ListItem.Title>
+              <ListItem.Title>
+                <Text>Cancel</Text>
+              </ListItem.Title>
             </ListItem.Content>
           </ListItem>
         </View>
@@ -247,7 +259,7 @@ function EditModal(data: any) {
       <Dialog
         isVisible={showDialog}
         onBackdropPress={() => setShowDialog(false)}
-        overlayStyle={{ borderRadius: 10 }}
+        overlayStyle={{ borderRadius: 10, backgroundColor: colors.back1 }}
       >
         <Text>Are you sure you want to delete the wishlist?</Text>
         <View

@@ -11,11 +11,11 @@ import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function SearchResultScreen() {
-  const { loading, data, refetch, text } = useSearchContext();
+  const { loading, data, refetch, filters } = useSearchContext();
   const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
-      <SearchEntry text={text} />
+    <View style={styles.container} theme={{ background: "back2" }}>
+      <SearchEntry text={filters.text || ""} />
       <MasonryList
         style={styles.listingCardsContainer}
         data={data ? data.searchListings : []}
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f5f5f5",
   },
   listingCardsContainer: {
     flex: 1,

@@ -1,18 +1,19 @@
 import { gql, useMutation } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
-import { Text, View } from "@components/Themed";
+import {
+  Text,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "@components/Themed";
 import { storeLocalItem } from "@config/storageManager";
 import Colors from "@constants/Colors";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router, Stack } from "expo-router";
 import React, { useState, useEffect, useContext } from "react";
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const signUpMutation = gql`
@@ -40,6 +41,7 @@ const sendVeriCodeMutation = gql`
 `;
 
 function LoginScreen() {
+  const colors = useThemedColors();
   const { setIsLoggedIn } = useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
@@ -163,7 +165,7 @@ function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
           title: "Sign Up",
@@ -171,33 +173,47 @@ function LoginScreen() {
           headerTitleAlign: "center",
           headerBackTitleVisible: false,
           headerBackButtonMenuEnabled: false,
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
         }}
       />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 30}
+        theme={{ background: "back2" }}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          theme={{ background: "back2" }}
+        >
           <Input
             label="User Name"
             labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={[
+              styles.inputContainer,
+              { borderColor: colors.border1 },
+            ]}
+            inputStyle={{ color: colors.text }}
             onChangeText={(text) => setUserName(text)}
           />
           <Input
             label="Email"
             labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={[
+              styles.inputContainer,
+              { borderColor: colors.border1 },
+            ]}
+            inputStyle={{ color: colors.text }}
             rightIcon={
               isValidEmail && (
-                <Ionicons
-                  name="checkmark"
-                  size={24}
-                  style={styles.invalidEmailIcon}
-                />
+                <Ionicons name="checkmark" size={24} color={colors.text} />
               )
             }
             onChangeText={(text) => {
@@ -209,7 +225,11 @@ function LoginScreen() {
             label="Password"
             labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={[
+              styles.inputContainer,
+              { borderColor: colors.border1 },
+            ]}
+            inputStyle={{ color: colors.text }}
             secureTextEntry={!showPassword}
             rightIcon={
               password && (
@@ -227,7 +247,11 @@ function LoginScreen() {
             label="Confirm Password"
             labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={[
+              styles.inputContainer,
+              { borderColor: colors.border1 },
+            ]}
+            inputStyle={{ color: colors.text }}
             secureTextEntry={!showPassword}
             rightIcon={
               confirmPassword && (
@@ -252,7 +276,11 @@ function LoginScreen() {
             label="Verification Code"
             labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={[
+              styles.inputContainer,
+              { borderColor: colors.border1 },
+            ]}
+            inputStyle={{ color: colors.text }}
             rightIcon={
               isValidEmail && (
                 <Ionicons
@@ -275,8 +303,8 @@ function LoginScreen() {
             style={{
               flexDirection: "row",
               justifyContent: "center",
-              backgroundColor: "#f5f5f5",
             }}
+            theme={{ background: "back2" }}
           >
             <Button
               buttonStyle={{
@@ -309,7 +337,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 30,
     paddingVertical: 20,
-    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 15,
@@ -322,12 +349,6 @@ const styles = StyleSheet.create({
     height: 1,
     width: "80%",
   },
-  validEmailIcon: {
-    color: "black",
-  },
-  invalidEmailIcon: {
-    color: "black",
-  },
   verfication: {
     fontSize: 12,
     marginTop: -20,
@@ -336,7 +357,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.2)",
     borderRadius: 5,
   },
   inputWrapper: {

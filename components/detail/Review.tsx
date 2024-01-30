@@ -1,9 +1,9 @@
-import { Text, View } from "@components/Themed";
+import { Text, View, Pressable, TouchableOpacity } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@rneui/themed";
 import { router } from "expo-router";
-import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 
 const formatTime = (timestamp) => {
   const now = new Date();

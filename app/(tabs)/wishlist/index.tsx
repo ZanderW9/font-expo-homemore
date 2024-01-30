@@ -4,6 +4,7 @@ import NotLogIn from "@components/NotLogIn";
 import { View } from "@components/Themed";
 import CreateModal from "@components/wishlist/CreateModal";
 import FavoriteCardContainer from "@components/wishlist/FavoriteCardsContainer";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
@@ -32,6 +33,7 @@ const favoriteByUserQuery = gql`
 `;
 
 function TabWishlistScreen() {
+  const colors = useThemedColors();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const inputRef = useRef(null);
   const { data } = useQuery(favoriteByUserQuery);
@@ -41,16 +43,21 @@ function TabWishlistScreen() {
   return (
     <View
       style={{
-        backgroundColor: "#f5f5f5",
+        // backgroundColor: "#f5f5f5",
         flex: 1,
-        paddingTop: 4,
-        paddingHorizontal: 4,
       }}
+      theme={{ background: "back2" }}
     >
       <Stack.Screen
         options={{
           title: "Wishlist",
           headerTitleAlign: "center",
+          headerTitleStyle: {
+            color: colors.text,
+          },
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
           headerRight: () => (
             <Ionicons
               name="add-outline"

@@ -19,13 +19,12 @@ export const styles = StyleSheet.create({
   priceRangeContainer: {
     width: 120,
     borderWidth: 1,
-    borderColor: "#ccc",
+    // borderColor: "#ccc",
     borderRadius: 10,
   },
   titleStyle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
   },
   searchBarContainer: {
     alignItems: "center",

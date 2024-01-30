@@ -1,25 +1,32 @@
+import { View, ScrollView, Text } from "@components/Themed";
 import EditModal from "@components/wishlist/EditModal";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ListItem, Avatar } from "@rneui/themed";
 import { router } from "expo-router";
 import React, { useRef } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet } from "react-native";
 
 const FavoriteCardsContainer: React.FunctionComponent = (data: any) => {
+  const colors = useThemedColors();
   const [favoriteId, setFavoriteId] = React.useState("");
   const [userId, setUserId] = React.useState("");
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   return (
-    <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={styles.container} theme={{ background: "back2" }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        theme={{ background: "back2" }}
+        style={{ padding: 5, paddingTop: 6 }}
+      >
         {data &&
           data?.data?.map((item, index) => (
             <ListItem
               key={index}
-              containerStyle={styles.card}
+              containerStyle={[styles.card, { backgroundColor: colors.back1 }]}
               onPress={() => {
                 router.navigate({
                   pathname: `/wishlist/${item.name}`,
@@ -52,7 +59,9 @@ const FavoriteCardsContainer: React.FunctionComponent = (data: any) => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <ListItem.Title>{item?.name}</ListItem.Title>
+                    <ListItem.Title>
+                      <Text>{item?.name}</Text>
+                    </ListItem.Title>
                     <ListItem.Subtitle style={{ color: "gray" }}>
                       {item?.description}
                     </ListItem.Subtitle>

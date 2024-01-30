@@ -1,6 +1,7 @@
 import { View, Text } from "@components/Themed";
 import { useSearchContext } from "@components/search/SearchProvider";
 import { styles } from "@components/search/styles";
+import { useThemedColors } from "@constants/theme";
 import {
   MaterialCommunityIcons,
   FontAwesome6,
@@ -11,25 +12,30 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 
 const AmenitiesFilters = (props: any) => {
+  const colors = useThemedColors();
   const { filters, dispatchFilters } = useSearchContext();
 
   const amenities = [
     {
       name: "Wifi",
       value: "wifi",
-      icon: <FontAwesome6 name="wifi" size={24} color="black" />,
+      icon: <FontAwesome6 name="wifi" size={24} color={colors.text} />,
     },
 
     {
       name: "Air Conditioner",
       value: "airConditioner",
-      icon: <Ionicons name="snow" size={26} color="black" />,
+      icon: <Ionicons name="snow" size={26} color={colors.text} />,
     },
     {
       name: "Fridge",
       value: "fridge",
       icon: (
-        <MaterialCommunityIcons name="fridge-outline" size={28} color="black" />
+        <MaterialCommunityIcons
+          name="fridge-outline"
+          size={28}
+          color={colors.text}
+        />
       ),
     },
     {
@@ -39,14 +45,14 @@ const AmenitiesFilters = (props: any) => {
         <MaterialCommunityIcons
           name="washing-machine"
           size={28}
-          color="black"
+          color={colors.text}
         />
       ),
     },
     {
       name: "Kitchen",
       value: "kitchen",
-      icon: <FontAwesome6 name="kitchen-set" size={24} color="black" />,
+      icon: <FontAwesome6 name="kitchen-set" size={24} color={colors.text} />,
     },
     {
       name: "Bath Tub",
@@ -55,7 +61,7 @@ const AmenitiesFilters = (props: any) => {
         <MaterialCommunityIcons
           name="bathtub-outline"
           size={26}
-          color="black"
+          color={colors.text}
         />
       ),
     },
@@ -79,7 +85,7 @@ const AmenitiesFilters = (props: any) => {
           marginBottom: 10,
         }}
       >
-        Amenities you want{" "}
+        Amenities you want
       </Text>
 
       <FlashList
@@ -114,11 +120,11 @@ const AmenitiesFilters = (props: any) => {
                 paddingTop: 6,
                 borderColor: filters.amenities?.includes(item.value)
                   ? "#888"
-                  : "#ccc",
+                  : colors.border1,
                 height: 85,
                 backgroundColor: filters.amenities?.includes(item.value)
-                  ? "#f5f5f5"
-                  : "white",
+                  ? colors.back2
+                  : colors.back1,
               }}
             >
               <View

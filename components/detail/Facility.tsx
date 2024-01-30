@@ -10,7 +10,7 @@ function Facility(data: any) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Facilities/Services</Text>
+      <Text style={styles.title}>Amenities/Services</Text>
       <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
         {amenities.map((amenity: any, index: number) => {
           if (amenity.length > 5) {
@@ -31,7 +31,6 @@ function Facility(data: any) {
                 style={{
                   padding: 5,
                   borderWidth: 1,
-                  borderColor: "rgba(0, 0, 0, 0.1)",
                   borderRadius: 15,
                   marginRight: 5,
                   minWidth: 50,

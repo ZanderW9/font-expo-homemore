@@ -1,6 +1,13 @@
 import { useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
-import { View, Text, SafeAreaView } from "@components/Themed";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Pressable,
+} from "@components/Themed";
 import BasicInfo from "@components/detail/BasicInfo";
 import DetailEnd from "@components/detail/DetailEnd";
 import DetailProvider from "@components/detail/DetailProvider";
@@ -14,17 +21,13 @@ import Review from "@components/detail/Review";
 import ShareModal from "@components/detail/ShareModal";
 import AddModal from "@components/wishlist/AddModal";
 import { DETAIL_PAGE_LISTING_QUERY } from "@config/gql/listing";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Avatar } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useRef, useCallback, useContext } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Pressable,
-} from "react-native";
+import { StyleSheet } from "react-native";
 
 const CustomHeaderTitle = (data: any) => {
   const owner = data ? data?.listingById?.owner : null;
@@ -62,6 +65,7 @@ const CustomHeaderTitle = (data: any) => {
 };
 
 function ListingDetailScreen() {
+  const colors = useThemedColors();
   const { isLoggedIn } = useContext(GlobalContext);
   const { listing } = useLocalSearchParams();
   const { data } = useQuery(DETAIL_PAGE_LISTING_QUERY, {
@@ -99,7 +103,7 @@ function ListingDetailScreen() {
 
   return (
     <DetailProvider>
-      <View style={styles.container}>
+      <View style={styles.container} theme={{ background: "back2" }}>
         <Stack.Screen
           options={{
             headerTitle: () => CustomHeaderTitle(data),
@@ -107,6 +111,9 @@ function ListingDetailScreen() {
             headerTitleAlign: "center",
             headerBackTitleVisible: false,
             headerBackButtonMenuEnabled: false,
+            headerStyle: {
+              backgroundColor: colors.back1,
+            },
             headerRight: () => (
               <TouchableOpacity
                 style={{
@@ -242,7 +249,7 @@ function ListingDetailScreen() {
               <Ionicons
                 name="chatbubble-ellipses-outline"
                 size={32}
-                color="black"
+                color={colors.text}
               />
             </View>
 
@@ -268,7 +275,7 @@ function ListingDetailScreen() {
                 <Ionicons
                   name="heart-outline"
                   size={32}
-                  color="black"
+                  color={colors.text}
                   onPress={() => {
                     toggleCheckboxHandler();
                   }}
@@ -310,7 +317,6 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     width: "100%",
-    backgroundColor: "white",
     position: "absolute",
     bottom: 0,
     paddingBottom: 0,

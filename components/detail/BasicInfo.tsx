@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: "black",
     marginBottom: 3,
   },
 });

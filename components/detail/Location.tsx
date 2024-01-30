@@ -1,9 +1,9 @@
-import { Text, View } from "@components/Themed";
+import { Text, View, Pressable } from "@components/Themed";
 import MapScreen from "@components/map/MapView";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 function Location(data: any) {
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   },
   address: {
     fontSize: 15,
-    color: "rgba(0, 0, 0, 0.5)",
     paddingVertical: 5,
   },
 });

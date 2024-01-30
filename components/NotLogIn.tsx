@@ -13,7 +13,7 @@ export const signUpHandler = async () => {
 
 function NotLogIn(data: any) {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Text style={styles.title}>{data.title}</Text>
       <Text style={styles.subtitle}>{data.subtitle}</Text>
       <View
@@ -21,8 +21,8 @@ function NotLogIn(data: any) {
           flexDirection: "row",
           justifyContent: "space-around",
           width: "80%",
-          backgroundColor: "#f5f5f5",
         }}
+        theme={{ background: "back2" }}
       >
         <Button
           title="Sign In"
@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
     flex: 0.6,
   },
   buttonContainer: {

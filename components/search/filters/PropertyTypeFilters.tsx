@@ -1,6 +1,7 @@
 import { View, Text } from "@components/Themed";
 import { useSearchContext } from "@components/search/SearchProvider";
 import { styles } from "@components/search/styles";
+import { useThemedColors } from "@constants/theme";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CheckBox } from "@rneui/themed";
 import { FlashList } from "@shopify/flash-list";
@@ -8,18 +9,23 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 
 const PropertyTypeFilters = (props: any) => {
+  const colors = useThemedColors();
   const { filters, dispatchFilters } = useSearchContext();
   const propertyTypes = [
     {
       name: "Apartment",
       value: "apartment",
-      icon: <MaterialIcons name="apartment" size={30} color="black" />,
+      icon: <MaterialIcons name="apartment" size={30} color={colors.text} />,
     },
     {
       name: "House",
       value: "house",
       icon: (
-        <MaterialCommunityIcons name="greenhouse" size={30} color="black" />
+        <MaterialCommunityIcons
+          name="greenhouse"
+          size={30}
+          color={colors.text}
+        />
       ),
     },
   ];
@@ -95,10 +101,12 @@ const PropertyTypeFilters = (props: any) => {
                 paddingBottom: 5,
                 paddingTop: 6,
                 borderColor:
-                  filters.propertyType === item.value ? "#888" : "#ccc",
+                  filters.propertyType === item.value ? "#888" : colors.border1,
                 height: 85,
                 backgroundColor:
-                  filters.propertyType === item.value ? "#f5f5f5" : "white",
+                  filters.propertyType === item.value
+                    ? colors.back2
+                    : colors.back1,
               }}
             >
               <View
@@ -156,7 +164,11 @@ const PropertyTypeFilters = (props: any) => {
               >
                 <CheckBox
                   checkedColor="rgb(236, 76, 96)"
-                  containerStyle={{ margin: 0, padding: 0 }}
+                  containerStyle={{
+                    margin: 0,
+                    padding: 0,
+                    backgroundColor: "transparent",
+                  }}
                   checked={filters.placeType === item.value}
                   onPress={() => {
                     dispatchFilters({
@@ -204,7 +216,11 @@ const PropertyTypeFilters = (props: any) => {
               >
                 <CheckBox
                   checkedColor="rgb(236, 76, 96)"
-                  containerStyle={{ margin: 0, padding: 0 }}
+                  containerStyle={{
+                    margin: 0,
+                    padding: 0,
+                    backgroundColor: "transparent",
+                  }}
                   checked={filters.serviceType === item.value}
                   onPress={() => {
                     dispatchFilters({

@@ -1,8 +1,10 @@
 import { Text, View } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import { StyleSheet, Dimensions } from "react-native";
 
 function OverView(data: any) {
+  const colors = useThemedColors();
   const PAGE_WIDTH = Dimensions.get("window").width * 0.95;
 
   let rentType = "";
@@ -34,7 +36,7 @@ function OverView(data: any) {
             width: PAGE_WIDTH * 0.25,
           }}
         >
-          <Feather name="home" size={24} color="black" />
+          <Feather name="home" size={24} color={colors.text} />
           <Text style={styles.iconDescription}>
             {data.bedRooms ? data.bedRooms : 0} Bedrooms
           </Text>
@@ -51,7 +53,7 @@ function OverView(data: any) {
           <MaterialCommunityIcons
             name="bed-king-outline"
             size={24}
-            color="black"
+            color={colors.text}
           />
           <Text style={styles.iconDescription}>
             {data.bed ? data.bed : 0} Beds
@@ -66,7 +68,7 @@ function OverView(data: any) {
             width: PAGE_WIDTH * 0.25,
           }}
         >
-          <MaterialCommunityIcons name="toilet" size={24} color="black" />
+          <MaterialCommunityIcons name="toilet" size={24} color={colors.text} />
           <Text style={styles.iconDescription}>
             {data.bathRooms ? data.bathRooms : 0} Bathrooms
           </Text>
@@ -83,7 +85,7 @@ function OverView(data: any) {
           <MaterialCommunityIcons
             name="account-group-outline"
             size={24}
-            color="black"
+            color={colors.text}
           />
           <Text style={styles.iconDescription}>
             {data.guests ? data.guests : 0} Guests
@@ -132,7 +134,6 @@ const styles = StyleSheet.create({
   },
   iconDescription: {
     fontSize: 12,
-    color: "black",
   },
   boxWrapper: {
     display: "flex",
@@ -150,14 +151,12 @@ const styles = StyleSheet.create({
     width: "35%",
     height: 80,
     borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.2)",
     borderRadius: 10,
     padding: 8,
     marginRight: 10,
   },
   boxText: {
     fontSize: 12,
-    color: "black",
     padding: 2,
   },
 });

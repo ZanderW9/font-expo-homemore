@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { Text, View } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import {
   BottomSheetModal,
   BottomSheetBackdrop,
@@ -40,6 +41,7 @@ const updateFavoriteMutation = gql`
 `;
 
 function UpdateModal(data: any) {
+  const colors = useThemedColors();
   const { data: favoriteData, refetch } = useQuery(favoriteByIdQuery, {
     variables: { favoriteId: data.favoriteId },
     errorPolicy: "all",
@@ -120,6 +122,7 @@ function UpdateModal(data: any) {
       <BottomSheetModal
         ref={data.bottomSheetModalRef}
         index={0}
+        backgroundStyle={{ backgroundColor: colors.back1 }}
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
         keyboardBehavior="interactive"
@@ -132,16 +135,15 @@ function UpdateModal(data: any) {
             placeholder="*Name"
             value={folderName}
             onChangeText={setFolderName}
-            style={styles.nameInput}
+            style={[styles.nameInput, { color: colors.text }]}
           />
         </View>
 
         <View style={styles.content}>
           <BottomSheetTextInput
             placeholder="Description: (optional)"
-            value={description}
             onChangeText={setDescription}
-            style={styles.descriptionInput}
+            style={[styles.descriptionInput, { color: colors.text }]}
             multiline
             textAlignVertical="top"
             numberOfLines={4}

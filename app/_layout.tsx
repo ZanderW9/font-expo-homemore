@@ -24,18 +24,13 @@ import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
 import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { Asset } from "expo-asset";
 import Constants from "expo-constants";
 import * as Font from "expo-font";
 import { useNavigationContainerRef, SplashScreen, Stack } from "expo-router";
 import { createClient } from "graphql-ws";
 import React, { useEffect, useState } from "react";
-import { useColorScheme, Platform, View, StyleSheet } from "react-native";
+import { Platform, View, StyleSheet } from "react-native";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import FlashMessage from "react-native-flash-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -293,80 +288,77 @@ export const ChatProvider = ({ children }) => {
 };
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
   useUserLocation();
   const client = useApolloClient();
   useApolloClientDevTools(client);
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetModalProvider>
-          <ChatProvider>
-            <SearchProvider>
-              <EventProvider>
-                <AutocompleteDropdownContextProvider>
-                  <Stack>
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="modal"
-                      options={{ presentation: "modal" }}
-                    />
-                    <Stack.Screen
-                      name="search"
-                      options={{
-                        animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="search-result"
-                      options={{
-                        animation: "slide_from_right",
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="createwishlist"
-                      options={{
-                        presentation: "transparentModal",
-                        animation: "slide_from_bottom",
-                        headerShown: false,
-                        animationDuration: 100,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="map"
-                      options={{
-                        presentation: "transparentModal",
-                        animation: "slide_from_bottom",
-                        headerShown: false,
-                        animationDuration: 100,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="detailMap"
-                      options={{
-                        presentation: "transparentModal",
-                        animation: "slide_from_bottom",
-                        headerShown: false,
-                        animationDuration: 100,
-                      }}
-                    />
-                  </Stack>
-                  <FlashMessage
-                    position="top"
-                    floating
-                    statusBarHeight={Platform.OS === "ios" ? null : 35}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <ChatProvider>
+          <SearchProvider>
+            <EventProvider>
+              <AutocompleteDropdownContextProvider>
+                <Stack>
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
                   />
-                </AutocompleteDropdownContextProvider>
-              </EventProvider>
-            </SearchProvider>
-          </ChatProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-    </ThemeProvider>
+                  <Stack.Screen
+                    name="modal"
+                    options={{ presentation: "modal" }}
+                  />
+                  <Stack.Screen
+                    name="search"
+                    options={{
+                      animation: "slide_from_right",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="search-result"
+                    options={{
+                      animation: "slide_from_right",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="createwishlist"
+                    options={{
+                      presentation: "transparentModal",
+                      animation: "slide_from_bottom",
+                      headerShown: false,
+                      animationDuration: 100,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="map"
+                    options={{
+                      presentation: "transparentModal",
+                      animation: "slide_from_bottom",
+                      headerShown: false,
+                      animationDuration: 100,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="detailMap"
+                    options={{
+                      presentation: "transparentModal",
+                      animation: "slide_from_bottom",
+                      headerShown: false,
+                      animationDuration: 100,
+                    }}
+                  />
+                </Stack>
+                <FlashMessage
+                  position="top"
+                  floating
+                  statusBarHeight={Platform.OS === "ios" ? null : 35}
+                />
+              </AutocompleteDropdownContextProvider>
+            </EventProvider>
+          </SearchProvider>
+        </ChatProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }

@@ -3,16 +3,12 @@ import { GlobalContext } from "@app/_layout";
 import { Text, View } from "@components/Themed";
 import { storeLocalItem, getLocalItem } from "@config/storageManager";
 import Colors from "@constants/Colors";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router, Stack } from "expo-router";
 import React, { useEffect, useState, useContext } from "react";
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const signInMutation = gql`
@@ -25,6 +21,7 @@ const signInMutation = gql`
 `;
 
 function LoginScreen() {
+  const colors = useThemedColors();
   const { httpLinkUrl, setToken, setIsLoggedIn, setApolloClient } =
     useContext(GlobalContext);
   const [email, setEmail] = useState("");
@@ -90,7 +87,7 @@ function LoginScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
           title: "Sign In",
@@ -98,76 +95,79 @@ function LoginScreen() {
           headerTitleAlign: "center",
           headerBackTitleVisible: false,
           headerBackButtonMenuEnabled: false,
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
         }}
       />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 30}
+      <Input
+        label="Email"
+        labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
+        containerStyle={styles.inputWrapper}
+        inputContainerStyle={[
+          styles.inputContainer,
+          { borderColor: colors.border1 },
+        ]}
+        inputStyle={{ color: colors.text }}
+        rightIcon={
+          isValidEmail && (
+            <Ionicons name="checkmark" size={24} color={colors.text} />
+          )
+        }
+        onChangeText={(text) => {
+          setEmail(text);
+          validateEmail(text);
+        }}
+      />
+      <Input
+        label="Password"
+        labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
+        containerStyle={styles.inputWrapper}
+        inputContainerStyle={[
+          styles.inputContainer,
+          { borderColor: colors.border1 },
+        ]}
+        inputStyle={{ color: colors.text }}
+        secureTextEntry={!showPassword}
+        rightIcon={
+          password && (
+            <Ionicons
+              name={showPassword ? "eye-outline" : "eye-off-outline"}
+              size={24}
+              color={colors.text}
+              onPress={togglePasswordVisibility}
+            />
+          )
+        }
+        onChangeText={(text) => setPassword(text)}
+      />
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+        theme={{ background: "back2" }}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Input
-            label="Email"
-            labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
-            containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
-            rightIcon={
-              isValidEmail && (
-                <Ionicons
-                  name="checkmark"
-                  size={24}
-                  style={styles.invalidEmailIcon}
-                />
-              )
-            }
-            onChangeText={(text) => {
-              setEmail(text);
-              validateEmail(text);
-            }}
-          />
-          <Input
-            label="Password"
-            labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
-            containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
-            secureTextEntry={!showPassword}
-            rightIcon={
-              password && (
-                <Ionicons
-                  name={showPassword ? "eye-outline" : "eye-off-outline"}
-                  size={24}
-                  color="black"
-                  onPress={togglePasswordVisibility}
-                />
-              )
-            }
-            onChangeText={(text) => setPassword(text)}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              backgroundColor: "#f5f5f5",
-            }}
-          >
-            <Button
-              buttonStyle={{
-                backgroundColor: "rgb(236, 76, 96)",
-                height: 50,
-                width: 100,
-                borderRadius: 7,
-                marginVertical: 10,
-              }}
-              onPress={SignInHandler}
-            >
-              Sign In
-            </Button>
-          </View>
-          <Text style={styles.title} onPress={gotoSignupHandler}>
-            <Text>Don't have an account? </Text>
-            Register
-          </Text>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        <Button
+          buttonStyle={{
+            backgroundColor: "rgb(236, 76, 96)",
+            height: 50,
+            width: 100,
+            borderRadius: 7,
+            marginVertical: 10,
+          }}
+          onPress={SignInHandler}
+        >
+          Sign In
+        </Button>
+      </View>
+      <Text style={styles.title} onPress={gotoSignupHandler}>
+        <Text>Don't have an account? </Text>
+        Register
+      </Text>
     </View>
   );
 }
@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 30,
     paddingVertical: 20,
-    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 15,
@@ -192,15 +191,8 @@ const styles = StyleSheet.create({
     height: 1,
     width: "80%",
   },
-  validEmailIcon: {
-    color: "black",
-  },
-  invalidEmailIcon: {
-    color: "black",
-  },
   inputContainer: {
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.2)",
     borderRadius: 5,
   },
   inputWrapper: {

@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import { View } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
 import { LISTING_REVIEW_QUERY } from "@config/gql/listing";
+import { useThemedColors } from "@constants/theme";
 import {
   BottomSheetModal,
   BottomSheetTextInput,
@@ -10,6 +11,7 @@ import {
 import { Button } from "@rneui/themed";
 import React, { useState, useMemo, useCallback } from "react";
 import { StyleSheet } from "react-native";
+
 const createReviewMutation = gql`
   mutation Mutation(
     $listingId: String!
@@ -29,6 +31,7 @@ const createReviewMutation = gql`
 `;
 
 function ReviewInputModal(props: any) {
+  const colors = useThemedColors();
   const { reviewData, dispatchReviewData } = useDetailContext();
   const snapPoints = useMemo(() => [80], []);
   const [reviewText, setReviewText] = useState("");
@@ -60,6 +63,7 @@ function ReviewInputModal(props: any) {
         ref={props.bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
+        backgroundStyle={{ backgroundColor: colors.back1 }}
         backdropComponent={renderBackdrop}
         keyboardBehavior="interactive"
         android_keyboardInputMode="adjustResize"
@@ -68,7 +72,7 @@ function ReviewInputModal(props: any) {
         <View style={styles.contentContainer}>
           <BottomSheetTextInput
             ref={props.inputRef}
-            style={styles.input}
+            style={[styles.input, { color: colors.text }]}
             placeholder={
               reviewData.receiverName
                 ? `Reply to @${reviewData.receiverName}`
@@ -85,6 +89,7 @@ function ReviewInputModal(props: any) {
               justifyContent: "center",
               alignSelf: "center",
             }}
+            disabledStyle={{ backgroundColor: colors.back2 }}
             disabled={reviewText === ""}
             containerStyle={styles.buttonContainer}
             onPress={() => {
@@ -142,7 +147,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     borderRadius: 10,
     fontSize: 16,
-    height: 40,
   },
 });
 

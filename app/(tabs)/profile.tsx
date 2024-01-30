@@ -1,13 +1,20 @@
 import { gql, useMutation } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import NotLogIn from "@components/NotLogIn";
-import { View, Text, SafeAreaView } from "@components/Themed";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  Pressable,
+} from "@components/Themed";
 import { clearLocalItems, getLocalItem } from "@config/storageManager";
 import useCachedQuery from "@config/useCachedQuery";
+import { useThemedColors } from "@constants/theme";
 import { ListItem, Avatar } from "@rneui/themed";
 import { router, usePathname } from "expo-router";
 import React, { useEffect, useContext } from "react";
-import { StyleSheet, ScrollView, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 
 const createListingMutation = gql`
   mutation Mutation {
@@ -29,6 +36,7 @@ const meQuery = gql`
 `;
 
 function TabProfileScreen() {
+  const colors = useThemedColors();
   const { setIsLoggedIn, isLoggedIn, setToken, httpLinkUrl, setApolloClient } =
     useContext(GlobalContext);
   const [createListingFunction, { data }] = useMutation(createListingMutation);
@@ -82,9 +90,9 @@ function TabProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       {!isLoggedIn && (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+        <SafeAreaView style={{ flex: 1 }} theme={{ background: "back2" }}>
           <NotLogIn
             title="Find your next home from here!"
             subtitle="Sign in to publish or order a listing"
@@ -93,8 +101,12 @@ function TabProfileScreen() {
       )}
 
       {isLoggedIn && (
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-          <View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ flex: 1 }}
+          theme={{ background: "back2" }}
+        >
+          <View theme={{ background: "back2" }}>
             <Pressable
               style={styles.userInfo}
               onPress={() => {
@@ -129,67 +141,62 @@ function TabProfileScreen() {
               </View>
             </Pressable>
 
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-
-            <ListItem onPress={createListingHandler}>
+            <ListItem
+              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
+              onPress={createListingHandler}
+            >
               <ListItem.Content>
-                <ListItem.Title>Create Listing</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Create Listing</Text>
+                </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-
-            <ListItem onPress={myPostHandler}>
+            <ListItem
+              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
+              onPress={myPostHandler}
+            >
               <ListItem.Content>
-                <ListItem.Title>Manage Listing</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Manage Listing</Text>
+                </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <View
-              style={styles.separatorThin}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-
-            <ListItem onPress={myOrderHandler}>
+            <ListItem
+              containerStyle={{ backgroundColor: colors.back1, marginTop: 1 }}
+              onPress={myOrderHandler}
+            >
               <ListItem.Content>
-                <ListItem.Title>My Order</ListItem.Title>
+                <ListItem.Title>
+                  <Text>My Order</Text>
+                </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-
-            <ListItem onPress={AccountHandler}>
+            <ListItem
+              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
+              onPress={AccountHandler}
+            >
               <ListItem.Content>
-                <ListItem.Title>Account and Security</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Account and Security</Text>
+                </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-
-            <ListItem onPress={logOutHandler}>
+            <ListItem
+              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
+              onPress={logOutHandler}
+            >
               <ListItem.Content>
-                <ListItem.Title>Log Out</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Log Out</Text>
+                </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
@@ -203,24 +210,12 @@ function TabProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
     paddingTop: 0,
   },
   title: {
     fontSize: 18,
   },
-  separator: {
-    height: 10,
-    width: "100%",
-  },
-  separatorThin: {
-    height: 1,
-    width: "95%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignSelf: "flex-end",
-  },
+
   buttonWrapper: {
     display: "flex",
     flexDirection: "row",
@@ -236,8 +231,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     padding: 10,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "white",
+    borderBottomWidth: 0.25,
   },
   avatar: {
     width: 64,

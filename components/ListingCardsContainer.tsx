@@ -3,7 +3,6 @@ import ListingCard from "@components/ListingCard";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { debounce } from "lodash";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
 
 const allListingsQuery = gql`
   query Query(
@@ -65,7 +64,7 @@ function ListingCardsContainer() {
 
   return (
     <MasonryList
-      style={styles.container}
+      style={{ margin: 3 }}
       data={data ? data.allListings : []}
       numColumns={2}
       renderItem={({ item }) => <ListingCard data={item} />}
@@ -77,12 +76,5 @@ function ListingCardsContainer() {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 3,
-  },
-});
 
 export default ListingCardsContainer;
