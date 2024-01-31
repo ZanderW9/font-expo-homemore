@@ -7,8 +7,8 @@ import {
   FontAwesome6,
   Ionicons,
 } from "@expo/vector-icons";
+import { FlashList } from "@shopify/flash-list";
 import React from "react";
-import { FlatList } from "react-native";
 
 const AmenitiesFilters = (props: any) => {
   const colors = useThemedColors();
@@ -87,7 +87,8 @@ const AmenitiesFilters = (props: any) => {
         Amenities you want
       </Text>
 
-      <FlatList
+      <FlashList
+        estimatedItemSize={100}
         data={amenities}
         numColumns={3}
         renderItem={({ item }) => (
