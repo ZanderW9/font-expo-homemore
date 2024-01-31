@@ -11,7 +11,7 @@ export default function TabInboxScreen() {
   const colors = useThemedColors();
   const { isLoggedIn } = useContext(GlobalContext);
   return (
-    <View style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
           title: "Inbox",
