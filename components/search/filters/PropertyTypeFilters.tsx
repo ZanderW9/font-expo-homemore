@@ -4,9 +4,8 @@ import { styles } from "@components/search/styles";
 import { useThemedColors } from "@constants/theme";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CheckBox } from "@rneui/themed";
-import { FlashList } from "@shopify/flash-list";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, FlatList } from "react-native";
 
 const PropertyTypeFilters = (props: any) => {
   const colors = useThemedColors();
@@ -73,8 +72,7 @@ const PropertyTypeFilters = (props: any) => {
         Property Type
       </Text>
 
-      <FlashList
-        estimatedItemSize={95}
+      <FlatList
         data={propertyTypes}
         numColumns={2}
         renderItem={({ item }) => (

@@ -1,11 +1,12 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
-import { View } from "@components/Themed";
+import { View, ScrollView, TouchableOpacity, Text } from "@components/Themed";
 // import { useGetLocalItem } from "@config/hooks/storage";
 import { CREATE_LISTING_PAGE_QUERY } from "@config/gql/listing";
 import { compressImage } from "@config/media";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { ListItem, Input, ButtonGroup, Button, Dialog } from "@rneui/themed";
 import { Image } from "expo-image";
@@ -13,15 +14,10 @@ import * as ImagePicker from "expo-image-picker";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useState, useEffect, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  BackHandler,
-} from "react-native";
+import { StyleSheet, BackHandler } from "react-native";
 import { CalendarList } from "react-native-calendars";
 import DropDownPicker from "react-native-dropdown-picker";
+
 DropDownPicker.setListMode("SCROLLVIEW");
 
 const updateListingMutation = gql`
@@ -84,6 +80,7 @@ const deleteListingMutation = gql`
 `;
 
 const CreateListingScreen = () => {
+  const colors = useThemedColors();
   const { httpLinkUrl } = useContext(GlobalContext);
   const { listingId } = useLocalSearchParams();
   const [updateListingFunction] = useMutation(updateListingMutation);
@@ -557,6 +554,7 @@ const CreateListingScreen = () => {
   return (
     <ScrollView
       style={styles.container}
+      theme={{ background: "back2" }}
       showsVerticalScrollIndicator={false}
       scrollEnabled={!open}
     >
@@ -564,11 +562,17 @@ const CreateListingScreen = () => {
         options={{
           title: "Create",
           animation: "slide_from_right",
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
           headerLeft: () => (
             <Ionicons
               name="arrow-back-outline"
               size={24}
-              color="black"
+              color={colors.text}
               style={{ marginRight: 30 }}
               onPress={handleExit}
             />
@@ -588,8 +592,12 @@ const CreateListingScreen = () => {
           ),
         }}
       />
-      <View style={styles.imagesContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View style={styles.imagesContainer} theme={{ background: "back2" }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          theme={{ background: "back2" }}
+        >
           {s3Images?.map((image, index) => (
             <TouchableOpacity
               key={index}
@@ -609,7 +617,7 @@ const CreateListingScreen = () => {
       <Dialog
         isVisible={showDeleteDialog}
         onBackdropPress={cancelDelete}
-        overlayStyle={{ borderRadius: 10 }}
+        overlayStyle={{ borderRadius: 10, backgroundColor: colors.back1 }}
       >
         <Text>Are you sure you want to delete this image?</Text>
         <View
@@ -635,11 +643,27 @@ const CreateListingScreen = () => {
           content={
             <>
               <ListItem.Content>
-                <ListItem.Title>Basic Infomation</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Basic Infomation</Text>
+                </ListItem.Title>
               </ListItem.Content>
             </>
           }
-          containerStyle={{ borderRadius: 15 }}
+          expandIcon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          icon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          containerStyle={{ borderRadius: 8, backgroundColor: colors.back1 }}
           isExpanded={expanded.includes(0)}
           onPress={() => {
             if (expanded.includes(0)) {
@@ -716,11 +740,27 @@ const CreateListingScreen = () => {
           content={
             <>
               <ListItem.Content>
-                <ListItem.Title>Search your address</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Search your address</Text>
+                </ListItem.Title>
               </ListItem.Content>
             </>
           }
-          containerStyle={{ borderRadius: 15 }}
+          expandIcon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          icon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          containerStyle={{ borderRadius: 8, backgroundColor: colors.back1 }}
           isExpanded={expanded.includes(1)}
           onPress={() => {
             if (expanded.includes(1)) {
@@ -739,7 +779,8 @@ const CreateListingScreen = () => {
             setItems={setCountry}
             dropDownContainerStyle={{
               borderWidth: 1,
-              borderColor: "#c4c4c4",
+              borderColor: colors.border1,
+              backgroundColor: colors.back1,
             }}
             containerStyle={{
               width: "94.5%",
@@ -747,10 +788,15 @@ const CreateListingScreen = () => {
               alignSelf: "center",
               borderWidth: 0,
               margin: 15,
+              backgroundColor: colors.back1,
             }}
-            style={styles.pickerContainer}
+            style={[
+              styles.pickerContainer,
+              { backgroundColor: colors.back1, borderColor: colors.border1 },
+            ]}
             textStyle={{
               fontSize: 16,
+              color: colors.text,
             }}
             onSelectItem={(item) => {
               setSelectedCountry(item.value);
@@ -846,11 +892,27 @@ const CreateListingScreen = () => {
           content={
             <>
               <ListItem.Content>
-                <ListItem.Title>Place Information</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Place Information</Text>
+                </ListItem.Title>
               </ListItem.Content>
             </>
           }
-          containerStyle={{ borderRadius: 15 }}
+          expandIcon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          icon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          containerStyle={{ borderRadius: 8, backgroundColor: colors.back1 }}
           isExpanded={expanded.includes(2)}
           onPress={() => {
             if (expanded.includes(2)) {
@@ -1044,16 +1106,33 @@ const CreateListingScreen = () => {
           </View>
         </ListItem.Accordion>
       </View>
+
       <View style={styles.contentWrapper}>
         <ListItem.Accordion
           content={
             <>
               <ListItem.Content>
-                <ListItem.Title>More Information</ListItem.Title>
+                <ListItem.Title>
+                  <Text>More Information</Text>
+                </ListItem.Title>
               </ListItem.Content>
             </>
           }
-          containerStyle={{ borderRadius: 15 }}
+          expandIcon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          icon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          containerStyle={{ borderRadius: 8, backgroundColor: colors.back1 }}
           isExpanded={expanded.includes(3)}
           onPress={() => {
             if (expanded.includes(3)) {
@@ -1129,16 +1208,33 @@ const CreateListingScreen = () => {
           />
         </ListItem.Accordion>
       </View>
+
       <View style={styles.contentWrapper}>
         <ListItem.Accordion
           content={
             <>
               <ListItem.Content>
-                <ListItem.Title>Available Date</ListItem.Title>
+                <ListItem.Title>
+                  <Text>Available Date</Text>
+                </ListItem.Title>
               </ListItem.Content>
             </>
           }
-          containerStyle={{ borderRadius: 15 }}
+          expandIcon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          icon={
+            <Ionicons
+              name="chevron-down-outline"
+              size={24}
+              color={colors.text}
+            />
+          }
+          containerStyle={{ borderRadius: 8, backgroundColor: colors.back1 }}
           isExpanded={expanded.includes(4)}
           onPress={() => {
             if (expanded.includes(4)) {
@@ -1204,6 +1300,11 @@ const CreateListingScreen = () => {
           <CalendarList
             minDate={today}
             horizontal
+            calendarStyle={{ backgroundColor: colors.back1 }}
+            style={{ backgroundColor: colors.back1 }}
+            theme={{
+              backgroundColor: colors.back1,
+            }}
             pastScrollRange={0}
             futureScrollRange={12}
             scrollEnabled
@@ -1225,12 +1326,13 @@ const CreateListingScreen = () => {
           />
         </ListItem.Accordion>
       </View>
+
       <View
         style={{
           flexDirection: "row",
           justifyContent: "center",
-          backgroundColor: "#f5f5f5",
         }}
+        theme={{ background: "back2" }}
       >
         <Button
           title="Publish"
@@ -1248,7 +1350,7 @@ const CreateListingScreen = () => {
       <Dialog
         isVisible={showSaveDraftDialog}
         onBackdropPress={() => setShowSaveDraftDialog(false)}
-        overlayStyle={{ borderRadius: 10 }}
+        overlayStyle={{ borderRadius: 10, backgroundColor: colors.back1 }}
       >
         <Text>Do you want to save the draft before exiting?</Text>
         <View
@@ -1284,7 +1386,6 @@ const CreateListingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
   },
   imagesContainer: {
     justifyContent: "flex-start",
@@ -1297,7 +1398,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 8,
     overflow: "hidden",
     marginRight: 10,
@@ -1357,7 +1457,6 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.2)",
     borderRadius: 5,
   },
   errorMessage: {

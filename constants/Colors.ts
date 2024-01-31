@@ -4,10 +4,12 @@ const tintColorDark = "#fff";
 export default {
   light: {
     text: "#000",
-    contrastText: "#f0f0f0",
+    textReverse: "#f0f0f0",
+    textSub1: "#666",
+    textSub1Reverse: "#999",
     back1: "#fff", // 纯白
     back2: "#f5f5f5", //灰一点的白
-    border1: "#d5d5d5",
+    border1: "rgba(0,0,0,0.1)", // 灰色边框
     mainColor: "rgb(236, 76, 96)",
     tint: tintColorLight,
     tabIconDefault: "#ccc",
@@ -15,10 +17,12 @@ export default {
   },
   dark: {
     text: "#f0f0f0",
-    contrastText: "#000",
+    textReverse: "#000",
+    textSub1: "#999",
+    textSub1Reverse: "#666",
     back1: "#222",
     back2: "#111",
-    border1: "#333",
+    border1: "rgba(255,255,255,0.1)",
     mainColor: "rgb(236, 76, 96)",
     tint: tintColorDark,
     tabIconDefault: "#ccc",

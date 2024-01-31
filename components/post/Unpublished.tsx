@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 
 function Unpublished(data: any) {
   return (
-    <View>
+    <View theme={{ background: "back2" }}>
       <MasonryList
         style={styles.container}
         data={data.unpublished ? data.unpublished : []}
@@ -21,7 +21,6 @@ function Unpublished(data: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
   },
 });
 

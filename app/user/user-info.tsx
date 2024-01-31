@@ -1,8 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
-import { View } from "@components/Themed";
+import { Text, ScrollView } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { ListItem, Avatar } from "@rneui/themed";
 import { Stack, router } from "expo-router";
-import { StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { StyleSheet } from "react-native";
 
 const meQuery = gql`
   query Query {
@@ -18,6 +19,7 @@ const meQuery = gql`
 `;
 
 function EditProfileScreen() {
+  const colors = useThemedColors();
   const { data } = useQuery(meQuery);
 
   const updateAvatarHandler = () => {
@@ -56,105 +58,140 @@ function EditProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Stack.Screen
-          options={{
-            title: "Personal Information",
-            headerTitleAlign: "center",
-            headerBackTitleVisible: false,
-            animation: "slide_from_right",
-          }}
-        />
-        <ListItem onPress={updateAvatarHandler}>
-          <ListItem.Content style={styles.subtitleWrapper}>
-            <ListItem.Title>Avatar</ListItem.Title>
-            <ListItem.Subtitle>
-              {data?.me?.avatar ? (
-                <Avatar
-                  size={64}
-                  rounded
-                  source={{ uri: data?.me?.avatar }}
-                  containerStyle={styles.avatar}
-                />
-              ) : (
-                <Avatar
-                  size={64}
-                  rounded
-                  title={data?.me?.userName?.slice(0, 2) ?? ""}
-                  containerStyle={styles.avatar}
-                />
-              )}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+      theme={{ background: "back2" }}
+    >
+      <Stack.Screen
+        options={{
+          title: "Personal Information",
+          headerTitleAlign: "center",
+          headerBackTitleVisible: false,
+          animation: "slide_from_right",
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
+        }}
+      />
+      <ListItem
+        containerStyle={{
+          backgroundColor: colors.back1,
+          borderColor: colors.border1,
+          borderBottomWidth: 0.5,
+        }}
+        bottomDivider
+        onPress={updateAvatarHandler}
+      >
+        <ListItem.Content style={styles.subtitleWrapper}>
+          <ListItem.Title>
+            <Text>Avatar</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle>
+            {data?.me?.avatar ? (
+              <Avatar
+                size={64}
+                rounded
+                source={{ uri: data?.me?.avatar }}
+                containerStyle={styles.avatar}
+              />
+            ) : (
+              <Avatar
+                size={64}
+                rounded
+                title={data?.me?.userName?.slice(0, 2) ?? ""}
+                titleStyle={{ color: colors.textSub1Reverse }}
+                containerStyle={styles.avatar}
+              />
+            )}
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.Chevron />
+      </ListItem>
 
-        <View
-          style={styles.separatorThin}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
+      <ListItem
+        containerStyle={{
+          backgroundColor: colors.back1,
+          borderColor: colors.border1,
+          borderBottomWidth: 0.5,
+        }}
+        bottomDivider
+        onPress={updateNameHandler}
+      >
+        <ListItem.Content style={styles.subtitleWrapper}>
+          <ListItem.Title>
+            <Text>Name</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle style={styles.subtitle}>
+            <Text theme={{ color: "textSub1" }}> {data?.me?.userName}</Text>
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.Chevron />
+      </ListItem>
 
-        <ListItem onPress={updateNameHandler}>
-          <ListItem.Content style={styles.subtitleWrapper}>
-            <ListItem.Title>Name</ListItem.Title>
-            <ListItem.Subtitle style={styles.subtitle}>
-              {data?.me?.userName}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
+      <ListItem
+        containerStyle={{
+          backgroundColor: colors.back1,
+          borderColor: colors.border1,
+          borderBottomWidth: 0.5,
+        }}
+        bottomDivider
+        onPress={updateEmailHandler}
+      >
+        <ListItem.Content style={styles.subtitleWrapper}>
+          <ListItem.Title>
+            <Text>Email</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle style={styles.subtitle}>
+            <Text theme={{ color: "textSub1" }}>{data?.me?.email}</Text>
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.Chevron />
+      </ListItem>
 
-        <View
-          style={styles.separatorThin}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
+      <ListItem
+        containerStyle={{
+          backgroundColor: colors.back1,
+          borderColor: colors.border1,
+          borderBottomWidth: 0.5,
+        }}
+        bottomDivider
+        onPress={updatePhoneHandler}
+      >
+        <ListItem.Content style={styles.subtitleWrapper}>
+          <ListItem.Title>
+            <Text>Phone</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle style={styles.subtitle}>
+            <Text theme={{ color: "textSub1" }}>{data?.me?.phone}</Text>
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.Chevron />
+      </ListItem>
 
-        <ListItem onPress={updateEmailHandler}>
-          <ListItem.Content style={styles.subtitleWrapper}>
-            <ListItem.Title>Email</ListItem.Title>
-            <ListItem.Subtitle style={styles.subtitle}>
-              {data?.me?.email}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
-
-        <View
-          style={styles.separatorThin}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
-
-        <ListItem onPress={updatePhoneHandler}>
-          <ListItem.Content style={styles.subtitleWrapper}>
-            <ListItem.Title>Phone</ListItem.Title>
-            <ListItem.Subtitle style={styles.subtitle}>
-              {data?.me?.phone}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
-
-        <View
-          style={styles.separatorThin}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
-
-        <ListItem onPress={updateGenderHandler}>
-          <ListItem.Content style={styles.subtitleWrapper}>
-            <ListItem.Title>Gender</ListItem.Title>
-            <ListItem.Subtitle style={styles.subtitle}>
-              {data?.me?.gender}
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
-      </ScrollView>
-    </SafeAreaView>
+      <ListItem
+        containerStyle={{
+          backgroundColor: colors.back1,
+          borderColor: colors.border1,
+          borderBottomWidth: 0.5,
+        }}
+        bottomDivider
+        onPress={updateGenderHandler}
+      >
+        <ListItem.Content style={styles.subtitleWrapper}>
+          <ListItem.Title>
+            <Text>Gender</Text>
+          </ListItem.Title>
+          <ListItem.Subtitle style={styles.subtitle}>
+            <Text theme={{ color: "textSub1" }}>{data?.me?.gender}</Text>
+          </ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.Chevron />
+      </ListItem>
+    </ScrollView>
   );
 }
 
@@ -172,7 +209,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   subtitle: {
-    color: "gray",
     fontSize: 16,
   },
   separatorThin: {

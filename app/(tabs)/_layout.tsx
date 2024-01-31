@@ -47,7 +47,7 @@ export default function () {
         name="inbox"
         options={{
           title: "Inbox",
-          headerTitleAlign: "center",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="message1" color={color} />
           ),

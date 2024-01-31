@@ -1,16 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
-import { Text, View } from "@components/Themed";
+import { Text, View, TouchableOpacity, ScrollView } from "@components/Themed";
 import Published from "@components/post/Published";
 import Unpublished from "@components/post/Unpublished";
+import { useThemedColors } from "@constants/theme";
 import { Stack } from "expo-router";
 import React, { useState, useRef, useCallback } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  RefreshControl,
-  SafeAreaView,
-} from "react-native";
+import { StyleSheet, RefreshControl } from "react-native";
 import PagerView from "react-native-pager-view";
 
 const meQuery = gql`
@@ -47,6 +42,7 @@ const meQuery = gql`
 `;
 
 function MyPost() {
+  const colors = useThemedColors();
   const { data, refetch } = useQuery(meQuery);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
@@ -64,19 +60,26 @@ function MyPost() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
           title: "My Post",
           animation: "slide_from_right",
           headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
         }}
       />
-      <View style={styles.content}>
-        <View style={styles.tabBar}>
+      <View style={styles.content} theme={{ background: "back2" }}>
+        <View style={styles.tabBar} theme={{ background: "back2" }}>
           <TouchableOpacity
             onPress={() => handleTabPress(0)}
             style={styles.tabItem}
+            theme={{ background: "back2" }}
           >
             <Text
               style={currentPage === 0 ? styles.activeTabText : styles.tabText}
@@ -87,6 +90,7 @@ function MyPost() {
           <TouchableOpacity
             onPress={() => handleTabPress(1)}
             style={styles.tabItem}
+            theme={{ background: "back2" }}
           >
             <Text
               style={currentPage === 1 ? styles.activeTabText : styles.tabText}
@@ -102,8 +106,9 @@ function MyPost() {
           onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
           ref={pagerRef}
         >
-          <View key="1" style={{ backgroundColor: "#f5f5f5" }}>
+          <View key="1">
             <ScrollView
+              theme={{ background: "back2" }}
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -112,8 +117,9 @@ function MyPost() {
               <Published published={data?.me.myPublishedListings} />
             </ScrollView>
           </View>
-          <View key="2" style={{ backgroundColor: "#f5f5f5" }}>
+          <View key="2">
             <ScrollView
+              theme={{ background: "back2" }}
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -124,7 +130,7 @@ function MyPost() {
           </View>
         </PagerView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -134,7 +140,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
   },
   safeArea: {
     width: "100%",
@@ -152,17 +157,14 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
   },
   tabItem: {
     padding: 10,
   },
   tabText: {
-    color: "rgba(0,0,0,0.5)",
     fontSize: 14,
   },
   activeTabText: {
-    color: "rgba(0,0,0,1)",
     fontSize: 18,
     fontWeight: "bold",
   },

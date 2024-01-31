@@ -1,11 +1,12 @@
 import { gql, useQuery } from "@apollo/client";
-import { View, Text } from "@components/Themed";
+import { View, Text, TouchableOpacity, ScrollView } from "@components/Themed";
 import Published from "@components/post/Published";
 import FavoriteCardsContainer from "@components/wishlist/FavoriteCardsContainer";
+import { useThemedColors } from "@constants/theme";
 import { Avatar } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useState, useRef } from "react";
-import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet } from "react-native";
 import PagerView from "react-native-pager-view";
 
 const meQuery = gql`
@@ -92,6 +93,7 @@ const CustomHeaderTitle = (data: any) => {
 };
 
 function UserScreen() {
+  const colors = useThemedColors();
   const { userId } = useLocalSearchParams();
   const { data } = useQuery(meQuery, {
     variables: { userId },
@@ -104,7 +106,7 @@ function UserScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
           headerTitle: () => CustomHeaderTitle(data),
@@ -112,17 +114,21 @@ function UserScreen() {
           headerTitleAlign: "center",
           headerBackTitleVisible: false,
           headerBackTitle: "Details",
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
           headerRight: () => (
             <TouchableOpacity
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 borderRadius: 20,
-                backgroundColor: "#f5f5f5",
                 borderWidth: 1,
-                borderColor: "#e3e3e3",
-                paddingHorizontal: 8,
-                paddingVertical: 3,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
               }}
               onPress={() => {
                 const chatId = [data?.myself?.id, data?.me?.id]
@@ -143,11 +149,12 @@ function UserScreen() {
           ),
         }}
       />
-      <View style={styles.content}>
-        <View style={styles.tabBar}>
+      <View style={styles.content} theme={{ background: "back2" }}>
+        <View style={styles.tabBar} theme={{ background: "back2" }}>
           <TouchableOpacity
             onPress={() => handleTabPress(0)}
             style={styles.tabItem}
+            theme={{ background: "back2" }}
           >
             <Text
               style={currentPage === 0 ? styles.activeTabText : styles.tabText}
@@ -158,6 +165,7 @@ function UserScreen() {
           <TouchableOpacity
             onPress={() => handleTabPress(1)}
             style={styles.tabItem}
+            theme={{ background: "back2" }}
           >
             <Text
               style={currentPage === 1 ? styles.activeTabText : styles.tabText}
@@ -168,18 +176,24 @@ function UserScreen() {
         </View>
 
         <PagerView
-          style={styles.pagerView}
+          style={[styles.pagerView, { backgroundColor: colors.back1 }]}
           initialPage={0}
           onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
           ref={pagerRef}
         >
-          <View key="1" style={{ backgroundColor: "#f5f5f5" }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+          <View key="1" theme={{ background: "back1" }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              theme={{ background: "back2" }}
+            >
               <Published published={data?.me.myPublishedListings} />
             </ScrollView>
           </View>
-          <View key="2" style={{ backgroundColor: "#f5f5f5" }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+          <View key="2" theme={{ background: "back1" }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              theme={{ background: "back2" }}
+            >
               <FavoriteCardsContainer data={data?.me?.favorites} />
             </ScrollView>
           </View>
@@ -196,7 +210,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 5,
-    backgroundColor: "#f5f5f5",
   },
   safeArea: {
     width: "100%",
@@ -214,17 +227,14 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
   },
   tabItem: {
     padding: 10,
   },
   tabText: {
-    color: "rgba(0,0,0,0.5)",
     fontSize: 14,
   },
   activeTabText: {
-    color: "rgba(0,0,0,1)",
     fontSize: 18,
     fontWeight: "bold",
   },

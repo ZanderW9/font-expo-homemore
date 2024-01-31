@@ -9,7 +9,7 @@ export default function InboxView() {
   const { data, refetch } = useCachedQuery(CHAT_QUERY, usePathname());
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+    <View style={{ flex: 1 }}>
       {data && <InboxList data={data} refetch={refetch} />}
     </View>
   );

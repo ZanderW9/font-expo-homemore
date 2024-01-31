@@ -1,19 +1,15 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
-import { Text, View } from "@components/Themed";
+import { Text, View, ScrollView, TouchableOpacity } from "@components/Themed";
 import { compressImage } from "@config/media";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
+import { useThemedColors } from "@constants/theme";
 import { Avatar } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, router } from "expo-router";
 import { useContext, useState } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const meQuery = gql`
@@ -35,6 +31,7 @@ const updateMutation = gql`
 `;
 
 function EditAvatarScreen() {
+  const colors = useThemedColors();
   const { data: gqlData } = useQuery(meQuery);
   const [updateFunction] = useMutation(updateMutation);
   const [imageUri, setImageUri] = useState(gqlData?.me?.avatar);
@@ -99,52 +96,67 @@ function EditAvatarScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Stack.Screen
-          options={{
-            title: "Edit Avatar",
-            headerTitleAlign: "center",
-            headerBackTitleVisible: false,
-            animation: "slide_from_right",
-          }}
-        />
-        <View style={styles.content}>
-          {gqlData?.me?.avatar ? (
-            <Avatar
-              size={64}
-              rounded
-              source={{ uri: imageUri }}
-              containerStyle={styles.avatar}
-            />
-          ) : (
-            <Avatar
-              size={64}
-              rounded
-              title={gqlData?.me?.userName?.slice(0, 2) ?? ""}
-              titleStyle={{
-                fontSize: 100,
-              }}
-              containerStyle={styles.avatar}
-            />
-          )}
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              paddingHorizontal: 10,
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+      theme={{ background: "back2" }}
+    >
+      <Stack.Screen
+        options={{
+          title: "Edit Avatar",
+          headerTitleAlign: "center",
+          headerBackTitleVisible: false,
+          animation: "slide_from_right",
+          headerTitleStyle: {
+            color: colors.text,
+          },
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+        }}
+      />
+      <View style={styles.content} theme={{ background: "back2" }}>
+        {gqlData?.me?.avatar ? (
+          <Avatar
+            size={64}
+            rounded
+            source={{ uri: imageUri }}
+            containerStyle={styles.avatar}
+          />
+        ) : (
+          <Avatar
+            size={64}
+            rounded
+            title={gqlData?.me?.userName?.slice(0, 2) ?? ""}
+            titleStyle={{
+              fontSize: 100,
+              color: colors.textSub1Reverse,
             }}
-          >
-            <TouchableOpacity style={styles.reserveButton} onPress={pickImage}>
-              <Text style={styles.reserveButtonText}>Change Avatar</Text>
-            </TouchableOpacity>
-          </View>
+            containerStyle={styles.avatar}
+          />
+        )}
+
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            paddingHorizontal: 10,
+          }}
+          theme={{ background: "back2" }}
+        >
+          <TouchableOpacity style={styles.reserveButton} onPress={pickImage}>
+            <Text
+              style={styles.reserveButtonText}
+              theme={{ color: "textSub1" }}
+            >
+              Change Avatar
+            </Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -164,15 +176,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3EED9",
   },
   reserveButton: {
-    padding: 5,
+    padding: 10,
     borderRadius: 30,
     marginVertical: 20,
     borderWidth: 1,
-    borderColor: "gray",
   },
   reserveButtonText: {
-    color: "gray",
-    fontSize: 12,
+    fontSize: 14,
     alignSelf: "center",
     justifyContent: "center",
   },

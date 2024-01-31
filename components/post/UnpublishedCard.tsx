@@ -1,11 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
-import { Text, View } from "@components/Themed";
+import { Text, View, Pressable, TouchableOpacity } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Card } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 type CardsComponentsProps = {
@@ -71,6 +72,7 @@ const deleteListingMutation = gql`
 const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
+  const colors = useThemedColors();
   const [deleteListingFunction, { error: deleteListingError }] = useMutation(
     deleteListingMutation,
     {
@@ -118,8 +120,17 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onLongPress={onImagePress} onPress={editHandler}>
-        <Card containerStyle={styles.cardContainer}>
+      <TouchableOpacity
+        onLongPress={onImagePress}
+        onPress={editHandler}
+        style={{ borderRadius: 15 }}
+      >
+        <Card
+          containerStyle={[
+            styles.cardContainer,
+            { backgroundColor: colors.back1 },
+          ]}
+        >
           <Image
             source={{ uri: imageData.smallUrl }}
             placeholder={{
@@ -131,7 +142,9 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
 
           <View style={styles.cardContent}>
             {data.price ? (
-              <Card.Title style={styles.price}>${data.price}</Card.Title>
+              <Card.Title style={styles.price}>
+                <Text>${data.price}</Text>
+              </Card.Title>
             ) : (
               <></>
             )}
@@ -140,11 +153,13 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
                 <Ionicons
                   name="location"
                   size={13}
-                  color="black"
+                  color={colors.text}
                   style={styles.icon}
                 />
                 <Card.Title style={styles.address}>
-                  {data.address.city + ", " + data.address.state}
+                  <Text theme={{ color: "textSub1" }}>
+                    {data.address.city + ", " + data.address.state}
+                  </Text>
                 </Card.Title>
               </View>
             ) : (
@@ -153,7 +168,7 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
 
             {styles.title ? (
               <Card.Title style={styles.title} numberOfLines={2}>
-                {data.title}
+                <Text>{data.title}</Text>
               </Card.Title>
             ) : (
               <></>
@@ -203,7 +218,7 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     borderRadius: 8,
-    borderWidth: 1,
+    borderWidth: 0,
     position: "relative",
   },
   image: {
@@ -221,7 +236,6 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginTop: -14,
     marginBottom: 0,
-    color: "gray",
   },
   address: {
     fontSize: 13,
@@ -233,7 +247,6 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 15,
-    color: "black",
     fontWeight: "400",
     marginBottom: 3,
     marginTop: 4,
@@ -241,7 +254,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 13,
-    color: "black",
     fontWeight: "400",
     marginBottom: 1,
     marginTop: 1,
@@ -251,7 +263,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 12,
-    color: "black",
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,

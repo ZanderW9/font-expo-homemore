@@ -43,7 +43,6 @@ function TabWishlistScreen() {
   return (
     <View
       style={{
-        // backgroundColor: "#f5f5f5",
         flex: 1,
       }}
       theme={{ background: "back2" }}

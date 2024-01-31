@@ -54,8 +54,11 @@ export function useThemeColor(
 }
 
 export function Text(props: TextProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({}, "text");
+  const { style, theme, ...otherProps } = props;
+  const color = useThemeColor(
+    {},
+    (theme?.color as keyof typeof Colors.light) || "text",
+  );
 
   return <DefaultText style={[{ color }, style]} {...otherProps} />;
 }

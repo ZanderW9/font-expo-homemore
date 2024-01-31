@@ -1,10 +1,11 @@
 import { gql, useMutation } from "@apollo/client";
-import { View, Text } from "@components/Themed";
+import { View, Text, ScrollView, Pressable } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Input } from "@rneui/themed";
 import { Stack, router } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, ScrollView, SafeAreaView, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const updateMutation = gql`
@@ -31,6 +32,7 @@ const sendVeriCodeMutation = gql`
 `;
 
 function EditEmailScreen() {
+  const colors = useThemedColors();
   const [updateFunction] = useMutation(updateMutation);
   const [text, setText] = useState("");
   const [veriCode, setVeriCode] = useState("");
@@ -119,58 +121,73 @@ function EditEmailScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Stack.Screen
-          options={{
-            title: "Edit Email",
-            headerTitleAlign: "center",
-            headerBackTitleVisible: false,
-            animation: "slide_from_right",
-            headerRight: () => (
-              <Pressable onPress={updateHandler}>
-                <Text>Save</Text>
-              </Pressable>
-            ),
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+      theme={{ background: "back2" }}
+    >
+      <Stack.Screen
+        options={{
+          title: "Edit Email",
+          headerTitleAlign: "center",
+          headerBackTitleVisible: false,
+          animation: "slide_from_right",
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
+          headerRight: () => (
+            <Pressable onPress={updateHandler}>
+              <Text>Save</Text>
+            </Pressable>
+          ),
+        }}
+      />
+      <View style={styles.content}>
+        <Input
+          placeholder="New Email"
+          containerStyle={styles.inputWrapper}
+          inputContainerStyle={{
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border1,
+          }}
+          inputStyle={{ color: colors.text }}
+          value={text}
+          onChangeText={(text) => {
+            setText(text);
           }}
         />
-        <View style={styles.content}>
-          <Input
-            placeholder="New Email"
-            labelStyle={{ color: "gray" }}
-            containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
-            value={text}
-            onChangeText={(text) => {
-              setText(text);
-            }}
-          />
 
-          <Input
-            placeholder="Verification Code"
-            labelStyle={{ color: "gray" }}
-            containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
-            value={veriCode}
-            rightIcon={
-              <Ionicons
-                name={countdown ? "lock-closed-outline" : "send-outline"}
-                size={24}
-                color="black"
-                onPress={sendCodeHandler}
-                disabled={isButtonDisabled}
-              />
-            }
-            onChangeText={(text) => setVeriCode(text)}
-          />
-          {countdown > 0 && (
-            <Text
-              style={{ color: "gray", paddingLeft: 10 }}
-            >{`Resend in ${countdown} seconds`}</Text>
-          )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        <Input
+          placeholder="Verification Code"
+          containerStyle={styles.inputWrapper}
+          inputContainerStyle={{
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border1,
+          }}
+          inputStyle={{ color: colors.text }}
+          value={veriCode}
+          rightIcon={
+            <Ionicons
+              name={countdown ? "lock-closed-outline" : "send-outline"}
+              size={24}
+              color={colors.text}
+              onPress={sendCodeHandler}
+              disabled={isButtonDisabled}
+            />
+          }
+          onChangeText={(text) => setVeriCode(text)}
+        />
+        {countdown > 0 && (
+          <Text
+            theme={{ color: "textSub1" }}
+            style={{ paddingLeft: 10 }}
+          >{`Resend in ${countdown} seconds`}</Text>
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -181,11 +198,6 @@ const styles = StyleSheet.create({
   content: {
     paddingVertical: 10,
     paddingHorizontal: 13,
-    backgroundColor: "white",
-  },
-  inputContainer: {
-    borderColor: "rgba(0,0,0,0.2)",
-    borderRadius: 5,
   },
   inputWrapper: {
     marginBottom: -20,

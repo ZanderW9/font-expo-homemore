@@ -1,4 +1,4 @@
-import { View, Text } from "@components/Themed";
+import { View, Text, TouchableOpacity } from "@components/Themed";
 import { useSearchContext } from "@components/search/SearchProvider";
 import { styles } from "@components/search/styles";
 import { useThemedColors } from "@constants/theme";
@@ -7,9 +7,8 @@ import {
   FontAwesome6,
   Ionicons,
 } from "@expo/vector-icons";
-import { FlashList } from "@shopify/flash-list";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { FlatList } from "react-native";
 
 const AmenitiesFilters = (props: any) => {
   const colors = useThemedColors();
@@ -88,8 +87,7 @@ const AmenitiesFilters = (props: any) => {
         Amenities you want
       </Text>
 
-      <FlashList
-        estimatedItemSize={95}
+      <FlatList
         data={amenities}
         numColumns={3}
         renderItem={({ item }) => (

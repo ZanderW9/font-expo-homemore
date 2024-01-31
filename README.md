@@ -54,6 +54,8 @@ npx expo install --fix
 build 命令：eas build -p android --profile preview --local
 
 .env 设置必须放在 eas.json 中，以 EXPO_PUBLIC_开头
+或者用这个命令放进eas
+```eas secret:push --scope project --env-file .env --force ```
 
 安装java11: https://medium.com/@kirebyte/using-homebrew-to-install-java-jdk11-on-macos-2021-4a90aa276f1c
 

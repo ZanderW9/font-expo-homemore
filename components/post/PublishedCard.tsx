@@ -1,13 +1,14 @@
 import { gql, useMutation } from "@apollo/client";
-import { Text, View } from "@components/Themed";
+import { Text, View, Pressable, TouchableOpacity } from "@components/Themed";
 import AddModal from "@components/wishlist/AddModal";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useState, useRef } from "react";
-import { StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 
 type CardsComponentsProps = {
   data: {
@@ -73,6 +74,7 @@ const meQuery = gql`
 const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
+  const colors = useThemedColors();
   const [modifyPublishFunction] = useMutation(modifyPublishMutation);
 
   const [showOptions, setShowOptions] = useState(false);
@@ -119,8 +121,17 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onLongPress={onImagePress} onPress={viewHandler}>
-        <Card containerStyle={styles.cardContainer}>
+      <TouchableOpacity
+        onLongPress={onImagePress}
+        onPress={viewHandler}
+        style={{ borderRadius: 15 }}
+      >
+        <Card
+          containerStyle={[
+            styles.cardContainer,
+            { backgroundColor: colors.back1 },
+          ]}
+        >
           <Image
             source={{ uri: imageData.smallUrl }}
             placeholder={{ thumbhash: imageData.thumbhash }}
@@ -128,23 +139,27 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
             contentFit="cover"
           />
           <View style={styles.cardContent}>
-            <Card.Title style={styles.price}>${data.price}</Card.Title>
+            <Card.Title style={styles.price}>
+              <Text>${data.price}</Text>
+            </Card.Title>
             <View style={styles.titleAndIconContainer}>
               <Ionicons
                 name="location"
                 size={13}
-                color="black"
+                color={colors.text}
                 style={styles.icon}
               />
               <Card.Title style={styles.address}>
-                {data.address.city + ", " + data.address.state}
+                <Text theme={{ color: "textSub1" }}>
+                  {data.address.city + ", " + data.address.state}
+                </Text>
               </Card.Title>
             </View>
             <Card.Title style={styles.title} numberOfLines={2}>
-              {data.title}
+              <Text>{data.title}</Text>
             </Card.Title>
             <Text style={styles.description} numberOfLines={3}>
-              {data.description}
+              <Text>{data.description}</Text>
             </Text>
           </View>
           <View style={styles.checkboxContainer}>

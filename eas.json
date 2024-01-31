@@ -8,9 +8,9 @@
         "simulator": true
       },
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "http://192.168.50.64:4001",
+        "EXPO_PUBLIC_BACKEND_URL": "https://4f60-103-120-10-159.ngrok-free.app",
         "EXPO_PUBLIC_S3_URL": "https://foothold-config.s3.ap-southeast-2.amazonaws.com",
-        "EXPO_PUBLIC_DEVELOPER": "yuhang"
+        "EXPO_PUBLIC_DEVELOPER": "haijing"
       }
     },
     "preview2": {
@@ -24,6 +24,12 @@
     "preview4": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_BACKEND_URL": "https://4f60-103-120-10-159.ngrok-free.app",
+        "EXPO_PUBLIC_S3_URL": "https://foothold-config.s3.ap-southeast-2.amazonaws.com",
+        "EXPO_PUBLIC_DEVELOPER": "haijing"
+      }
+    }
   }
 }
