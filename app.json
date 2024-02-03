@@ -14,10 +14,12 @@
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
+
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location.",
+        "UIBackgroundModes": ["location", "fetch", "remote-notification"],
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location.",
         "LSApplicationQueriesSchemes": [
           "weixin",
           "fb",
@@ -31,6 +33,7 @@
       },
       "bundleIdentifier": "com.marclu.footholdslug"
     },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -49,15 +52,30 @@
       ],
       "package": "com.marclu.footholdslug"
     },
+
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router", "expo-location"],
+
+    "plugins": [
+      "expo-router",
+
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ]
+    ],
+
     "experiments": {
       "typedRoutes": true
     },
+
     "extra": {
       "router": {
         "origin": false

@@ -1,21 +1,30 @@
 import { Text, View, Pressable } from "@components/Themed";
-import MapScreen from "@components/map/MapView";
+import MapView from "@components/map/MapView";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
-function Location(data: any) {
+const Location = (props: any) => {
+  const { listing } = props;
+  const { coordinate } = listing;
+  const lat = coordinate?.lat || 0;
+  const lng = coordinate?.lng || 0;
+  const address = listing.address || {};
+  const center = {
+    lat,
+    lng,
+    latDelta: 0.0922,
+    lngDelta: 0.0421,
+  };
   const [copyAddress, setCopyAddress] = useState(
-    `${data?.address?.city} ${data?.address?.postCode}, ${data?.address
-      ?.state} ${data?.address?.country?.toUpperCase()}`,
+    `${address?.city} ${address?.postCode}, ${address?.state} ${address?.country?.toUpperCase()}`,
   );
 
   const copyHandler = async () => {
     setCopyAddress(
-      `${data?.address?.city} ${data?.address?.postCode}, ${data?.address
-        ?.state} ${data?.address?.country?.toUpperCase()}`,
+      `${address?.city} ${address?.postCode}, ${address?.state} ${address?.country?.toUpperCase()}`,
     );
     await Clipboard.setStringAsync(copyAddress);
     showMessage({
@@ -29,8 +38,8 @@ function Location(data: any) {
     <View style={styles.container}>
       <Text style={styles.title}>Location</Text>
       <Text style={styles.address} onPress={copyHandler}>
-        {data?.address?.city} {data?.address?.postCode}, {data?.address?.state}{" "}
-        {data?.address?.country?.toUpperCase()}
+        {address?.city} {address?.postCode}, {address?.state}{" "}
+        {address?.country?.toUpperCase()}
       </Text>
 
       <Pressable
@@ -38,20 +47,17 @@ function Location(data: any) {
         onPress={() =>
           router.navigate({
             pathname: "/detailMap",
-            params: { lat: data.lat, lng: data.lng },
+            params: { lat, lng, id: listing.id, price: listing.price },
           })
         }
       >
-        {data.lat !== 0 && data.lng !== 0 && (
-          <MapScreen
-            center={{
-              lat: data.lat,
-              lng: data.lng,
-              latDelta: 0.0922 / 3,
-              lngDelta: 0.0421 / 3,
-            }}
+        {coordinate?.lat && (
+          <MapView
+            center={center}
+            setCenter={() => {}}
+            listings={[listing]}
+            refetch={() => {}}
             scrollEnabled={false} // 设置不可拖动
-            isFullScreen={false}
           />
         )}
       </Pressable>
@@ -62,7 +68,7 @@ function Location(data: any) {
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

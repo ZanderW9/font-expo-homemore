@@ -33,7 +33,7 @@ const PriceRange = (props: { setScrollEnabled: Function }) => {
         range={[filters.price?.gte || 0, filters.price?.lte || 1500]}
         onSlidingStart={() => setScrollEnabled(false)}
         onSlidingComplete={() => setScrollEnabled(true)}
-        style={{ height: 50, marginTop: 10 }}
+        style={{ height: 50, marginTop: 10, paddingHorizontal: 10 }}
         minimumValue={0}
         maximumValue={1500}
         step={1}

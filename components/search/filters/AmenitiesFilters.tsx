@@ -10,7 +10,7 @@ import {
 import { FlashList } from "@shopify/flash-list";
 import React from "react";
 
-const AmenitiesFilters = (props: any) => {
+const AmenitiesFilters = () => {
   const colors = useThemedColors();
   const { filters, dispatchFilters } = useSearchContext();
 

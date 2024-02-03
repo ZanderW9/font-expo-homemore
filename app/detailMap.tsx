@@ -1,5 +1,5 @@
 import { View } from "@components/Themed";
-import MapScreen from "@components/map/MapView";
+import MapView from "@components/map/MapView";
 import { Ionicons } from "@expo/vector-icons";
 import { FAB } from "@rneui/themed";
 import { router, useLocalSearchParams } from "expo-router";
@@ -15,18 +15,38 @@ const styles = StyleSheet.create({
 });
 
 function DetailMapScreen() {
-  const { lat, lng } = useLocalSearchParams();
+  const {
+    lat: latStr,
+    lng: lngStr,
+    id,
+    price: priceStr,
+  } = useLocalSearchParams();
+  const lat = parseFloat(latStr);
+  const lng = parseFloat(lngStr);
+  const price = parseInt(priceStr, 10);
+
+  const listing = {
+    id,
+    price,
+    coordinate: {
+      lat,
+      lng,
+    },
+  };
+
   return (
     <View style={styles.container}>
-      <MapScreen
+      <MapView
         center={{
           lat: parseFloat(lat),
           lng: parseFloat(lng),
           latDelta: 0.0922,
           lngDelta: 0.0421,
         }}
+        setCenter={() => {}}
+        listings={[listing]}
+        refetch={() => {}}
         scrollEnabled // 设置可拖动
-        isFullScreen
       />
 
       <FAB

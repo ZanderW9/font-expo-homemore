@@ -1,5 +1,5 @@
 import { GlobalContext } from "@app/_layout";
-import { Text, View } from "@components/Themed";
+import { Text, View, TouchableOpacity } from "@components/Themed";
 import AddModal from "@components/wishlist/AddModal";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,7 +8,7 @@ import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useContext, useRef } from "react";
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 
 type CardsComponentsProps = {
   data: {
@@ -55,7 +55,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={pressHandler}>
+      <TouchableOpacity onPress={pressHandler}>
         <Card
           containerStyle={{
             ...styles.cardContainer,
@@ -100,7 +100,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
             />
           </View>
         </Card>
-      </Pressable>
+      </TouchableOpacity>
 
       <AddModal bottomSheetModalRef={bottomSheetModalRef} listingId={data.id} />
     </View>

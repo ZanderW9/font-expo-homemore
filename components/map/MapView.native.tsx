@@ -1,66 +1,41 @@
-import { gql, useQuery } from "@apollo/client";
 import { View, Text } from "@components/Themed";
+import { calculateCenter } from "@config/hooks/location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Platform } from "react-native";
+import React, { useRef } from "react";
+import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
-import MapView, { Marker } from "react-native-maps";
+import { default as DefaultMapView, Marker } from "react-native-maps";
 
-const mapViewQuery = gql`
-  query Query($first: Int, $boundary: Json, $published: Boolean) {
-    allListings(first: $first, boundary: $boundary, published: $published) {
-      id
-      coordinate
-      price
-    }
-  }
-`;
+function MapView(props) {
+  const {
+    center,
+    setCenter,
+    userLocation,
+    showUserLocation,
+    listings,
+    refetch,
+    filters,
+    scrollEnabled,
+  } = props;
 
-function MapScreen(props) {
-  const [boundaries, setBoundaries] = useState({});
-  const { data } = useQuery(mapViewQuery, {
-    variables: {
-      first: 100,
-      published: true,
-      boundary: {
-        northEast: {
-          latitude: boundaries.northEast?.latitude,
-          longitude: boundaries.northEast?.longitude,
-        },
-        southWest: {
-          latitude: boundaries.southWest?.latitude,
-          longitude: boundaries.southWest?.longitude,
-        },
-      },
-    },
-  });
-
-  const { center, scrollEnabled, isFullScreen } = props;
-  const [region, setRegion] = useState({
+  const region = {
     latitude: center.lat,
     longitude: center.lng,
     latitudeDelta: center.latDelta,
     longitudeDelta: center.lngDelta,
-  });
-  const mapRef = useRef(null);
+  };
 
-  useEffect(() => {
-    if (Platform.OS === "android" && mapRef.current) {
-      mapRef.current.animateToRegion({
-        latitude: center.lat,
-        longitude: center.lng,
-        latitudeDelta: center.latDelta,
-        longitudeDelta: center.lngDelta,
-      });
-      handleGetBoundaries();
-    }
-  }, [center]);
+  const mapRef = useRef(null);
 
   const handleGetBoundaries = async () => {
     try {
       if (mapRef.current) {
         const result = await mapRef.current.getMapBoundaries();
-        setBoundaries(result);
+        const newCenter = calculateCenter(result);
+        setCenter(newCenter);
+        refetch({ filters });
+        await AsyncStorage.setItem("mapCenter", JSON.stringify(newCenter));
       }
     } catch {
       showMessage({
@@ -70,29 +45,36 @@ function MapScreen(props) {
     }
   };
 
-  const currentLocationMarker = {
-    latitude: center.lat,
-    longitude: center.lng,
-  };
-
   const showCircleMarker =
     region.latitudeDelta > 0.1 || region.longitudeDelta > 0.1;
 
   return (
-    <MapView
+    <DefaultMapView
       provider="google"
       ref={mapRef}
       initialRegion={region}
       scrollEnabled={scrollEnabled}
       style={{ width: "100%", height: "100%", flex: 1 }}
       onRegionChangeComplete={async (newRegion) => {
-        setRegion(newRegion);
-        await handleGetBoundaries(); // 在拖动完成时获取地图边界
+        setCenter({
+          lat: newRegion.latitude,
+          lng: newRegion.longitude,
+          latDelta: newRegion.latitudeDelta,
+          lngDelta: newRegion.longitudeDelta,
+        });
+        await handleGetBoundaries();
+        // 在拖动完成时获取地图边界
       }}
     >
-      {/* 使用圆点标记当前位置 */}
-      {!isFullScreen ? (
-        <Marker coordinate={currentLocationMarker} title="Current Location">
+      {/* 标记用户位置 */}
+      {showUserLocation && userLocation.accuracy && (
+        <Marker
+          coordinate={{
+            latitude: userLocation.lat,
+            longitude: userLocation.lng,
+          }}
+          title="Current Location"
+        >
           <View
             style={{
               backgroundColor: "rgba(212, 224,247, 0.8)",
@@ -113,42 +95,42 @@ function MapScreen(props) {
             />
           </View>
         </Marker>
-      ) : (
-        data?.allListings?.map((listing) => {
-          const coordinate = {
-            latitude: listing.coordinate.lat,
-            longitude: listing.coordinate.lng,
-          };
-          return showCircleMarker ? (
-            <Marker
-              key={listing.id}
-              coordinate={coordinate}
-              onPress={() => {
-                router.push({
-                  pathname: `/detail/${data.allListings[0].id}`,
-                });
-              }}
-            >
-              <View style={styles.circleMarker} />
-            </Marker>
-          ) : (
-            <Marker
-              key={listing.id}
-              coordinate={coordinate}
-              onPress={() => {
-                router.push({
-                  pathname: `/detail/${data.allListings[0].id}`,
-                });
-              }}
-            >
-              <View style={styles.marker}>
-                <Text style={styles.markerText}>${listing.price}</Text>
-              </View>
-            </Marker>
-          );
-        })
       )}
-    </MapView>
+
+      {listings?.map((listing) => {
+        const coordinate = {
+          latitude: listing?.coordinate.lat,
+          longitude: listing?.coordinate.lng,
+        };
+        return showCircleMarker ? (
+          <Marker
+            key={listing.id}
+            coordinate={coordinate}
+            onPress={() => {
+              router.push({
+                pathname: `/detail/${listings[0].id}`,
+              });
+            }}
+          >
+            <View style={styles.circleMarker} />
+          </Marker>
+        ) : (
+          <Marker
+            key={listing.id}
+            coordinate={coordinate}
+            onPress={() => {
+              router.push({
+                pathname: `/detail/${listings[0].id}`,
+              });
+            }}
+          >
+            <View style={styles.marker}>
+              <Text style={styles.markerText}>${listing.price}</Text>
+            </View>
+          </Marker>
+        );
+      })}
+    </DefaultMapView>
   );
 }
 
@@ -178,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MapScreen;
+export default MapView;

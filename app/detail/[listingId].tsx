@@ -67,9 +67,9 @@ const CustomHeaderTitle = (data: any) => {
 function ListingDetailScreen() {
   const colors = useThemedColors();
   const { isLoggedIn } = useContext(GlobalContext);
-  const { listing } = useLocalSearchParams();
+  const { listingId } = useLocalSearchParams();
   const { data } = useQuery(DETAIL_PAGE_LISTING_QUERY, {
-    variables: { listingId: listing },
+    variables: { listingId },
     errorPolicy: "all",
   });
 
@@ -153,6 +153,7 @@ function ListingDetailScreen() {
             lat={data ? data.listingById?.coordinate.lat : 0}
             lng={data ? data.listingById?.coordinate.lng : 0}
             address={data ? data.listingById?.address : ""}
+            listing={data ? data.listingById : {}}
           />
           {/* Part4 */}
           <Facility

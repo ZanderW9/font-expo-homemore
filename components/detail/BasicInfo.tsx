@@ -1,21 +1,21 @@
 import { Text, View } from "@components/Themed";
 import { StyleSheet } from "react-native";
 
-function BasicInfo(data: any) {
+function BasicInfo(props: any) {
   let rentType = "";
-  if (data.data.rentType === "ARoom") {
+  if (props.data.rentType === "ARoom") {
     rentType = "A Separate Room";
-  } else if (data.data.rentType === "entirePlace") {
+  } else if (props.data.rentType === "entirePlace") {
     rentType = "An Entire Place";
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.placeType}>
-        {data.data.placeType} · {rentType}
+        {props.data.placeType} · {rentType}
       </Text>
-      <Text style={styles.title}>{data.data.title}</Text>
-      <Text style={styles.description}>{data.data.description}</Text>
+      <Text style={styles.title}>{props.data.title}</Text>
+      <Text style={styles.description}>{props.data.description}</Text>
       <View
         style={styles.separator}
         lightColor="#eee"

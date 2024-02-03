@@ -17,8 +17,9 @@ import {
   CHAT_SUBSCRIPTION,
   updateChatsWithNewMessage,
 } from "@config/gql/chat";
-import useUserLocation from "@config/hooks/useUserLocation";
+import { useLocation } from "@config/hooks/location";
 import { getLocalItem } from "@config/storageManager";
+import { useThemedColors } from "@constants/theme";
 import { useApolloClientDevTools } from "@dev-plugins/apollo-client";
 import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
 import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
@@ -42,6 +43,7 @@ import Animated, {
   interpolate,
   runOnJS,
 } from "react-native-reanimated";
+// import { requestLocationPermissions } from "@config/backgroundTasks";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -148,6 +150,8 @@ export default function RootLayout() {
   const navigationRef = useNavigationContainerRef();
   useReactNavigationDevTools(navigationRef);
   useAsyncStorageDevTools();
+  const colors = useThemedColors();
+
   const [appIsReady, setAppIsReady] = useState(false);
   const [token, setToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -157,6 +161,7 @@ export default function RootLayout() {
   const setApolloClient = (token: string, httpLinkUrl: string) => {
     setClient(createApolloClient(token, httpLinkUrl));
   };
+
   const [isSplashAnimationComplete, setAnimationComplete] = useState(false);
   const animation = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => {
@@ -228,6 +233,7 @@ export default function RootLayout() {
                 StyleSheet.absoluteFill,
                 {
                   backgroundColor:
+                    colors.back2 ||
                     Constants.expoConfig?.splash?.backgroundColor,
                 },
                 animatedStyle,
@@ -288,9 +294,10 @@ export const ChatProvider = ({ children }) => {
 };
 
 function RootLayoutNav() {
-  useUserLocation();
+  useLocation();
   const client = useApolloClient();
   useApolloClientDevTools(client);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>

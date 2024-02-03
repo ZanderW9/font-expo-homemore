@@ -8,7 +8,7 @@ import { FlashList } from "@shopify/flash-list";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
-const PropertyTypeFilters = (props: any) => {
+const PropertyTypeFilters = () => {
   const colors = useThemedColors();
   const { filters, dispatchFilters } = useSearchContext();
   const propertyTypes = [
@@ -32,22 +32,22 @@ const PropertyTypeFilters = (props: any) => {
 
   const placeTypes = [
     {
-      name: <Text style={{ width: 75 }}>Entire Place</Text>,
+      name: <Text style={{ width: 80 }}>Entire Place</Text>,
       value: "entire",
     },
     {
-      name: <Text style={{ width: 36 }}>Room</Text>,
+      name: <Text style={{ width: 40 }}>Room</Text>,
       value: "room",
     },
   ];
 
   const serviceTypes = [
     {
-      name: <Text style={{ width: 75 }}>Travel</Text>,
+      name: <Text style={{ width: 80 }}>Travel</Text>,
       value: "travel",
     },
     {
-      name: <Text style={{ width: 36 }}>Rent</Text>,
+      name: <Text style={{ width: 40 }}>Rent</Text>,
       value: "rent",
     },
   ];
