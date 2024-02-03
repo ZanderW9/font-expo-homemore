@@ -3,7 +3,7 @@ import { calculateCenter } from "@config/hooks/location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useRef } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, useColorScheme, Keyboard } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import { default as DefaultMapView, Marker } from "react-native-maps";
 
@@ -18,6 +18,7 @@ function MapView(props) {
     filters,
     scrollEnabled,
   } = props;
+  const colorScheme = useColorScheme() ?? "light";
 
   const region = {
     latitude: center.lat,
@@ -50,10 +51,13 @@ function MapView(props) {
 
   return (
     <DefaultMapView
+      onPress={() => Keyboard.dismiss()}
+      onPanDrag={() => Keyboard.dismiss()}
       provider="google"
       ref={mapRef}
       initialRegion={region}
       scrollEnabled={scrollEnabled}
+      customMapStyle={colorScheme === "dark" ? mapStyle : []}
       style={{ width: "100%", height: "100%", flex: 1 }}
       onRegionChangeComplete={async (newRegion) => {
         setCenter({
@@ -161,3 +165,84 @@ const styles = StyleSheet.create({
 });
 
 export default MapView;
+
+const mapStyle = [
+  { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#263c3f" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#6b9a76" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#38414e" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#212a37" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9ca5b3" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#746855" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#1f2835" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#f3d19c" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ color: "#2f3948" }],
+  },
+  {
+    featureType: "transit.station",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#17263c" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#515c6d" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#17263c" }],
+  },
+];

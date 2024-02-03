@@ -3,9 +3,6 @@ import { View } from "@components/Themed";
 import MapView from "@components/map/MapView";
 import { useSearchContext } from "@components/search/SearchProvider";
 import { useLocation } from "@config/hooks/location";
-import { Ionicons } from "@expo/vector-icons";
-import { FAB } from "@rneui/themed";
-import { router } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 
@@ -26,7 +23,7 @@ const MapScreen = () => {
   const { data, refetch } = useQuery(MAP_SCREEN_LISTING_SEARCH_QUERY, {
     variables: { filters },
   });
-  console.log("data:", data);
+  console.log("filters:", filters);
 
   return (
     <View style={styles.container}>
@@ -39,6 +36,7 @@ const MapScreen = () => {
           }}
           listings={data ? data.searchListings : []}
           refetch={refetch}
+          filters={filters}
           center={
             center || {
               lat: location.coords.latitude,
@@ -51,14 +49,6 @@ const MapScreen = () => {
           scrollEnabled // 设置可拖动
         />
       )}
-      <FAB
-        size="small"
-        title=""
-        style={{ position: "absolute", bottom: 20, right: 10 }}
-        icon={<Ionicons name="close" size={21} color="white" />}
-        color="rgba(0,0,0,0.4)"
-        onPress={() => router.back()}
-      />
     </View>
   );
 };
