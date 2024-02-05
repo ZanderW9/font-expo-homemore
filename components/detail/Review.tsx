@@ -1,192 +1,8 @@
-import { Text, View, Pressable, TouchableOpacity } from "@components/Themed";
+import { Text, View, Pressable } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
+import RenderReviw from "@components/detail/ReviewItem";
 import { Ionicons } from "@expo/vector-icons";
-import { Avatar } from "@rneui/themed";
-import { router } from "expo-router";
 import { StyleSheet } from "react-native";
-
-const formatTime = (timestamp) => {
-  const now = new Date();
-  const createdAt = new Date(timestamp);
-  const timeDiff = now.getTime() - createdAt.getTime();
-
-  if (timeDiff < 60000) {
-    return "Now";
-  } else if (timeDiff < 3600000) {
-    return `${Math.floor(timeDiff / 60000)} minutes ago`;
-  } else if (timeDiff < 86400000) {
-    return `${Math.floor(timeDiff / 3600000)} hours ago`;
-  } else {
-    return `${Math.floor(timeDiff / 86400000)} days ago`;
-  }
-};
-
-const renderReviw = (props: any, review: any, dispatchReviewData: Function) => {
-  const renderSubReview = (subReview: any) => {
-    if (!subReview || !subReview.length) {
-      return;
-    }
-
-    return (
-      <View style={styles.subReviewWrapper}>
-        {subReview.map((subReview: any) => (
-          <View key={subReview.id} style={styles.reviewWrapper}>
-            {subReview?.sender?.avatar ? (
-              <Avatar
-                size={20}
-                rounded
-                containerStyle={styles.Avatar}
-                source={{
-                  uri: subReview?.sender?.avatar,
-                }}
-                onPress={() =>
-                  router.navigate(`/user/${subReview?.sender?.id}`)
-                }
-              />
-            ) : (
-              <Avatar
-                title={subReview?.sender?.userName?.slice(0, 2) ?? ""}
-                titleStyle={{
-                  justifyContent: "center",
-                  alignSelf: "center",
-                  fontSize: 12,
-                }}
-                size={20}
-                rounded
-                containerStyle={styles.Avatar}
-                onPress={() =>
-                  router.navigate(`/user/${subReview?.sender?.id}`)
-                }
-              />
-            )}
-            <TouchableOpacity
-              style={styles.reviewContent}
-              onPress={() => {
-                props.openBottomSheet();
-                dispatchReviewData({
-                  receiverName: subReview.sender.userName,
-                  receiverId: subReview.sender.id,
-                  reviewId: subReview.id,
-                });
-              }}
-              onLongPress={() => {
-                props.openEditBottomSheet();
-                dispatchReviewData({
-                  receiverName: subReview.sender.userName,
-                  receiverId: subReview.sender.id,
-                  reviewId: subReview.id,
-                  reviewOwner: subReview.sender.id,
-                  reviewText: subReview.text,
-                  longPressReviewId: subReview.id,
-                });
-              }}
-            >
-              <Text style={styles.senderName}>
-                {subReview?.sender?.userName} {">"}{" "}
-                {subReview?.receiver?.userName}
-              </Text>
-              <Text style={styles.reviewText}>{subReview?.text}</Text>
-              <View style={styles.reviewEndWrapper}>
-                <Text style={styles.reviewEnd}>
-                  {formatTime(subReview.createdAt)}
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    props.openBottomSheet();
-                    dispatchReviewData({
-                      receiverName: subReview.sender.userName,
-                      receiverId: subReview.sender.id,
-                      reviewId: subReview.id,
-                    });
-                  }}
-                >
-                  <Text style={styles.reviewEnd}>Reply</Text>
-                </Pressable>
-              </View>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
-    );
-  };
-
-  return (
-    <View key={review.id} style={styles.reviewWrapper}>
-      {review?.sender?.avatar ? (
-        <Avatar
-          size={35}
-          rounded
-          containerStyle={styles.Avatar}
-          source={{
-            uri: review?.sender?.avatar,
-          }}
-          onPress={() => router.navigate(`/user/${review?.sender?.id}`)}
-        />
-      ) : (
-        <Avatar
-          title={review?.sender?.userName?.slice(0, 2) ?? ""}
-          titleStyle={{
-            justifyContent: "center",
-            alignSelf: "center",
-            fontSize: 20,
-          }}
-          size={35}
-          rounded
-          containerStyle={styles.Avatar}
-          onPress={() => router.navigate(`/user/${review?.sender?.id}`)}
-        />
-      )}
-      <View style={styles.reviewContent}>
-        <TouchableOpacity
-          onPress={() => {
-            props.openBottomSheet();
-            dispatchReviewData({
-              receiverName: review.sender.userName,
-              receiverId: review.sender.id,
-              reviewId: review.id,
-            });
-          }}
-          onLongPress={() => {
-            props.openEditBottomSheet();
-            dispatchReviewData({
-              receiverName: review.sender.userName,
-              receiverId: review.sender.id,
-              reviewId: review.id,
-              reviewOwner: review.sender.id,
-              reviewText: review.text,
-              longPressReviewId: review.id,
-            });
-          }}
-        >
-          <Text style={styles.senderName}>{review.sender.userName}</Text>
-          <Text style={styles.reviewText}>{review.text}</Text>
-          <View style={styles.reviewEndWrapper}>
-            <Text style={styles.reviewEnd}>{formatTime(review.createdAt)}</Text>
-            {/* 一个回复按钮，点击回复消息 */}
-            <Pressable
-              onPress={() => {
-                props.openBottomSheet();
-                dispatchReviewData({
-                  receiverName: review.sender.userName,
-                  receiverId: review.sender.id,
-                  reviewId: review.id,
-                });
-              }}
-            >
-              <Text style={styles.reviewEnd}>Reply</Text>
-            </Pressable>
-          </View>
-        </TouchableOpacity>
-        {renderSubReview(review.subReviews)}
-        <View
-          style={styles.separator}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
-      </View>
-    </View>
-  );
-};
 
 function Review(props: { openBottomSheet: Function; reviews: any[] }) {
   const openModalHandler = () => {
@@ -214,9 +30,15 @@ function Review(props: { openBottomSheet: Function; reviews: any[] }) {
           Leave a review ···
         </Text>
       </Pressable>
-      {props.reviews.map((review: any) =>
-        renderReviw(props, review, dispatchReviewData),
-      )}
+      {props.reviews.map((review: any) => (
+        <RenderReviw
+          key={review.id}
+          review={review}
+          dispatchReviewData={dispatchReviewData}
+          openBottomSheet={props.openBottomSheet}
+          openEditBottomSheet={props.openEditBottomSheet}
+        />
+      ))}
     </View>
   );
 }
