@@ -9,8 +9,6 @@
       },
       "env": {
         "EXPO_PUBLIC_BACKEND_URL": "https://4f60-103-120-10-159.ngrok-free.app",
-        "EXPO_PUBLIC_S3_URL": "https://foothold-config.s3.ap-southeast-2.amazonaws.com",
-        "EXPO_PUBLIC_DEVELOPER": "haijing"
       }
     },
     "preview2": {
@@ -26,9 +24,7 @@
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://4f60-103-120-10-159.ngrok-free.app",
-        "EXPO_PUBLIC_S3_URL": "https://foothold-config.s3.ap-southeast-2.amazonaws.com",
-        "EXPO_PUBLIC_DEVELOPER": "haijing"
+        "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au",
       }
     }
   }
