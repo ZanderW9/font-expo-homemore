@@ -1,6 +1,19 @@
 {
   "build": {
+    "dev": {
+      "distribution": "internal",
+      "developmentClient": true,
+      "channel": "dev",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
     "preview": {
+      "distribution": "internal",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
       },
@@ -8,23 +21,20 @@
         "simulator": true
       },
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://4f60-103-120-10-159.ngrok-free.app",
+        "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au"
       }
     },
     "preview2": {
+      "distribution": "internal",
       "android": {
         "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "preview3": {
-      "developmentClient": true
-    },
-    "preview4": {
-      "distribution": "internal"
+      },
+      "channel": "preview2"
     },
     "production": {
+      "channel": "production",
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au",
+        "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au"
       }
     }
   }

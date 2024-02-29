@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "HomeMore",
+    "name": "Homemore",
     "slug": "homemore",
-    "version": "1.1.0",
+    "version": "1.1.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "homemore-scheme",
@@ -13,17 +13,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": [
-          "location",
-          "fetch",
-          "remote-notification"
-        ],
+        "UIBackgroundModes": ["location", "fetch", "remote-notification"],
         "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location.",
         "LSApplicationQueriesSchemes": [
           "weixin",
@@ -33,20 +27,13 @@
           "twitter"
         ]
       },
-      "config": {
-        "googleMapsApiKey": "AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
-      },
-      "bundleIdentifier": "au.com.homemore"
+      "bundleIdentifier": "au.com.homemore",
+      "runtimeVersion": "1.1.4"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyCv63CzdTG2txBuvQKry0N7Tt5PkoGA9kU"
-        }
       },
       "permissions": [
         "android.permission.INTERNET",
@@ -55,7 +42,10 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.ACCESS_BACKGROUND_LOCATION"
       ],
-      "package": "au.com.homemore"
+      "package": "au.com.homemore",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -72,7 +62,20 @@
           "isAndroidBackgroundLocationEnabled": true
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#000000"
+        }
+      ],
+      [
+        "expo-updates",
+        {
+          "username": "marclu"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -85,6 +88,14 @@
         "projectId": "2a824d39-c1fd-47dc-b9db-b908bfc28eae"
       }
     },
-    "owner": "marclu"
+    "owner": "marclu",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 60000,
+      "checkAutomatically": "ON_LOAD",
+      "url": "https://u.expo.dev/2a824d39-c1fd-47dc-b9db-b908bfc28eae"
+    }
   }
 }

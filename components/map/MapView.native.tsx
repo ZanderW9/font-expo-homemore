@@ -3,9 +3,14 @@ import { calculateCenter } from "@config/hooks/location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useRef } from "react";
-import { StyleSheet, useColorScheme, Keyboard } from "react-native";
+import { StyleSheet, useColorScheme, Keyboard, Platform } from "react-native";
 import { showMessage } from "react-native-flash-message";
-import { default as DefaultMapView, Marker } from "react-native-maps";
+import {
+  default as DefaultMapView,
+  Marker,
+  PROVIDER_GOOGLE,
+  PROVIDER_DEFAULT,
+} from "react-native-maps";
 
 function MapView(props) {
   const {
@@ -53,7 +58,7 @@ function MapView(props) {
     <DefaultMapView
       onPress={() => Keyboard.dismiss()}
       onPanDrag={() => Keyboard.dismiss()}
-      provider="google"
+      provider={Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
       ref={mapRef}
       initialRegion={region}
       scrollEnabled={scrollEnabled}

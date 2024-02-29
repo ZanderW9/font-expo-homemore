@@ -91,21 +91,21 @@ function TabProfileScreen() {
 
   return (
     <View style={styles.container} theme={{ background: "back2" }}>
-      {!isLoggedIn && (
-        <SafeAreaView style={{ flex: 1 }} theme={{ background: "back2" }}>
-          <NotLogIn
-            title="Find your next home from here!"
-            subtitle="Sign in to publish or order a listing"
-          />
-        </SafeAreaView>
-      )}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ flex: 1 }}
+        theme={{ background: "back2" }}
+      >
+        {!isLoggedIn && (
+          <SafeAreaView style={{ flex: 1 }} theme={{ background: "back2" }}>
+            <NotLogIn
+              title="Find your next home from here!"
+              subtitle="Sign in to publish or order a listing"
+            />
+          </SafeAreaView>
+        )}
 
-      {isLoggedIn && (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ flex: 1 }}
-          theme={{ background: "back2" }}
-        >
+        {isLoggedIn && (
           <View theme={{ background: "back2" }}>
             <Pressable
               style={styles.userInfo}
@@ -201,8 +201,8 @@ function TabProfileScreen() {
               <ListItem.Chevron />
             </ListItem>
           </View>
-        </ScrollView>
-      )}
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -215,7 +215,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
   },
-
   buttonWrapper: {
     display: "flex",
     flexDirection: "row",
