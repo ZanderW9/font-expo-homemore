@@ -5345,6 +5345,13 @@ expo-asset@~9.0.2:
     invariant "^2.2.4"
     md5-file "^3.2.3"
 
+expo-background-fetch@~11.8.1:
+  version "11.8.1"
+  resolved "https://registry.yarnpkg.com/expo-background-fetch/-/expo-background-fetch-11.8.1.tgz#7ead9ab486d8fcc97181541f9283163e257bc172"
+  integrity sha512-WkWgj1RZsBjIt/J2HvYhfNi+8WEM6vEptuUj6r/vW9w+kXzDo5z/+pkr7YnPgQIhc4P7Z/j7TlM43azUpIEFZA==
+  dependencies:
+    expo-task-manager "~11.7.2"
+
 expo-clipboard@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/expo-clipboard/-/expo-clipboard-5.0.1.tgz#a62a021a9444740d180d60f915cca8242a323716"
