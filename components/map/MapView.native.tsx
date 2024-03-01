@@ -116,7 +116,7 @@ function MapView(props) {
             key={listing.id}
             coordinate={coordinate}
             onPress={() => {
-              router.push({
+              router.navigate({
                 pathname: `/detail/${listings[0].id}`,
               });
             }}
@@ -128,7 +128,7 @@ function MapView(props) {
             key={listing.id}
             coordinate={coordinate}
             onPress={() => {
-              router.push({
+              router.navigate({
                 pathname: `/detail/${listings[0].id}`,
               });
             }}

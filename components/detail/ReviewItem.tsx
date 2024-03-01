@@ -21,7 +21,6 @@ export const formatTime = (timestamp) => {
 };
 
 const RenderReviw = (props: any) => {
-  console.log("Propsreview", props.review);
   const renderSubReview = (subReview: any) => {
     if (!subReview || !subReview.length) {
       return;

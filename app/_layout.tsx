@@ -340,7 +340,7 @@ function RootLayoutNav() {
                   <Stack.Screen
                     name="map"
                     options={{
-                      presentation: "transparentModal",
+                      // presentation: "transparentModal",
                       animation: "slide_from_bottom",
                       headerShown: false,
                       animationDuration: 100,
@@ -349,7 +349,7 @@ function RootLayoutNav() {
                   <Stack.Screen
                     name="detailMap"
                     options={{
-                      presentation: "transparentModal",
+                      // presentation: "transparentModal",
                       animation: "slide_from_bottom",
                       headerShown: false,
                       animationDuration: 100,
