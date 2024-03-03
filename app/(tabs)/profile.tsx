@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import NotLogIn from "@components/NotLogIn";
 import {
@@ -16,14 +16,6 @@ import { router, usePathname } from "expo-router";
 import React, { useEffect, useContext } from "react";
 import { StyleSheet } from "react-native";
 
-const createListingMutation = gql`
-  mutation Mutation {
-    createListing {
-      id
-    }
-  }
-`;
-
 const meQuery = gql`
   query Query {
     me {
@@ -39,18 +31,8 @@ function TabProfileScreen() {
   const colors = useThemedColors();
   const { setIsLoggedIn, isLoggedIn, setToken, httpLinkUrl, setApolloClient } =
     useContext(GlobalContext);
-  const [createListingFunction, { data }] = useMutation(createListingMutation);
 
   const { data: gqlData } = useCachedQuery(meQuery, usePathname());
-
-  useEffect(() => {
-    if (data?.createListing.id) {
-      router.navigate({
-        pathname: "/createlisting",
-        params: { listingId: data?.createListing.id },
-      });
-    }
-  }, [data]);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -71,10 +53,6 @@ function TabProfileScreen() {
     setToken(null);
     setApolloClient("", httpLinkUrl);
     router.replace("/profile");
-  };
-
-  const createListingHandler = async () => {
-    createListingFunction();
   };
 
   const myPostHandler = async () => {
@@ -143,7 +121,9 @@ function TabProfileScreen() {
 
             <ListItem
               containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
-              onPress={createListingHandler}
+              onPress={() => {
+                router.navigate("/listing/step-1");
+              }}
             >
               <ListItem.Content>
                 <ListItem.Title>

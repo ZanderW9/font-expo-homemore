@@ -355,6 +355,13 @@ function RootLayoutNav() {
                       animationDuration: 100,
                     }}
                   />
+                  <Stack.Screen
+                    name="listing"
+                    options={{
+                      animation: "slide_from_right",
+                      headerShown: false,
+                    }}
+                  />
                 </Stack>
                 <FlashMessage
                   position="top"

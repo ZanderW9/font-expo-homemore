@@ -72,7 +72,6 @@ function ListingDetailScreen() {
     variables: { listingId },
     errorPolicy: "all",
   });
-
   const inputRef = useRef(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetAddModalRef = useRef<BottomSheetModal>(null);
@@ -139,10 +138,10 @@ function ListingDetailScreen() {
           <BasicInfo data={data ? data.listingById : {}} />
           {/* Part2 */}
           <OverView
-            bathRooms={data ? data.listingById?.roomDetails.Bathrooms : 0}
-            bedRooms={data ? data.listingById?.roomDetails.Bedrooms : 0}
-            bed={data ? data.listingById?.roomDetails.Bed : 0}
-            guests={data ? data.listingById?.roomDetails.Guests : 0}
+            bathRooms={data ? data.listingById?.placeDetails.bathCount : 0}
+            bedRooms={data ? data.listingById?.placeDetails.bedroomCount : 0}
+            bed={data ? data.listingById?.placeDetails.bedCount : 0}
+            guests={data ? data.listingById?.placeDetails.guestCount : 0}
             placeType={data ? data.listingById?.placeType : ""}
             rentType={data ? data.listingById?.rentType : ""}
             price={data ? data.listingById?.price : 0}
@@ -157,9 +156,8 @@ function ListingDetailScreen() {
           />
           {/* Part4 */}
           <Facility
-            deviceType={data ? data.listingById?.deviceType : []}
-            standoutType={data ? data.listingById?.standoutType : []}
-            safetyDeviceType={data ? data.listingById?.safetyDeviceType : []}
+            device={data ? data.listingById?.device : []}
+            safetyDevice={data ? data.listingById?.safetyDevice : []}
           />
 
           {/* Part5 */}

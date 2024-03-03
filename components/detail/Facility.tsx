@@ -2,11 +2,10 @@ import { Text, View } from "@components/Themed";
 import { StyleSheet } from "react-native";
 
 function Facility(data: any) {
-  const deviceType = data.deviceType;
-  const standoutType = data.standoutType;
-  const safetyDeviceType = data.safetyDeviceType;
+  const device = data.device;
+  const safetyDevice = data.safetyDevice;
 
-  const amenities = [...deviceType, ...standoutType, ...safetyDeviceType];
+  const amenities = [...device, ...safetyDevice];
 
   return (
     <View style={styles.container}>

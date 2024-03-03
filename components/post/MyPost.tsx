@@ -65,6 +65,8 @@ function MyPost() {
         options={{
           title: "My Post",
           animation: "slide_from_right",
+          headerBackTitleVisible: false,
+          headerBackButtonMenuEnabled: false,
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: colors.back1,

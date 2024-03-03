@@ -66,6 +66,8 @@ function MyOrder() {
         options={{
           title: "My Order",
           animation: "slide_from_right",
+          headerBackTitleVisible: false,
+          headerBackButtonMenuEnabled: false,
           headerRight: () => (
             <TouchableOpacity
               style={{

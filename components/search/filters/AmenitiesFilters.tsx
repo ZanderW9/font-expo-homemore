@@ -16,7 +16,7 @@ const AmenitiesFilters = () => {
 
   const amenities = [
     {
-      name: "Wifi",
+      name: "Wi-Fi",
       value: "wifi",
       icon: <FontAwesome6 name="wifi" size={24} color={colors.text} />,
     },

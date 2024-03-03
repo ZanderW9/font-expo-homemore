@@ -23,10 +23,12 @@ export const DETAIL_PAGE_LISTING_QUERY = gql`
       publishAt
       placeType
       rentType
-      roomDetails
-      deviceType
-      standoutType
-      safetyDeviceType
+      placeDetails
+      bedRoomDetails
+      device
+      safetyDevice
+      discount
+      orderType
       guestType
       owner {
         userName
@@ -78,10 +80,9 @@ export const BOOKING_PAGE_LISTING_QUERY = gql`
       unavailability
       placeType
       rentType
-      roomDetails
-      roomDetails
-      deviceType
-      standoutType
+      placeDetails
+      device
+      safetyDevice
       owner {
         userName
       }

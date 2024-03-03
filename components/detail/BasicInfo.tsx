@@ -3,16 +3,16 @@ import { StyleSheet } from "react-native";
 
 function BasicInfo(props: any) {
   let rentType = "";
-  if (props.data.rentType === "ARoom") {
+  if (props.data.rentType === "aRoom") {
     rentType = "A Separate Room";
-  } else if (props.data.rentType === "entirePlace") {
+  } else if (props.data.rentType === "anEntirePlace") {
     rentType = "An Entire Place";
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.placeType}>
-        {props.data.placeType} · {rentType}
+        {props.data.placeType}· {rentType}
       </Text>
       <Text style={styles.title}>{props.data.title}</Text>
       <Text style={styles.description}>{props.data.description}</Text>

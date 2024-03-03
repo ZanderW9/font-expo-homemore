@@ -95,11 +95,9 @@ const CustomHeaderTitle = (data: any) => {
 function UserScreen() {
   const colors = useThemedColors();
   const { userId } = useLocalSearchParams();
-  console.log(userId);
   const { data } = useQuery(meQuery, {
     variables: { userId },
   });
-  console.log(data);
   const pagerRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(0);
   const handleTabPress = (pageNumber: number) => {

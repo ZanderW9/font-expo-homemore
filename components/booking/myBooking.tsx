@@ -73,6 +73,8 @@ function MyBooking() {
         options={{
           title: "Confirm your order",
           animation: "slide_from_right",
+          headerBackTitleVisible: false,
+          headerBackButtonMenuEnabled: false,
         }}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -86,7 +88,7 @@ function MyBooking() {
         <CheckIn
           availability={data?.listingById.availability}
           unavailability={data?.listingById.unavailability}
-          guestCount={data?.listingById.roomDetails.Guests}
+          guestCount={data?.listingById.placeDetails.guestCount}
         />
         <PriceInfo price={data?.listingById.price} />
       </ScrollView>

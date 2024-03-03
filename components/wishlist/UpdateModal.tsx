@@ -133,7 +133,6 @@ function UpdateModal(data: any) {
           <BottomSheetTextInput
             ref={data.inputRef}
             placeholder="*Name"
-            value={folderName}
             onChangeText={setFolderName}
             style={[styles.nameInput, { color: colors.text }]}
           />
