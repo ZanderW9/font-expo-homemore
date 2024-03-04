@@ -13,6 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import { router, Stack } from "expo-router";
 import React, { useContext, useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { DraggableGrid } from "react-native-draggable-grid";
 
 const updateListingMutation = gql`
   mutation UpdateListing($updateListingId: String!, $images: [String]) {
@@ -26,6 +27,8 @@ function UploadPhotos() {
   const { listingData, dispatchListingData } = useCreateListingContext();
   const { httpLinkUrl } = useContext(GlobalContext);
   const colors = useThemedColors();
+
+  const [scrollEnabled, setScrollEnabled] = useState(true);
 
   const [updateListingFunction] = useMutation(updateListingMutation);
 
@@ -100,6 +103,14 @@ function UploadPhotos() {
     }
   };
 
+  function renderImageGridItem(item) {
+    return (
+      <View style={[styles.imageContainer, { borderColor: colors.border1 }]}>
+        <Image source={{ uri: item.uri }} style={[styles.image]} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Button
@@ -127,8 +138,9 @@ function UploadPhotos() {
       />
 
       <ScrollView
+        scrollEnabled={scrollEnabled}
         style={{
-          display: "flex",
+          flex: 1,
           padding: 20,
         }}
       >
@@ -136,20 +148,25 @@ function UploadPhotos() {
         <Text style={styles.subtitle}>
           Add photos of your place to attract more guests
         </Text>
-        <View
-          theme={{ background: "back1" }}
-          style={{ flexDirection: "row", flexWrap: "wrap" }}
-        >
-          {listingData.images?.map((image, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.imageContainer, { borderColor: colors.border1 }]}
-              onPress={() => deleteImage(index)}
-            >
-              <Image source={{ uri: image }} style={styles.image} />
-            </TouchableOpacity>
-          ))}
-          <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+        <View theme={{ background: "back1" }}>
+          <DraggableGrid
+            numColumns={2}
+            style={{ flex: 1 }}
+            onItemPress={(index) => deleteImage(index)}
+            onDragStart={() => setScrollEnabled(false)}
+            renderItem={renderImageGridItem}
+            data={listingData.images.map((uri, index) => ({ uri, key: uri }))}
+            onDragRelease={(data) => {
+              const newImages = data.map((item) => item.uri);
+              console.log("newImages", newImages);
+              dispatchListingData({ ...listingData, images: newImages });
+              setScrollEnabled(true);
+            }}
+          />
+          <TouchableOpacity
+            onPress={pickImage}
+            style={{ alignItems: "center" }}
+          >
             <Text style={styles.plusIcon}>+</Text>
           </TouchableOpacity>
         </View>
@@ -245,19 +262,17 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   imageContainer: {
-    width: 180,
-    height: 180,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
+    width: 180,
+    padding: 4,
+    paddingHorizontal: 5,
     borderRadius: 8,
-    overflow: "hidden",
-    marginRight: 10,
-    marginBottom: 10,
   },
   image: {
-    width: 180,
-    height: 180,
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
   },
   plusIcon: {
     fontSize: 50,

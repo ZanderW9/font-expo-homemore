@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { ListItem, Avatar } from "@rneui/themed";
 import * as Clipboard from "expo-clipboard";
 import { router, usePathname } from "expo-router";
@@ -17,14 +17,6 @@ import {
 import { clearLocalItems, getLocalItem } from "@/config/storageManager";
 import useCachedQuery from "@/config/useCachedQuery";
 import { useThemedColors } from "@/constants/theme";
-
-const createListingMutation = gql`
-  mutation Mutation {
-    createListing {
-      id
-    }
-  }
-`;
 
 const meQuery = gql`
   query Query {
@@ -47,7 +39,6 @@ function TabProfileScreen() {
     setApolloClient,
     expoPushToken,
   } = useContext(GlobalContext);
-  const [createListingFunction, { data }] = useMutation(createListingMutation);
 
   const { data: gqlData } = useCachedQuery(meQuery, usePathname());
 
