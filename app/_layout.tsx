@@ -18,6 +18,7 @@ import {
   updateChatsWithNewMessage,
 } from "@config/gql/chat";
 import { useLocation } from "@config/hooks/location";
+import useFetch from "@config/hooks/restfulApi";
 import { getLocalItem } from "@config/storageManager";
 import { useThemedColors } from "@constants/theme";
 import { useApolloClientDevTools } from "@dev-plugins/apollo-client";
@@ -37,7 +38,7 @@ import {
   router,
 } from "expo-router";
 import { createClient } from "graphql-ws";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, View, StyleSheet } from "react-native";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import FlashMessage from "react-native-flash-message";
@@ -169,32 +170,32 @@ export default function RootLayout() {
   const colors = useThemedColors();
 
   const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  console.log("notification setting", expoPushToken, notification);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  // const [notification, setNotification] = useState(false);
+  // console.log("notification:", notification);
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token),
     );
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+    // notificationListener.current =
+    //   Notifications.addNotificationReceivedListener((notification) => {
+    //     setNotification(notification);
+    //   });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+    // responseListener.current =
+    //   Notifications.addNotificationResponseReceivedListener((response) => {
+    //     console.log(response);
+    //   });
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current,
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
+    // return () => {
+    //   Notifications.removeNotificationSubscription(
+    //     notificationListener.current
+    //   );
+    //   Notifications.removeNotificationSubscription(responseListener.current);
+    // };
   }, []);
 
   const [appIsReady, setAppIsReady] = useState(false);
@@ -215,6 +216,21 @@ export default function RootLayout() {
       transform: [{ scale: interpolate(animation.value, [0, 1], [2, 1]) }],
     };
   });
+
+  const { fetchFunc: updatePushToken } = useFetch();
+
+  useEffect(() => {
+    if (expoPushToken) {
+      updatePushToken(
+        process.env.EXPO_PUBLIC_BACKEND_URL + "/api/updateUserPushToken",
+        "POST",
+        {
+          expoPushToken,
+        },
+        token,
+      );
+    }
+  }, [expoPushToken, token]);
 
   useEffect(() => {
     const prepare = async () => {
