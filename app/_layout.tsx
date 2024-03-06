@@ -56,7 +56,7 @@ import Animated, {
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: false,
+    shouldPlaySound: true,
     shouldSetBadge: true,
   }),
 });
@@ -448,7 +448,9 @@ async function registerForPushNotificationsAsync() {
     await Notifications.setNotificationChannelAsync("default", {
       name: "default",
       importance: Notifications.AndroidImportance.MAX,
+      enableVibrate: true,
       vibrationPattern: [0, 250, 250, 250],
+      sound: "default",
       lightColor: "#FF231F7C",
     });
   }

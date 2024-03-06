@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import { ListItem, Avatar } from "@rneui/themed";
-import * as Clipboard from "expo-clipboard";
 import { router, usePathname } from "expo-router";
 import React, { useEffect, useContext } from "react";
 import { StyleSheet } from "react-native";
@@ -31,14 +30,8 @@ const meQuery = gql`
 
 function TabProfileScreen() {
   const colors = useThemedColors();
-  const {
-    setIsLoggedIn,
-    isLoggedIn,
-    setToken,
-    httpLinkUrl,
-    setApolloClient,
-    expoPushToken,
-  } = useContext(GlobalContext);
+  const { setIsLoggedIn, isLoggedIn, setToken, httpLinkUrl, setApolloClient } =
+    useContext(GlobalContext);
 
   const { data: gqlData } = useCachedQuery(meQuery, usePathname());
 
@@ -190,19 +183,6 @@ function TabProfileScreen() {
             </ListItem>
           </View>
         )}
-        <ListItem
-          containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
-          onLongPress={async () =>
-            await Clipboard.setStringAsync(expoPushToken || "")
-          }
-        >
-          <ListItem.Content>
-            <ListItem.Title>
-              <Text>{`push notification: ${expoPushToken}`}</Text>
-            </ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
       </ScrollView>
     </View>
   );
