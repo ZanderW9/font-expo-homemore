@@ -13,6 +13,7 @@ import {
   ScrollView,
   Pressable,
 } from "@/components/Themed";
+import { LinkPreview } from "@/components/inbox/LinkPreview";
 import { clearLocalItems, getLocalItem } from "@/config/storageManager";
 import useCachedQuery from "@/config/useCachedQuery";
 import { useThemedColors } from "@/constants/theme";
@@ -183,6 +184,16 @@ function TabProfileScreen() {
             </ListItem>
           </View>
         )}
+
+        <View
+          style={{
+            margin: 10,
+            marginBottom: 0,
+            backgroundColor: "transparent",
+          }}
+        >
+          <LinkPreview text="https//homemore.com.au" />
+        </View>
       </ScrollView>
     </View>
   );

@@ -24,6 +24,7 @@
     "@dev-plugins/async-storage": "^0.0.1",
     "@dev-plugins/react-navigation": "^0.0.5",
     "@expo/vector-icons": "^14.0.0",
+    "@flyerhq/react-native-link-preview": "^1.6.0",
     "@gorhom/bottom-sheet": "^4",
     "@react-native-assets/slider": "^7.0.7",
     "@react-native-async-storage/async-storage": "1.21.0",

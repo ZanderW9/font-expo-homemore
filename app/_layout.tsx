@@ -480,26 +480,23 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got new message", // homemore: user name
-      body: "Here is the notification body", // msg
-      data: { url: "detail/27ba3e14-47a7-44c6-87a8-61096b47be28" }, // redirect url, (chat channel, detail page)
-    },
-    trigger: null,
-  });
-}
-
 function useNotificationObserver() {
   useEffect(() => {
     let isMounted = true;
 
     function redirect(notification: Notifications.Notification) {
-      const url = notification.request.content.data?.url;
-      if (url) {
-        console.log("redirecting to", url);
-        router.push(url);
+      const data = notification.request.content.data;
+      const msgType = data?.msgType;
+      if (msgType === "inbox") {
+        router.navigate(`/inbox/${data?.chatId}`);
+        router.navigate({
+          pathname: "/inbox/[chatId]",
+          params: {
+            chatId: data?.chatId,
+            userId: data?.userId,
+            userName: data?.userName,
+          },
+        });
       }
     }
 
