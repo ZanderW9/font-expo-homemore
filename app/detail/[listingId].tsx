@@ -66,7 +66,7 @@ const CustomHeaderTitle = (data: any) => {
 
 function ListingDetailScreen() {
   const colors = useThemedColors();
-  const { isLoggedIn } = useContext(GlobalContext);
+  const { isLoggedIn, me } = useContext(GlobalContext);
   const { listingId } = useLocalSearchParams();
   const { data } = useQuery(DETAIL_PAGE_LISTING_QUERY, {
     variables: { listingId },
@@ -249,6 +249,19 @@ function ListingDetailScreen() {
                 name="chatbubble-ellipses-outline"
                 size={32}
                 color={colors.text}
+                onPress={() => {
+                  const chatId = [data?.listingById?.owner.id, me?.id]
+                    .sort()
+                    .join("__");
+                  router.navigate({
+                    pathname: "/inbox/[chatId]",
+                    params: {
+                      chatId,
+                      userId: data?.listingById?.owner.id,
+                      userName: data?.listingById?.owner.userName,
+                    },
+                  });
+                }}
               />
             </View>
 

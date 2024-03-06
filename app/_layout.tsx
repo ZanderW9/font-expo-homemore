@@ -6,6 +6,8 @@ import {
   split,
   useSubscription,
   useApolloClient,
+  useQuery,
+  gql,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
@@ -51,6 +53,16 @@ import Animated, {
   interpolate,
   runOnJS,
 } from "react-native-reanimated";
+const meQuery = gql`
+  query Query {
+    me {
+      id
+      userName
+      avatar
+      createdAt
+    }
+  }
+`;
 // import { requestLocationPermissions } from "@config/backgroundTasks";
 
 Notifications.setNotificationHandler({
@@ -152,16 +164,7 @@ const createApolloClient = (token: string, httpLinkUrl: string) => {
   });
 };
 
-export const GlobalContext = React.createContext({
-  isLoggedIn: false,
-  setIsLoggedIn: () => {},
-  token: null,
-  setToken: () => {},
-  httpLinkUrl: "",
-  client: null,
-  setApolloClient: () => {},
-  expoPushToken: "",
-});
+export const GlobalContext = React.createContext({});
 
 export default function RootLayout() {
   const navigationRef = useNavigationContainerRef();
@@ -200,6 +203,7 @@ export default function RootLayout() {
 
   const [appIsReady, setAppIsReady] = useState(false);
   const [token, setToken] = useState(null);
+  const [me, setMe] = useState({ avatar: "", userName: "", id: "" });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [httpLinkUrl] = useState(process.env.EXPO_PUBLIC_BACKEND_URL);
   const [client, setClient] = useState(null);
@@ -283,6 +287,8 @@ export default function RootLayout() {
         client,
         setApolloClient,
         expoPushToken,
+        me,
+        setMe,
       }}
     >
       <ApolloProvider client={client}>
@@ -323,6 +329,7 @@ export const ChatContext = React.createContext({});
 
 export const ChatProvider = ({ children }) => {
   const client = useApolloClient();
+  const [refetchChatId, setRefetchChatId] = useState();
   const { loading } = useSubscription(CHAT_SUBSCRIPTION, {
     onData: ({ data }) => {
       if (data.data) {
@@ -331,14 +338,24 @@ export const ChatProvider = ({ children }) => {
           query: CHAT_QUERY,
         });
         if (existingData) {
+          const chatExists = existingData.allChats.some(
+            (chat) => chat.id === newMessage.chat.id,
+          );
           // Update the cache with the new message
-          client.writeQuery({
-            query: CHAT_QUERY,
-            data: {
-              allChats: updateChatsWithNewMessage(existingData, newMessage),
-              me: existingData.me,
-            },
-          });
+          if (chatExists) {
+            client.writeQuery({
+              query: CHAT_QUERY,
+              data: {
+                allChats: updateChatsWithNewMessage(existingData, newMessage),
+                me: existingData.me,
+              },
+            });
+          } else {
+            // If the chat doesn't exist, refetch the chat
+            setRefetchChatId(newMessage.chat.id);
+          }
+        } else {
+          setRefetchChatId(newMessage.chat.id);
         }
       }
     },
@@ -348,6 +365,8 @@ export const ChatProvider = ({ children }) => {
     <ChatContext.Provider
       value={{
         loading,
+        refetchChatId,
+        setRefetchChatId,
       }}
     >
       {children}
@@ -356,10 +375,19 @@ export const ChatProvider = ({ children }) => {
 };
 
 function RootLayoutNav() {
+  const { setMe } = React.useContext(GlobalContext);
   useNotificationObserver();
   useLocation();
   const client = useApolloClient();
   useApolloClientDevTools(client);
+
+  const { data } = useQuery(meQuery);
+
+  useEffect(() => {
+    if (data?.me) {
+      setMe(data.me);
+    }
+  }, [data]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -472,7 +500,6 @@ async function registerForPushNotificationsAsync() {
         projectId: Constants.expoConfig?.extra?.eas.projectId,
       })
     ).data;
-    console.log("push token:", token);
   } else {
     alert("Must use physical device for Push Notifications");
   }

@@ -16,13 +16,18 @@ const signInMutation = gql`
   mutation SignIn($email: String!, $password: String!) {
     SignIn(email: $email, password: $password) {
       token
+      user {
+        id
+        userName
+        avatar
+      }
     }
   }
 `;
 
 function LoginScreen() {
   const colors = useThemedColors();
-  const { httpLinkUrl, setToken, setIsLoggedIn, setApolloClient } =
+  const { httpLinkUrl, setToken, setIsLoggedIn, setApolloClient, setMe } =
     useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,14 +49,18 @@ function LoginScreen() {
     }
   }, [error]);
 
-  if (!loading && data) {
-    storeLocalItem("userToken", data.SignIn.token);
-    setIsLoggedIn(true);
-    setToken(data.SignIn.token);
-    setApolloClient(data.SignIn.token, httpLinkUrl);
-    router.canGoBack() && router.back();
-    router.replace("/profile");
-  }
+  useEffect(() => {
+    if (!loading && data) {
+      storeLocalItem("userToken", data.SignIn.token);
+      setIsLoggedIn(true);
+      setToken(data.SignIn.token);
+      setApolloClient(data.SignIn.token, httpLinkUrl);
+      setMe(data.SignIn.user);
+      router.canGoBack() && router.back();
+      router.replace("/profile");
+    }
+  }, [loading, data]);
+
   const SignInHandler = async () => {
     signInFunction({ variables: { email, password } });
   };

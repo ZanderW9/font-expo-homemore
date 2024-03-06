@@ -31,8 +31,14 @@ const meQuery = gql`
 
 function TabProfileScreen() {
   const colors = useThemedColors();
-  const { setIsLoggedIn, isLoggedIn, setToken, httpLinkUrl, setApolloClient } =
-    useContext(GlobalContext);
+  const {
+    setIsLoggedIn,
+    isLoggedIn,
+    setToken,
+    httpLinkUrl,
+    setApolloClient,
+    setMe,
+  } = useContext(GlobalContext);
 
   const { data: gqlData } = useCachedQuery(meQuery, usePathname());
 
@@ -54,6 +60,11 @@ function TabProfileScreen() {
     setIsLoggedIn(false);
     setToken(null);
     setApolloClient("", httpLinkUrl);
+    setMe({
+      id: "",
+      userName: "",
+      avatar: "",
+    });
     router.replace("/profile");
   };
 

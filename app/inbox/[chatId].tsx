@@ -1,18 +1,30 @@
 import { useQuery, useMutation } from "@apollo/client";
+import { ChatContext } from "@app/_layout";
 import { CHAT_QUERY, SEND_MESSAGE_MUTATION } from "@config/gql/chat";
 import { Avatar, Input } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { StyleSheet } from "react-native";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChatScreen = () => {
+  const { refetchChatId, setRefetchChatId } = useContext(ChatContext);
   const messageContainerRef = useRef();
+
   const { chatId, userId, userName } = useLocalSearchParams();
-  const { data } = useQuery(CHAT_QUERY, {
+  const { data, refetch } = useQuery(CHAT_QUERY, {
+    fetchPolicy: "cache-and-network",
     variables: { chatId },
   });
+
+  useEffect(() => {
+    if (refetchChatId === chatId) {
+      refetch({ chatId });
+      setRefetchChatId(null);
+    }
+  }, [refetchChatId]);
+
   const [messageText, setMessageText] = useState("");
   const [sendMessage] = useMutation(SEND_MESSAGE_MUTATION);
   const [messages, setMessages] = useState([]);

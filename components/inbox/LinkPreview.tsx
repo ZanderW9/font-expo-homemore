@@ -9,7 +9,6 @@ export function LinkPreview({ text }: { text: string }) {
       text={text}
       containerStyle={{ width: "100%" }}
       renderLinkPreview={(link) => {
-        console.log(link);
         return (
           <View
             style={{
