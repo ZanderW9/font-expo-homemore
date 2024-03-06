@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView } from "@components/Themed";
+import { View, Text } from "@components/Themed";
 import { useCreateListingContext } from "@components/listing/create/CreateProvider";
 import { useThemedColors } from "@constants/theme";
 import { Button } from "@rneui/themed";
@@ -31,26 +31,22 @@ function PostSuccessScreen() {
       <View
         style={{
           display: "flex",
-          justifyContent: "flex-start",
+          flex: 1,
+          justifyContent: "center",
           alignItems: "center",
-          paddingHorizontal: 20,
-          paddingTop: 300,
         }}
       >
         <Text style={styles.title}>Post Success!</Text>
         <Text style={styles.subtitle}>
           Your listing has been successfully posted.
         </Text>
-      </View>
 
-      <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
         <View
           style={{
             display: "flex",
             flexDirection: "row",
-            marginHorizontal: 20,
-            marginBottom: 400,
             justifyContent: "space-between",
+            alignItems: "center",
           }}
           theme={{ background: "back1" }}
         >
@@ -61,9 +57,9 @@ function PostSuccessScreen() {
             buttonStyle={{
               borderColor: colors.mainColor,
               height: 50,
-              width: 180,
+              width: 130,
               borderRadius: 7,
-              marginVertical: 20,
+              margin: 20,
             }}
             titleStyle={{
               color: colors.mainColor,
@@ -77,13 +73,13 @@ function PostSuccessScreen() {
             buttonStyle={{
               backgroundColor: colors.mainColor,
               height: 50,
-              width: 180,
+              width: 130,
               borderRadius: 7,
-              marginVertical: 20,
+              margin: 20,
             }}
           />
         </View>
-      </SafeAreaView>
+      </View>
     </View>
   );
 }

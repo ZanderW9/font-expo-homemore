@@ -79,9 +79,9 @@ function TypeOfServiceScreen() {
       <View
         style={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           padding: 20,
-          flex: 0.3,
+          flex: 0.35,
         }}
       >
         <Text style={styles.title}>
@@ -89,6 +89,7 @@ function TypeOfServiceScreen() {
         </Text>
 
         <FlashList
+          showsVerticalScrollIndicator={false}
           estimatedItemSize={100}
           data={typeOfService}
           numColumns={2}
@@ -154,14 +155,14 @@ function TypeOfServiceScreen() {
         />
 
         {listingData.serviceType === "rent" && (
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
             Weekly rent with an option for daily payment. Suited for long-term
             and short-term tenants.
           </Text>
         )}
 
         {listingData.serviceType === "travel" && (
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
             Strictly daily payment. Ideal for short-term travelers.
           </Text>
         )}
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
   },
 });
 

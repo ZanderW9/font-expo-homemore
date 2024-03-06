@@ -83,7 +83,7 @@ function TypeOfPalceScreen() {
       <View
         style={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           padding: 20,
           flex: 0.8,
         }}
@@ -93,6 +93,7 @@ function TypeOfPalceScreen() {
         </Text>
 
         <FlashList
+          showsVerticalScrollIndicator={false}
           estimatedItemSize={100}
           data={typeOfPlace}
           numColumns={2}

@@ -67,7 +67,9 @@ function LocationScreen() {
             borderWidth: 1,
             borderColor: colors.border1,
             borderRadius: 20,
-            padding: 10,
+            paddingLeft: 10,
+            paddingRight: 30,
+            paddingVertical: 10,
           }}
           onPress={() => router.navigate("/listing/search-location")}
         >

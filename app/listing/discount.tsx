@@ -130,23 +130,26 @@ function DiscountScreen() {
                   (discount) => discount.discountType === item.discountType,
                 )?.discountValue
               }
-              onChangeText={(text) =>
+              onChangeText={(text) => {
+                const numericInput = text.trim() === "" ? "0" : text;
+                const numericValue = parseInt(numericInput, 10);
+                const clampedValue = Math.min(Math.max(numericValue, 0), 100);
                 dispatchListingData({
                   ...listingData,
                   discount: listingData.discount?.map((discount) =>
                     discount.discountType === item.discountType
-                      ? { ...discount, discountValue: text }
+                      ? { ...discount, discountValue: String(clampedValue) }
                       : discount,
                   ),
-                })
-              }
+                });
+              }}
               disabled={
                 !listingData.discount?.some(
                   (discount) => discount.discountType === item.discountType,
                 )
               }
               rightIcon={
-                <FontAwesome5 name="percent" size={16} color={colors.text} />
+                <FontAwesome5 name="percent" size={10} color={colors.text} />
               }
               keyboardType="numeric"
               returnKeyType="done"
@@ -159,7 +162,7 @@ function DiscountScreen() {
                 color: colors.text,
               }}
             />
-            <View style={{ padding: 10 }}>
+            <View style={{ width: "65%" }}>
               <Text style={[styles.description, { color: colors.text }]}>
                 {item.label}
               </Text>
@@ -194,6 +197,7 @@ function DiscountScreen() {
               containerStyle={{
                 backgroundColor: "transparent",
                 borderColor: "transparent",
+                width: "10%",
               }}
             />
           </View>
@@ -271,10 +275,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     borderWidth: 1,
     borderRadius: 5,
-    paddingHorizontal: 15,
   },
   inputWrapper: {
-    width: 100,
+    width: "20%",
     paddingTop: 20,
   },
 });

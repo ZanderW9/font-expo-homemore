@@ -1,40 +1,20 @@
-import { gql, useMutation } from "@apollo/client";
 import { View, Text, SafeAreaView } from "@components/Themed";
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
 import { Button } from "@rneui/themed";
 import { router, Stack } from "expo-router";
-import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
-
-const createListingMutation = gql`
-  mutation Mutation {
-    createListing {
-      id
-    }
-  }
-`;
 
 function Step2() {
   const colors = useThemedColors();
-  const [createListingFunction, { data }] = useMutation(createListingMutation);
 
   const nextHandler = async () => {
-    createListingFunction();
+    router.navigate("/listing/amenity");
   };
 
   const backHandler = async () => {
     router.back();
   };
-
-  useEffect(() => {
-    if (data?.createListing.id) {
-      router.navigate({
-        pathname: "/listing/amenity",
-        params: { listingId: data?.createListing.id },
-      });
-    }
-  }, [data]);
 
   const labels = ["Step 1", "Step 2", "Step 3"];
 

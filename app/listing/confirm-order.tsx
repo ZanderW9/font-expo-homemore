@@ -141,6 +141,7 @@ function TypeOfOrderScreen() {
                     display: "flex",
                     flexDirection: "column",
                     backgroundColor: "transparent",
+                    width: "90%",
                   }}
                 >
                   <View
@@ -167,6 +168,7 @@ function TypeOfOrderScreen() {
                     justifyContent: "flex-end",
                     alignItems: "flex-end",
                     backgroundColor: "transparent",
+                    width: "10%",
                   }}
                 >
                   {item.icon}
@@ -239,10 +241,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 18,
   },
   description: {
-    fontSize: 16,
+    fontSize: 15,
     color: "gray",
   },
 });

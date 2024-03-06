@@ -86,14 +86,15 @@ function TypeOfRentScreen() {
       <View
         style={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           padding: 20,
-          flex: 0.3,
+          flex: 0.35,
         }}
       >
         <Text style={styles.title}>What type of place will guests have?</Text>
 
         <FlashList
+          showsVerticalScrollIndicator={false}
           estimatedItemSize={100}
           data={typeOfRent}
           numColumns={2}
@@ -159,13 +160,13 @@ function TypeOfRentScreen() {
         />
 
         {listingData.rentType === "anEntirePlace" && (
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
             Guests will have the entire place to themselves.
           </Text>
         )}
 
         {listingData.rentType === "aRoom" && (
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
             Guests will have their own room and share common areas.
           </Text>
         )}
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
   },
 });
 

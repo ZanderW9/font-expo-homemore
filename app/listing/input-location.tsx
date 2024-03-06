@@ -117,6 +117,7 @@ function InputLocation() {
             alignSelf: "center",
             borderWidth: 0,
             margin: 15,
+            zIndex: 1000,
             backgroundColor: colors.back1,
           }}
           style={[

@@ -7,8 +7,9 @@ import { StyleSheet } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 function SearchLocation() {
-  const { dispatchListingData } = useCreateListingContext();
-  const placesRef = useRef(null);
+  const { listingData, dispatchListingData } = useCreateListingContext();
+  const inputRef = useRef(null);
+  inputRef.current?.focus();
 
   const [currentPlace, setCurrentPlace] = useState({
     description: "Current location",
@@ -45,7 +46,6 @@ function SearchLocation() {
       latitude: lat,
       longitude: lng,
     });
-    console.log(location);
     dispatchListingData({
       address: {
         street: location[0].name,
@@ -54,6 +54,13 @@ function SearchLocation() {
         postCode: location[0].postalCode,
         country: location[0].country,
       },
+      searchHistory: [
+        ...listingData.searchHistory,
+        {
+          description: `${location[0].name}, ${location[0].city}, ${location[0].region}, ${location[0].country}`,
+          geometry: { location: { lat, lng } },
+        },
+      ],
     });
   };
   return (
@@ -66,9 +73,8 @@ function SearchLocation() {
           headerShown: false,
         }}
       />
-
       <GooglePlacesAutocomplete
-        ref={placesRef}
+        ref={inputRef}
         placeholder="Search"
         onPress={(data, details = null) => {
           // 'details' is provided when fetchDetails = true
@@ -81,7 +87,6 @@ function SearchLocation() {
             const cityStateLength = data.description
               .split(",")[1]
               .split(" ").length;
-            console.log(data);
             dispatchListingData({
               address: {
                 street: data.description.split(",")[0],
@@ -95,9 +100,15 @@ function SearchLocation() {
                 ],
                 country: data.description.split(",")[2].replace(" ", ""),
               },
+              searchHistory: [
+                ...listingData.searchHistory,
+                {
+                  description: data.description,
+                  geometry: details.geometry,
+                },
+              ],
             });
           }
-
           router.navigate({
             pathname: "/listing/input-location",
           });
@@ -107,7 +118,7 @@ function SearchLocation() {
           key: "AIzaSyDq3UkkY4zOP1O-Dwa58IzxGXyZBU_lV5w",
           language: "en",
         }}
-        predefinedPlaces={[currentPlace]}
+        predefinedPlaces={[currentPlace, ...listingData.searchHistory]}
         enablePoweredByContainer={false}
         listViewDisplayed="auto"
         fetchDetails
@@ -136,6 +147,14 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     paddingBottom: 10,
+  },
+  historyContainer: {
+    marginTop: 20,
+  },
+  historyItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
 });
 

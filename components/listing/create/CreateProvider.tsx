@@ -29,6 +29,10 @@ type CreateListingState = {
   orderType?: string;
   price?: string;
   discount?: { discountType: string; discountValue: string }[];
+  searchHistory?: {
+    description: string;
+    geometry: { location: { lat: number; lng: number } };
+  }[];
 };
 
 const initialState: CreateListingState = {
@@ -55,6 +59,7 @@ const initialState: CreateListingState = {
   orderType: "",
   price: "",
   discount: [],
+  searchHistory: [],
 };
 
 interface CreateListingContextType {
