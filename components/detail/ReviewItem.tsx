@@ -1,5 +1,6 @@
 import { View, TouchableOpacity, Pressable, Text } from "@components/Themed";
-import { Avatar } from "@rneui/themed";
+import { useThemedColors } from "@constants/theme";
+import { Avatar, Divider } from "@rneui/themed";
 import { router } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
@@ -21,6 +22,7 @@ export const formatTime = (timestamp) => {
 };
 
 const RenderReviw = (props: any) => {
+  const colors = useThemedColors();
   const renderSubReview = (subReview: any) => {
     if (!subReview || !subReview.length) {
       return;
@@ -157,7 +159,9 @@ const RenderReviw = (props: any) => {
             });
           }}
         >
-          <Text style={styles.senderName}>{props.review.sender.userName}</Text>
+          <Text style={[styles.senderName, { color: colors.text }]}>
+            {props.review.sender.userName}
+          </Text>
           <Text style={styles.reviewText}>{props.review.text}</Text>
           <View style={styles.reviewEndWrapper}>
             <Text style={styles.reviewEnd}>
@@ -179,11 +183,7 @@ const RenderReviw = (props: any) => {
           </View>
         </TouchableOpacity>
         {renderSubReview(props.review.subReviews)}
-        <View
-          style={styles.separator}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
+        <Divider width={1} color={colors.border1} />
       </View>
     </View>
   );
@@ -203,11 +203,6 @@ const styles = StyleSheet.create({
     height: 1,
     width: "85%",
   },
-  title: {
-    fontSize: 16,
-    color: "rgba(0, 0, 0, 0.5)",
-    marginLeft: 8,
-  },
   reviewContent: {
     width: "100%",
     height: "auto",
@@ -215,7 +210,6 @@ const styles = StyleSheet.create({
   },
   senderName: {
     fontSize: 14,
-    color: "rgba(0, 0, 0, 0.5)",
   },
   reviewText: {
     fontSize: 14,
@@ -230,7 +224,6 @@ const styles = StyleSheet.create({
 
   reviewEnd: {
     fontSize: 12,
-    color: "rgba(0, 0, 0, 0.5)",
     alignSelf: "flex-start",
     marginEnd: 10,
     marginTop: -4,

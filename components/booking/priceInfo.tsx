@@ -1,8 +1,10 @@
 import { Text, View } from "@components/Themed";
 import { useBookingContext } from "@components/booking/bookingProvider";
+import { useThemedColors } from "@constants/theme";
 import { StyleSheet } from "react-native";
 
 function PriceInfo(data: any) {
+  const colors = useThemedColors();
   const { nightStayCount } = useBookingContext();
 
   return (
@@ -14,7 +16,7 @@ function PriceInfo(data: any) {
           width: "100%",
           justifyContent: "space-between",
           borderWidth: 1,
-          borderColor: "rgba(0,0,0,0.1)",
+          borderColor: colors.border1,
           padding: 10,
           borderRadius: 15,
         }}
@@ -58,15 +60,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 10,
     marginHorizontal: 10,
-  },
-  separator: {
-    marginBottom: 3,
-    height: 1,
-    width: "100%",
-  },
-  placeType: {
-    fontSize: 13,
-    color: "gray",
   },
   title: {
     fontSize: 12,

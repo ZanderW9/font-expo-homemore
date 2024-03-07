@@ -22,9 +22,9 @@ import ShareModal from "@components/detail/ShareModal";
 import AddModal from "@components/wishlist/AddModal";
 import { DETAIL_PAGE_LISTING_QUERY } from "@config/gql/listing";
 import { useThemedColors } from "@constants/theme";
-import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Avatar } from "@rneui/themed";
+import { Avatar, Divider } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useRef, useCallback, useContext } from "react";
 import { StyleSheet } from "react-native";
@@ -135,18 +135,22 @@ function ListingDetailScreen() {
           {/* Carousel */}
           <MyCarousel images={data ? data.listingById?.images : []} />
           {/* Part1 */}
-          <BasicInfo data={data ? data.listingById : {}} />
+          <BasicInfo
+            placeType={data ? data.listingById?.placeType : ""}
+            rentType={data ? data.listingById?.rentType : ""}
+            title={data ? data.listingById?.title : ""}
+            description={data ? data.listingById?.description : ""}
+          />
+          <Divider width={10} color={colors.textReverse} />
           {/* Part2 */}
           <OverView
             bathRooms={data ? data.listingById?.placeDetails.bathCount : 0}
             bedRooms={data ? data.listingById?.placeDetails.bedroomCount : 0}
             bed={data ? data.listingById?.placeDetails.bedCount : 0}
             guests={data ? data.listingById?.placeDetails.guestCount : 0}
-            placeType={data ? data.listingById?.placeType : ""}
-            rentType={data ? data.listingById?.rentType : ""}
-            price={data ? data.listingById?.price : 0}
-            guestType={data ? data.listingById?.guestType : []}
+            bedroomDetails={data ? data.listingById?.bedRoomDetails : []}
           />
+          <Divider width={10} color={colors.textReverse} />
           {/* Part3 */}
           <Location
             lat={data ? data.listingById?.coordinate.lat : 0}
@@ -154,12 +158,13 @@ function ListingDetailScreen() {
             address={data ? data.listingById?.address : ""}
             listing={data ? data.listingById : {}}
           />
+          <Divider width={10} color={colors.textReverse} />
           {/* Part4 */}
           <Facility
             device={data ? data.listingById?.device : []}
             safetyDevice={data ? data.listingById?.safetyDevice : []}
           />
-
+          <Divider width={10} color={colors.textReverse} />
           {/* Part5 */}
           <Review
             reviews={data ? data.listingById?.reviews : []}
@@ -209,32 +214,69 @@ function ListingDetailScreen() {
           >
             <Pressable
               style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
                 marginStart: 10,
-                marginVertical: 5,
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                paddingHorizontal: 5,
-                borderRadius: 20,
                 flex: 1,
               }}
-              onPress={openBottomSheet}
+              // onPress={openBottomSheet}
             >
-              <SimpleLineIcons
-                name="pencil"
-                size={13}
-                color="rgba(0, 0, 0, 0.5)"
-              />
-              <Text
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Fontisto
+                  name="dollar"
+                  size={13}
+                  color={colors.text}
+                  style={{ marginRight: -5, marginBottom: -2 }}
+                />
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    color: colors.text,
+                    marginLeft: 5,
+                  }}
+                >
+                  {data ? data.listingById?.price : 0} AUD
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: colors.textSub1Reverse,
+                    marginLeft: 5,
+                  }}
+                >
+                  / night
+                </Text>
+              </View>
+              {/* discount */}
+              <View
                 style={{
-                  fontSize: 15,
-                  color: "gray",
-                  marginLeft: 5,
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
                 }}
               >
-                Leave a review ···
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: colors.textSub1Reverse,
+                  }}
+                >
+                  {data?.listingById?.discount?.map((discount: any) => {
+                    return (
+                      <Text
+                        key={discount.discountType}
+                        style={{
+                          fontSize: 10,
+                          color: colors.textSub1Reverse,
+                        }}
+                      >
+                        {discount.discountValue}% per {discount.discountType}{" "}
+                      </Text>
+                    );
+                  })}
+                </Text>
+              </View>
             </Pressable>
             <View
               style={{
@@ -325,7 +367,6 @@ function ListingDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   safeArea: {
     width: "100%",

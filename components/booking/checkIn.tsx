@@ -1,7 +1,9 @@
 import { Text, View } from "@components/Themed";
 import { useBookingContext } from "@components/booking/bookingProvider";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { Divider } from "@rneui/themed";
 import React, {
   useRef,
   useCallback,
@@ -17,7 +19,8 @@ import {
 } from "react-native";
 import { CalendarList } from "react-native-calendars";
 
-function CheckIn(data: any) {
+function CheckIn(props: any) {
+  const colors = useThemedColors();
   const today = new Date().toISOString().slice(0, 10);
   const [checkInDate, setCheckInDate] = useState(today);
   const [checkOutDate, setCheckOutDate] = useState(today);
@@ -74,7 +77,7 @@ function CheckIn(data: any) {
   };
 
   const markedDates = useMemo(() => {
-    const unavailabilityMarks = data.unavailability?.reduce((result, date) => {
+    const unavailabilityMarks = props.unavailability?.reduce((result, date) => {
       result[date] = {
         disabled: true,
       };
@@ -92,7 +95,7 @@ function CheckIn(data: any) {
     }, {});
 
     return { ...unavailabilityMarks, ...selectedDateMarks };
-  }, [data.unavailability, selectedDates]);
+  }, [props.unavailability, selectedDates]);
 
   const toggleStartingEndingDays = (day) => {
     if (day.dateString < today || markedDates[day.dateString]?.disabled) {
@@ -157,7 +160,6 @@ function CheckIn(data: any) {
   }, [selectedDates]);
 
   return (
-    // <View style={styles.container}>
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <View
         style={{
@@ -166,7 +168,7 @@ function CheckIn(data: any) {
           width: "100%",
           justifyContent: "space-between",
           borderWidth: 1,
-          borderColor: "rgba(0,0,0,0.1)",
+          borderColor: colors.border1,
           padding: 10,
           borderRadius: 15,
         }}
@@ -219,6 +221,7 @@ function CheckIn(data: any) {
       <View style={styles.modalContainer}>
         <BottomSheetModal
           ref={bottomSheetModalRef}
+          backgroundStyle={{ backgroundColor: colors.back1 }}
           index={0}
           snapPoints={snapPoints}
           backdropComponent={renderBackdrop}
@@ -226,11 +229,7 @@ function CheckIn(data: any) {
         >
           <View style={styles.modalContentContainer}>
             <Text style={styles.modalTitle}>Choose Dates</Text>
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
+            <Divider width={1} color={colors.border1} />
             <View
               style={{
                 display: "flex",
@@ -274,35 +273,43 @@ function CheckIn(data: any) {
                 <Text style={{ fontSize: 16 }}>{checkOutDate}</Text>
               </View>
             </View>
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
-            {/* 只让data.availability中的日期有效，其他的日期无效 */}
+            <Divider width={1} color={colors.border1} />
+            {/* 只让props.availability中的日期有效，其他的日期无效 */}
             <CalendarList
               minDate={today}
               maxDate={
-                data.availability?.length
-                  ? data.availability[data.availability.length - 1]
+                props.availability?.length
+                  ? props.availability[props.availability.length - 1]
                   : today
               }
               pastScrollRange={0}
-              futureScrollRange={6}
+              futureScrollRange={24}
               scrollEnabled
               markingType="period"
               onDayPress={(day) => {
                 toggleStartingEndingDays(day);
               }}
               markedDates={markedDates}
+              calendarStyle={{
+                backgroundColor: colors.back1,
+              }}
+              style={{
+                backgroundColor: colors.back1,
+              }}
+              theme={{
+                backgroundColor: colors.back1,
+                calendarBackground: colors.back1,
+                textSectionTitleColor: colors.text,
+                selectedDayBackgroundColor: colors.mainColor,
+                selectedDayTextColor: colors.text,
+                monthTextColor: colors.text,
+                dayTextColor: colors.text,
+                textDisabledColor: colors.textSub1Reverse,
+              }}
             />
           </View>
           <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
+            <Divider width={1} color={colors.border1} />
             <View
               style={{
                 display: "flex",
@@ -325,6 +332,7 @@ function CheckIn(data: any) {
       <View style={styles.modalContainer}>
         <BottomSheetModal
           ref={guestModalRef}
+          backgroundStyle={{ backgroundColor: colors.back1 }}
           index={0}
           snapPoints={snapPointsGuest}
           backdropComponent={renderBackdrop}
@@ -332,11 +340,7 @@ function CheckIn(data: any) {
         >
           <View style={styles.modalGuestContainer}>
             <Text style={styles.modalTitle}>Choose Guests</Text>
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
+            <Divider width={1} color={colors.border1} />
             {/* 成年人，儿童，婴幼儿的数量 */}
             <View
               style={{
@@ -368,14 +372,14 @@ function CheckIn(data: any) {
                       style={{ marginRight: 10, marginLeft: 10 }}
                       name="remove-circle-outline"
                       size={32}
-                      color="rgba(0,0,0,0.1)"
+                      color={colors.disabled}
                     />
                   ) : (
                     <Ionicons
                       style={{ marginRight: 10, marginLeft: 10 }}
                       name="remove-circle-outline"
                       size={32}
-                      color="gray"
+                      color={colors.textSub1Reverse}
                       onPress={() => {
                         if (adultNum > 1) setAdultNum(adultNum - 1);
                       }}
@@ -390,21 +394,21 @@ function CheckIn(data: any) {
                   >
                     {adultNum}
                   </Text>
-                  {adultNum + childNum >= data.guestCount ? (
+                  {adultNum + childNum >= props.guestCount ? (
                     <Ionicons
                       style={{ marginLeft: 10 }}
                       name="add-circle-outline"
                       size={32}
-                      color="rgba(0,0,0,0.1)"
+                      color={colors.disabled}
                     />
                   ) : (
                     <Ionicons
                       style={{ marginLeft: 10 }}
                       name="add-circle-outline"
                       size={32}
-                      color="gray"
+                      color={colors.textSub1Reverse}
                       onPress={() => {
-                        if (adultNum + childNum < data.guestCount)
+                        if (adultNum + childNum < props.guestCount)
                           setAdultNum(adultNum + 1);
                       }}
                     />
@@ -433,14 +437,14 @@ function CheckIn(data: any) {
                       style={{ marginRight: 10, marginLeft: 10 }}
                       name="remove-circle-outline"
                       size={32}
-                      color="rgba(0,0,0,0.1)"
+                      color={colors.disabled}
                     />
                   ) : (
                     <Ionicons
                       style={{ marginRight: 10, marginLeft: 10 }}
                       name="remove-circle-outline"
                       size={32}
-                      color="gray"
+                      color={colors.textSub1Reverse}
                       onPress={() => {
                         if (childNum > 0) setChildNum(childNum - 1);
                       }}
@@ -457,21 +461,21 @@ function CheckIn(data: any) {
                     {childNum}
                   </Text>
 
-                  {adultNum + childNum >= data.guestCount ? (
+                  {adultNum + childNum >= props.guestCount ? (
                     <Ionicons
                       style={{ marginLeft: 10 }}
                       name="add-circle-outline"
                       size={32}
-                      color="rgba(0,0,0,0.1)"
+                      color={colors.disabled}
                     />
                   ) : (
                     <Ionicons
                       style={{ marginLeft: 10 }}
                       name="add-circle-outline"
                       size={32}
-                      color="gray"
+                      color={colors.textSub1Reverse}
                       onPress={() => {
-                        if (adultNum + childNum < data.guestCount)
+                        if (adultNum + childNum < props.guestCount)
                           setChildNum(childNum + 1);
                       }}
                     />
@@ -500,14 +504,14 @@ function CheckIn(data: any) {
                       style={{ marginRight: 10, marginLeft: 10 }}
                       name="remove-circle-outline"
                       size={32}
-                      color="rgba(0,0,0,0.1)"
+                      color={colors.disabled}
                     />
                   ) : (
                     <Ionicons
                       style={{ marginRight: 10, marginLeft: 10 }}
                       name="remove-circle-outline"
                       size={32}
-                      color="gray"
+                      color={colors.textSub1Reverse}
                       onPress={() => {
                         if (infantNum > 0) setInfantNum(infantNum - 1);
                       }}
@@ -529,14 +533,14 @@ function CheckIn(data: any) {
                       style={{ marginLeft: 10 }}
                       name="add-circle-outline"
                       size={32}
-                      color="rgba(0,0,0,0.1)"
+                      color={colors.disabled}
                     />
                   ) : (
                     <Ionicons
                       style={{ marginLeft: 10 }}
                       name="add-circle-outline"
                       size={32}
-                      color="gray"
+                      color={colors.textSub1Reverse}
                       onPress={() => {
                         if (infantNum < 29) setInfantNum(infantNum + 1);
                       }}
@@ -559,17 +563,13 @@ function CheckIn(data: any) {
                   color: "gray",
                 }}
               >
-                Up to {data.guestCount} guests. Infants and toddlers are not
+                Up to {props.guestCount} guests. Infants and toddlers are not
                 counted as guests.
               </Text>
             </View>
           </View>
           <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
-            <View
-              style={styles.separator}
-              lightColor="#eee"
-              darkColor="rgba(255,255,255,0.1)"
-            />
+            <Divider width={1} color={colors.border1} />
             <View
               style={{
                 display: "flex",
@@ -603,7 +603,6 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     width: "100%",
-    backgroundColor: "white",
     position: "absolute",
     ...Platform.select({
       ios: {
@@ -613,11 +612,6 @@ const styles = StyleSheet.create({
         bottom: 0,
       },
     }),
-  },
-  separator: {
-    marginBottom: 3,
-    height: 1,
-    width: "100%",
   },
   text: {
     fontSize: 12,

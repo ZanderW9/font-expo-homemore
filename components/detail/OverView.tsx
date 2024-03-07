@@ -1,18 +1,11 @@
-import { Text, View } from "@components/Themed";
+import { Text, View, ScrollView } from "@components/Themed";
 import { useThemedColors } from "@constants/theme";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import { StyleSheet, Dimensions } from "react-native";
 
-function OverView(data: any) {
+function OverView(props: any) {
   const colors = useThemedColors();
   const PAGE_WIDTH = Dimensions.get("window").width * 0.95;
-
-  let rentType = "";
-  if (data.rentType === "ARoom") {
-    rentType = "A Separate Room";
-  } else {
-    rentType = "An Entire Place";
-  }
 
   return (
     <View style={styles.container}>
@@ -38,7 +31,7 @@ function OverView(data: any) {
         >
           <Feather name="home" size={24} color={colors.text} />
           <Text style={styles.iconDescription}>
-            {data.bedRooms ? data.bedRooms : 0} Bedrooms
+            {props.bedRooms ? props.bedRooms : 0} Bedrooms
           </Text>
         </View>
         <View
@@ -56,7 +49,7 @@ function OverView(data: any) {
             color={colors.text}
           />
           <Text style={styles.iconDescription}>
-            {data.bed ? data.bed : 0} Beds
+            {props.bed ? props.bed : 0} Beds
           </Text>
         </View>
         <View
@@ -70,7 +63,7 @@ function OverView(data: any) {
         >
           <MaterialCommunityIcons name="toilet" size={24} color={colors.text} />
           <Text style={styles.iconDescription}>
-            {data.bathRooms ? data.bathRooms : 0} Bathrooms
+            {props.bathRooms ? props.bathRooms : 0} Bathrooms
           </Text>
         </View>
         <View
@@ -88,28 +81,49 @@ function OverView(data: any) {
             color={colors.text}
           />
           <Text style={styles.iconDescription}>
-            {data.guests ? data.guests : 0} Guests
+            {props.guests ? props.guests : 0} Guests
           </Text>
         </View>
       </View>
-      <View style={styles.boxWrapper}>
-        <View style={styles.box}>
-          <Text style={styles.boxText}>{data.placeType}</Text>
-          <Text style={styles.boxText}>{rentType}</Text>
-          <Text style={styles.boxText}>${data.price ? data.price : 0}/day</Text>
-        </View>
-        <View style={styles.box}>
-          <Text style={styles.boxText}>Preferred Guests: </Text>
-          <Text style={styles.boxText}>
-            {data.guestType.map((item: any, index: number) => item).join(", ")}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        style={styles.boxWrapper}
+      >
+        {props.bedroomDetails?.map((bedroom: any, index: number) => (
+          <View
+            key={index}
+            style={[
+              styles.box,
+              { width: PAGE_WIDTH * 0.35, borderColor: colors.border1 },
+            ]}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "bold",
+                color: colors.text,
+                textTransform: "capitalize",
+                marginBottom: 5,
+                textShadowColor: colors.border1,
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 1,
+              }}
+            >
+              Bedroom {index + 1}
+            </Text>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={styles.boxText}>{bedroom.bed.bedCount}</Text>
+              <Text style={styles.boxText}>{bedroom.bed.bedType}</Text>
+              <Text style={styles.boxText}>
+                {bedroom.bed.bedCount === 1 ? "bed" : "beds"}
+              </Text>
+            </View>
+            {bedroom.bath && <Text style={styles.boxText}>With Bath</Text>}
+            {bedroom.toilet && <Text style={styles.boxText}>With Toilet</Text>}
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -120,13 +134,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: 10,
+    marginVertical: 10,
     marginHorizontal: 10,
-  },
-  separator: {
-    marginTop: 10,
-    height: 1,
-    width: "100%",
   },
   title: {
     fontSize: 18,
@@ -136,20 +145,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   boxWrapper: {
-    display: "flex",
     flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
     marginTop: 10,
     width: "100%",
   },
   box: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
     marginBottom: 3,
-    width: "35%",
-    height: 80,
+    height: 90,
     borderWidth: 1,
     borderRadius: 10,
     padding: 8,

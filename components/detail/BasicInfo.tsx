@@ -2,25 +2,24 @@ import { Text, View } from "@components/Themed";
 import { StyleSheet } from "react-native";
 
 function BasicInfo(props: any) {
-  let rentType = "";
-  if (props.data.rentType === "aRoom") {
-    rentType = "A Separate Room";
-  } else if (props.data.rentType === "anEntirePlace") {
-    rentType = "An Entire Place";
-  }
+  const placeTypeDir = {
+    apartment: "Apartment",
+    house: "House",
+    hotel: "Hotel",
+  };
+
+  const rentTypeDir = {
+    aRoom: "A Separate Room",
+    anEntirePlace: "Entire Place",
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.placeType}>
-        {props.data.placeType}· {rentType}
+        {placeTypeDir[props.placeType]} · {rentTypeDir[props.rentType]}
       </Text>
-      <Text style={styles.title}>{props.data.title}</Text>
-      <Text style={styles.description}>{props.data.description}</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <Text style={styles.title}>{props.title}</Text>
+      <Text style={styles.description}>{props.description}</Text>
     </View>
   );
 }
@@ -31,13 +30,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: 20,
+    marginVertical: 10,
     marginHorizontal: 10,
-  },
-  separator: {
-    marginBottom: 3,
-    height: 1,
-    width: "100%",
   },
   placeType: {
     fontSize: 13,

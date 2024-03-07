@@ -71,7 +71,7 @@ function AmenityScreen() {
     },
     {
       name: "Kitchen",
-      value: "Kitchen",
+      value: "kitchen",
       icon: <FontAwesome6 name="kitchen-set" size={26} color={colors.text} />,
     },
     {

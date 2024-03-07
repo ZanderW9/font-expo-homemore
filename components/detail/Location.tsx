@@ -61,11 +61,6 @@ const Location = (props: any) => {
           />
         )}
       </Pressable>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
     </View>
   );
 };
@@ -76,13 +71,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: 10,
+    marginVertical: 10,
     marginHorizontal: 10,
-  },
-  separator: {
-    marginTop: 10,
-    height: 1,
-    width: "100%",
   },
   title: {
     fontSize: 18,

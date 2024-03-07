@@ -124,7 +124,6 @@ function ChooseDate() {
         style={{
           display: "flex",
           justifyContent: "flex-start",
-          // padding: 20,
           flex: 0.7,
         }}
       >

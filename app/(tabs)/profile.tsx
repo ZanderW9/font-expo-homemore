@@ -240,9 +240,6 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 100,
     marginRight: 20,
-    borderWidth: 0.5,
-    borderColor: "gray",
-    borderStyle: "dashed",
     backgroundColor: "#F3EED9",
   },
   usernameWrapper: {

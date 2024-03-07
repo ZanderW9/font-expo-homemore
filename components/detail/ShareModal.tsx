@@ -3,6 +3,7 @@ import { View, Text } from "@components/Themed";
 import { useThemedColors } from "@constants/theme";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { Divider } from "@rneui/themed";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import { router } from "expo-router";
@@ -85,17 +86,6 @@ function ShareModal(data: any) {
     }
   };
 
-  const openWeibo = async () => {
-    const isInstalled = await Linking.canOpenURL("sinaweibo://splash");
-
-    if (isInstalled) {
-      copyLinkHandler();
-      Linking.openURL("sinaweibo://splash");
-    } else {
-      alert("Weibo is not installed on your device.");
-    }
-  };
-
   const editHandler = () => {
     router.navigate({ pathname: "/createlisting", params: { listingId } });
     data.bottomSheetModalRef.current?.close();
@@ -154,24 +144,10 @@ function ShareModal(data: any) {
                 />
                 <Text style={styles.title}>Facebook</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity style={styles.iconWrapper}>
-                <AntDesign
-                  name="weibo"
-                  size={40}
-                  color={colors.text}
-                  onPress={openWeibo}
-                />
-                <Text style={styles.title}>WeiBo</Text>
-              </TouchableOpacity>
             </View>
           </ScrollView>
 
-          <View
-            style={styles.separator}
-            lightColor="#eee"
-            darkColor="rgba(255,255,255,0.1)"
-          />
+          <Divider width={1} color="red" />
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.iconContainer}>
@@ -232,7 +208,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    // flex: 1,
     alignItems: "flex-start",
     padding: 5,
   },
@@ -252,10 +227,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 80,
     padding: 5,
-  },
-  separator: {
-    height: 1,
-    width: "100%",
   },
 });
 

@@ -1,29 +1,40 @@
+import { GlobalContext } from "@app/_layout";
 import { Text, View, Pressable } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
 import RenderReviw from "@components/detail/ReviewItem";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
 
 function Review(props: { openBottomSheet: Function; reviews: any[] }) {
+  const colors = useThemedColors();
+  const { isLoggedIn } = useContext(GlobalContext);
   const openModalHandler = () => {
-    props.openBottomSheet();
+    if (!isLoggedIn) {
+      router.navigate("/signin");
+    } else {
+      props.openBottomSheet();
+    }
   };
 
   const { dispatchReviewData } = useDetailContext();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{props.reviews.length} Reviews</Text>
-      <Pressable style={styles.inputWrapper} onPress={openModalHandler}>
-        <Ionicons
-          name="document-text-outline"
-          size={24}
-          color="rgba(0, 0, 0, 0.5)"
-        />
+      <Text style={[styles.title, { color: colors.text }]}>
+        {props.reviews.length} Reviews
+      </Text>
+      <Pressable
+        style={[styles.inputWrapper, { backgroundColor: colors.back2 }]}
+        onPress={openModalHandler}
+      >
+        <Ionicons name="document-text-outline" size={24} color={colors.text} />
         <Text
           style={{
             fontSize: 15,
-            color: "gray",
+            color: colors.text,
             marginLeft: 5,
           }}
         >
@@ -49,17 +60,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: 10,
-    marginHorizontal: 10,
-  },
-  separator: {
     marginVertical: 10,
-    height: 1,
-    width: "85%",
+    marginHorizontal: 10,
   },
   title: {
     fontSize: 16,
-    color: "rgba(0, 0, 0, 0.5)",
     marginLeft: 8,
   },
   reviewContent: {
@@ -67,27 +72,8 @@ const styles = StyleSheet.create({
     height: "auto",
     borderRadius: 10,
   },
-  senderName: {
-    fontSize: 14,
-    color: "rgba(0, 0, 0, 0.5)",
-  },
   reviewText: {
     fontSize: 14,
-  },
-  reviewEndWrapper: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    marginTop: 5,
-    marginBottom: 5,
-  },
-
-  reviewEnd: {
-    fontSize: 12,
-    color: "rgba(0, 0, 0, 0.5)",
-    alignSelf: "flex-start",
-    marginEnd: 10,
-    marginTop: -4,
   },
   inputWrapper: {
     flexDirection: "row",
@@ -95,7 +81,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 40,
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
     borderRadius: 20,
     paddingHorizontal: 10,
     marginVertical: 10,
