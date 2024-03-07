@@ -75,7 +75,7 @@ function SearchLocation() {
       />
       <GooglePlacesAutocomplete
         ref={inputRef}
-        placeholder="Search"
+        placeholder="Search your address"
         onPress={(data, details = null) => {
           // 'details' is provided when fetchDetails = true
           if (data.description === "Current location") {
@@ -87,6 +87,7 @@ function SearchLocation() {
             const cityStateLength = data.description
               .split(",")[1]
               .split(" ").length;
+
             dispatchListingData({
               address: {
                 street: data.description.split(",")[0],
@@ -117,6 +118,8 @@ function SearchLocation() {
         query={{
           key: "AIzaSyDq3UkkY4zOP1O-Dwa58IzxGXyZBU_lV5w",
           language: "en",
+          components: "country:au",
+          types: "address",
         }}
         predefinedPlaces={[currentPlace, ...listingData.searchHistory]}
         enablePoweredByContainer={false}
