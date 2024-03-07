@@ -55,7 +55,10 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={pressHandler}>
+      <TouchableOpacity
+        onPress={pressHandler}
+        style={{ backgroundColor: "transparent" }}
+      >
         <Card
           containerStyle={{
             ...styles.cardContainer,
