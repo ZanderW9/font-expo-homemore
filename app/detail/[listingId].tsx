@@ -141,7 +141,13 @@ function ListingDetailScreen() {
             title={data ? data.listingById?.title : ""}
             description={data ? data.listingById?.description : ""}
           />
-          <Divider width={10} color={colors.textReverse} />
+          <Divider
+            width={1}
+            style={{
+              marginHorizontal: 10,
+            }}
+            color={colors.disabled}
+          />
           {/* Part2 */}
           <OverView
             bathRooms={data ? data.listingById?.placeDetails.bathCount : 0}
@@ -150,7 +156,13 @@ function ListingDetailScreen() {
             guests={data ? data.listingById?.placeDetails.guestCount : 0}
             bedroomDetails={data ? data.listingById?.bedRoomDetails : []}
           />
-          <Divider width={10} color={colors.textReverse} />
+          <Divider
+            width={1}
+            style={{
+              marginHorizontal: 10,
+            }}
+            color={colors.disabled}
+          />
           {/* Part3 */}
           <Location
             lat={data ? data.listingById?.coordinate.lat : 0}
@@ -158,13 +170,25 @@ function ListingDetailScreen() {
             address={data ? data.listingById?.address : ""}
             listing={data ? data.listingById : {}}
           />
-          <Divider width={10} color={colors.textReverse} />
+          <Divider
+            width={1}
+            style={{
+              marginHorizontal: 10,
+            }}
+            color={colors.disabled}
+          />
           {/* Part4 */}
           <Facility
             device={data ? data.listingById?.device : []}
             safetyDevice={data ? data.listingById?.safetyDevice : []}
           />
-          <Divider width={10} color={colors.textReverse} />
+          <Divider
+            width={1}
+            style={{
+              marginHorizontal: 10,
+            }}
+            color={colors.disabled}
+          />
           {/* Part5 */}
           <Review
             reviews={data ? data.listingById?.reviews : []}
