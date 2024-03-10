@@ -5,7 +5,7 @@
     "version": "1.1.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "homemore-scheme",
+    "scheme": "au.com.homemore",
     "userInterfaceStyle": "automatic",
     "jsEngine": "hermes",
     "splash": {
@@ -27,9 +27,10 @@
           "twitter"
         ]
       },
+      "associatedDomains": ["applinks:homemore.com.au"],
       "bundleIdentifier": "au.com.homemore",
       "runtimeVersion": "1.1.5",
-      "buildNumber": "202403022"
+      "buildNumber": "202403101"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -47,7 +48,21 @@
       "package": "au.com.homemore",
       "runtimeVersion": {
         "policy": "appVersion"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*.homemore.com.au",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
