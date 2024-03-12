@@ -30,7 +30,7 @@
       "associatedDomains": ["applinks:homemore.com.au"],
       "bundleIdentifier": "au.com.homemore",
       "runtimeVersion": "1.1.5",
-      "buildNumber": "202403101"
+      "buildNumber": "202403121"
     },
     "android": {
       "googleServicesFile": "./google-services.json",

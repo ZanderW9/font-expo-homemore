@@ -34,7 +34,7 @@ const allListingsQuery = gql`
 
 function ListingCardsContainer() {
   const { loading, data, refetch, fetchMore } = useQuery(allListingsQuery, {
-    variables: { first: 10, after: null, sortOrder: "desc", published: true },
+    variables: { first: 12, after: null, sortOrder: "desc", published: true },
     errorPolicy: "all",
   });
 
@@ -45,7 +45,7 @@ function ListingCardsContainer() {
       setIsFetchingMore(true);
       fetchMore({
         variables: {
-          first: 10,
+          first: 12,
           after:
             data.allListings.length > 0
               ? data.allListings[data.allListings.length - 1].id

@@ -86,6 +86,11 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+/**
+ * 从后往前检查 incoming list。
+ * 当找到存在于当前 cache 中的数据时停下，只保留这个数据之后的部分
+ * 避免分页时数据重复
+ */
 const offsetFromCursor = (merged, incoming, readField) => {
   const mergedIds = merged.map((item) => readField("id", item));
   for (let i = incoming.length - 1; i >= 0; --i) {
@@ -143,8 +148,15 @@ const createApolloClient = (token: string, httpLinkUrl: string) => {
                 const merged = existing ? existing.slice(0) : [];
                 const offset = offsetFromCursor(merged, incoming, readField);
                 if (offset >= incoming.length) return merged;
+
                 const newmerged = [...merged, ...incoming.slice(offset)];
                 return newmerged;
+              },
+              // 读取所有数据
+              read(existing, { args, readField }) {
+                if (existing && Array.isArray(existing)) {
+                  return existing;
+                }
               },
             },
             searchListings: {
