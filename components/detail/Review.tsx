@@ -34,7 +34,7 @@ function Review(props: { openBottomSheet: Function; reviews: any[] }) {
         <Text
           style={{
             fontSize: 15,
-            color: colors.text,
+            color: colors.textSub1Reverse,
             marginLeft: 5,
           }}
         >

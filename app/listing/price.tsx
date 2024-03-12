@@ -4,13 +4,18 @@ import { useCreateListingContext } from "@components/listing/create/CreateProvid
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
 import { FontAwesome } from "@expo/vector-icons";
+import { CommonActions } from "@react-navigation/native";
 import { Button, Input } from "@rneui/themed";
-import { router, Stack } from "expo-router";
+import { router, Stack, useNavigation } from "expo-router";
 import { StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 const updateListingMutation = gql`
-  mutation Mutation($updateListingId: String!, $price: Int) {
-    updateListing(id: $updateListingId, price: $price) {
+  mutation Mutation(
+    $updateListingId: String!
+    $price: Int
+    $published: Boolean
+  ) {
+    updateListing(id: $updateListingId, price: $price, published: $published) {
       id
     }
   }
@@ -21,7 +26,7 @@ function PriceScreen() {
 
   const [updateListingFunction] = useMutation(updateListingMutation);
   const nextHandler = async () => {
-    updateListingFunction({
+    await updateListingFunction({
       variables: {
         updateListingId: listingData.listingId,
         price: parseInt(listingData.price),
@@ -34,13 +39,33 @@ function PriceScreen() {
     router.back();
   };
 
+  const navigation = useNavigation();
+  const handleResetAction = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        routes: [{ name: "save-success" }],
+      }),
+    );
+  };
+
+  const saveAndExitHandler = async () => {
+    await updateListingFunction({
+      variables: {
+        updateListingId: listingData.listingId,
+        serviceType: listingData.serviceType,
+        published: false,
+      },
+    });
+    handleResetAction();
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Button
           title=" Save & Exit"
           type="clear"
-          onPress={backHandler}
+          onPress={saveAndExitHandler}
           buttonStyle={{
             justifyContent: "flex-start",
             marginTop: 40,

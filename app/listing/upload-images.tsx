@@ -7,17 +7,26 @@ import { compressImage } from "@config/media";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
 import { uploadImage } from "@config/s3";
 import { useThemedColors } from "@constants/theme";
+import { CommonActions } from "@react-navigation/native";
 import { Button, Dialog } from "@rneui/themed";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
-import { router, Stack } from "expo-router";
+import { router, Stack, useNavigation } from "expo-router";
 import React, { useContext, useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { DraggableGrid } from "react-native-draggable-grid";
 
 const updateListingMutation = gql`
-  mutation UpdateListing($updateListingId: String!, $images: [String]) {
-    updateListing(id: $updateListingId, images: $images) {
+  mutation UpdateListing(
+    $updateListingId: String!
+    $images: [String]
+    $published: Boolean
+  ) {
+    updateListing(
+      id: $updateListingId
+      images: $images
+      published: $published
+    ) {
       id
     }
   }
@@ -36,7 +45,7 @@ function UploadPhotos() {
   const [deleteIndex, setDeleteIndex] = useState(null);
 
   const nextHandler = async () => {
-    updateListingFunction({
+    await updateListingFunction({
       variables: {
         updateListingId: listingData.listingId,
         images: listingData.images,
@@ -47,6 +56,26 @@ function UploadPhotos() {
 
   const backHandler = async () => {
     router.back();
+  };
+
+  const navigation = useNavigation();
+  const handleResetAction = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        routes: [{ name: "save-success" }],
+      }),
+    );
+  };
+
+  const saveAndExitHandler = async () => {
+    await updateListingFunction({
+      variables: {
+        updateListingId: listingData.listingId,
+        serviceType: listingData.serviceType,
+        published: false,
+      },
+    });
+    handleResetAction();
   };
 
   const deleteImage = (index: number) => {
@@ -116,7 +145,7 @@ function UploadPhotos() {
       <Button
         title=" Save & Exit"
         type="clear"
-        onPress={backHandler}
+        onPress={saveAndExitHandler}
         buttonStyle={{
           justifyContent: "flex-start",
           marginTop: 40,

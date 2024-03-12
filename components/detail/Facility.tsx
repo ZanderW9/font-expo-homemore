@@ -10,7 +10,7 @@ function Facility(data: any) {
   const amenitiesDict = {
     "Wi-Fi": "Wi-Fi",
     TV: "TV",
-    Kitchen: "Kitchen",
+    kitchen: "Kitchen",
     washingMachine: "Washing Machine",
     airConditioner: "Air Conditioner",
     parking: "Parking",

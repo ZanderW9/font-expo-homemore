@@ -4,14 +4,23 @@ import { useCreateListingContext } from "@components/listing/create/CreateProvid
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
 import { MaterialIcons } from "@expo/vector-icons";
+import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { FlashList } from "@shopify/flash-list";
-import { router, Stack } from "expo-router";
+import { router, Stack, useNavigation } from "expo-router";
 import { StyleSheet } from "react-native";
 
 const updateListingMutation = gql`
-  mutation UpdateListing($updateListingId: String!, $placeType: String) {
-    updateListing(id: $updateListingId, placeType: $placeType) {
+  mutation UpdateListing(
+    $updateListingId: String!
+    $placeType: String
+    $published: Boolean
+  ) {
+    updateListing(
+      id: $updateListingId
+      placeType: $placeType
+      published: $published
+    ) {
       id
     }
   }
@@ -23,7 +32,7 @@ function TypeOfPalceScreen() {
 
   const [updateListingFunction] = useMutation(updateListingMutation);
   const nextHandler = async () => {
-    updateListingFunction({
+    await updateListingFunction({
       variables: {
         updateListingId: listingData.listingId,
         placeType: listingData.placeType,
@@ -34,6 +43,26 @@ function TypeOfPalceScreen() {
 
   const backHandler = async () => {
     router.back();
+  };
+
+  const navigation = useNavigation();
+  const handleResetAction = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        routes: [{ name: "save-success" }],
+      }),
+    );
+  };
+
+  const saveAndExitHandler = async () => {
+    await updateListingFunction({
+      variables: {
+        updateListingId: listingData.listingId,
+        serviceType: listingData.serviceType,
+        published: false,
+      },
+    });
+    handleResetAction();
   };
 
   const typeOfPlace = [
@@ -60,7 +89,7 @@ function TypeOfPalceScreen() {
       <Button
         title=" Save & Exit"
         type="clear"
-        onPress={backHandler}
+        onPress={saveAndExitHandler}
         buttonStyle={{
           justifyContent: "flex-start",
           marginTop: 40,

@@ -22,6 +22,7 @@ export default function () {
         <Stack.Screen name="confirm-order" />
         <Stack.Screen name="price" />
         <Stack.Screen name="discount" />
+        <Stack.Screen name="save-success" />
       </Stack>
     </CreateListingProvider>
   );

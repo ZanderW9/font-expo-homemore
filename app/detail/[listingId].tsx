@@ -17,6 +17,7 @@ import ReviewInputModal from "@components/detail/InputModal";
 import Location from "@components/detail/Location";
 import MyCarousel from "@components/detail/MyCarousel";
 import OverView from "@components/detail/OverView";
+import PreferredRoomer from "@components/detail/PreferredRoomer";
 import Review from "@components/detail/Review";
 import ShareModal from "@components/detail/ShareModal";
 import AddModal from "@components/wishlist/AddModal";
@@ -163,6 +164,7 @@ function ListingDetailScreen() {
             }}
             color={colors.disabled}
           />
+          <Divider width={1} color={colors.textReverse} />
           {/* Part3 */}
           <Location
             lat={data ? data.listingById?.coordinate.lat : 0}
@@ -178,10 +180,21 @@ function ListingDetailScreen() {
             color={colors.disabled}
           />
           {/* Part4 */}
+
+          {data?.listingById?.guestType?.length > 0 && (
+            <View>
+              <PreferredRoomer
+                guestType={data ? data.listingById?.guestType : []}
+              />
+              <Divider width={1} color={colors.textReverse} />
+            </View>
+          )}
+          {/* Part5 */}
           <Facility
             device={data ? data.listingById?.device : []}
             safetyDevice={data ? data.listingById?.safetyDevice : []}
           />
+          {/* Part6 */}
           <Divider
             width={1}
             style={{
@@ -255,7 +268,7 @@ function ListingDetailScreen() {
                 />
                 <Text
                   style={{
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: "bold",
                     color: colors.text,
                     marginLeft: 5,
@@ -265,7 +278,7 @@ function ListingDetailScreen() {
                 </Text>
                 <Text
                   style={{
-                    fontSize: 20,
+                    fontSize: 15,
                     color: colors.textSub1Reverse,
                     marginLeft: 5,
                   }}
@@ -329,6 +342,7 @@ function ListingDetailScreen() {
                   });
                 }}
               />
+              <Text style={{ fontSize: 12, color: colors.text }}>Chat</Text>
             </View>
 
             <View

@@ -1,4 +1,4 @@
-import { Text, View, Pressable } from "@components/Themed";
+import { Text, View, TouchableOpacity } from "@components/Themed";
 import MapView from "@components/map/MapView";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
@@ -41,8 +41,7 @@ const Location = (props: any) => {
         {address?.city} {address?.postCode}, {address?.state}{" "}
         {address?.country?.toUpperCase()}
       </Text>
-
-      <Pressable
+      <TouchableOpacity
         style={styles.mapWrapper}
         onPress={() =>
           router.navigate({
@@ -60,7 +59,7 @@ const Location = (props: any) => {
             scrollEnabled={false} // 设置不可拖动
           />
         )}
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -42,7 +42,7 @@ function DiscountScreen() {
   const [updateListingFunction] = useMutation(updateListingMutation);
 
   const nextHandler = async () => {
-    updateListingFunction({
+    await updateListingFunction({
       variables: {
         updateListingId: listingData.listingId,
         discount: listingData.discount,
@@ -54,6 +54,25 @@ function DiscountScreen() {
 
   const backHandler = async () => {
     router.back();
+  };
+
+  const handleResetAction2 = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        routes: [{ name: "save-success" }],
+      }),
+    );
+  };
+
+  const saveAndExitHandler = async () => {
+    await updateListingFunction({
+      variables: {
+        updateListingId: listingData.listingId,
+        serviceType: listingData.serviceType,
+        published: false,
+      },
+    });
+    handleResetAction2();
   };
 
   const discountType = [
@@ -76,7 +95,7 @@ function DiscountScreen() {
       <Button
         title=" Save & Exit"
         type="clear"
-        onPress={backHandler}
+        onPress={saveAndExitHandler}
         buttonStyle={{
           justifyContent: "flex-start",
           marginTop: 40,

@@ -11,13 +11,13 @@ import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
 import {
   MaterialIcons,
-  FontAwesome6,
   Ionicons,
-  FontAwesome5,
+  MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { FlashList } from "@shopify/flash-list";
-import { router, Stack } from "expo-router";
+import { router, Stack, useNavigation } from "expo-router";
 import { StyleSheet } from "react-native";
 
 const updateListingMutation = gql`
@@ -34,7 +34,7 @@ function TypeOfGuestScreen() {
 
   const [updateListingFunction] = useMutation(updateListingMutation);
   const nextHandler = async () => {
-    updateListingFunction({
+    await updateListingFunction({
       variables: {
         updateListingId: listingData.listingId,
         guestType: listingData.guestType,
@@ -47,12 +47,32 @@ function TypeOfGuestScreen() {
     router.back();
   };
 
+  const navigation = useNavigation();
+  const handleResetAction = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        routes: [{ name: "save-success" }],
+      }),
+    );
+  };
+
+  const saveAndExitHandler = async () => {
+    await updateListingFunction({
+      variables: {
+        updateListingId: listingData.listingId,
+        serviceType: listingData.serviceType,
+        published: false,
+      },
+    });
+    handleResetAction();
+  };
+
   const guest = [
     {
       name: "Family",
       value: "family",
       icon: (
-        <MaterialIcons name="family-restroom" size={26} color={colors.text} />
+        <MaterialIcons name="family-restroom" size={30} color={colors.text} />
       ),
     },
 
@@ -60,13 +80,17 @@ function TypeOfGuestScreen() {
       name: "Couple",
       value: "couple",
       icon: (
-        <FontAwesome6 name="people-pulling" size={30} color={colors.text} />
+        <MaterialCommunityIcons
+          name="heart-multiple-outline"
+          size={30}
+          color={colors.text}
+        />
       ),
     },
     {
       name: "Male",
       value: "male",
-      icon: <Ionicons name="male" size={26} color={colors.text} />,
+      icon: <Ionicons name="male" size={30} color={colors.text} />,
     },
     {
       name: "Female",
@@ -79,9 +103,15 @@ function TypeOfGuestScreen() {
       icon: <MaterialIcons name="smoke-free" size={30} color={colors.text} />,
     },
     {
-      name: "With pet",
-      value: "pet",
-      icon: <FontAwesome5 name="dog" size={26} color={colors.text} />,
+      name: "Without pet",
+      value: "withoutPet",
+      icon: (
+        <MaterialCommunityIcons
+          name="dog-side-off"
+          size={30}
+          color={colors.text}
+        />
+      ),
     },
   ];
 
@@ -90,7 +120,7 @@ function TypeOfGuestScreen() {
       <Button
         title=" Save & Exit"
         type="clear"
-        onPress={backHandler}
+        onPress={saveAndExitHandler}
         buttonStyle={{
           justifyContent: "flex-start",
           marginTop: 40,

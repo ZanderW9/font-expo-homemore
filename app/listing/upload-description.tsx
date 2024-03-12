@@ -3,14 +3,23 @@ import { View, Text, SafeAreaView } from "@components/Themed";
 import { useCreateListingContext } from "@components/listing/create/CreateProvider";
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
+import { CommonActions } from "@react-navigation/native";
 import { Button, Input } from "@rneui/themed";
-import { router, Stack } from "expo-router";
+import { router, Stack, useNavigation } from "expo-router";
 import React from "react";
 import { StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 const updateListingMutation = gql`
-  mutation Mutation($updateListingId: String!, $description: String) {
-    updateListing(id: $updateListingId, description: $description) {
+  mutation Mutation(
+    $updateListingId: String!
+    $description: String
+    $published: Boolean
+  ) {
+    updateListing(
+      id: $updateListingId
+      description: $description
+      published: $published
+    ) {
       id
     }
   }
@@ -23,7 +32,7 @@ function UploadDescription() {
   const [updateListingFunction] = useMutation(updateListingMutation);
 
   const nextHandler = async () => {
-    updateListingFunction({
+    await updateListingFunction({
       variables: {
         updateListingId: listingData.listingId,
         description: listingData.description,
@@ -36,13 +45,33 @@ function UploadDescription() {
     router.back();
   };
 
+  const navigation = useNavigation();
+  const handleResetAction = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        routes: [{ name: "save-success" }],
+      }),
+    );
+  };
+
+  const saveAndExitHandler = async () => {
+    await updateListingFunction({
+      variables: {
+        updateListingId: listingData.listingId,
+        serviceType: listingData.serviceType,
+        published: false,
+      },
+    });
+    handleResetAction();
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Button
           title=" Save & Exit"
           type="clear"
-          onPress={backHandler}
+          onPress={saveAndExitHandler}
           buttonStyle={{
             justifyContent: "flex-start",
             marginTop: 40,

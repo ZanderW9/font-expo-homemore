@@ -102,7 +102,7 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   const editHandler = () => {
     router.navigate({
-      pathname: "/createlisting",
+      pathname: "/listing/step-1",
       params: { listingId: data.id },
     });
     closeOptions();

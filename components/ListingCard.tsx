@@ -66,9 +66,9 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           }}
         >
           <Image
-            style={{ ...styles.image, aspectRatio: imageData.ratio || 1 }}
-            placeholder={{ thumbhash: imageData.thumbhash }}
-            source={{ uri: imageData.smallUrl }}
+            style={{ ...styles.image, aspectRatio: imageData?.ratio || 1 }}
+            placeholder={{ thumbhash: imageData?.thumbhash }}
+            source={{ uri: imageData?.smallUrl }}
           />
           <View style={styles.cardContent}>
             <Card.Title style={styles.price}>

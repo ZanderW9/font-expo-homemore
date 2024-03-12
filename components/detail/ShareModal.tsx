@@ -26,18 +26,18 @@ const modifyPublishMutation = gql`
   }
 `;
 
-function ShareModal(data: any) {
+function ShareModal(props: any) {
   const colors = useThemedColors();
   const snapPoints = useMemo(() => ["30%"], []);
-  const copyLink = `https://192.168.50.242:8081/detail/${data.listingId}`;
+  const copyLink = `https://192.168.50.242:8081/detail/${props.listingId}`;
   const [modifyPublishFunction] = useMutation(modifyPublishMutation);
 
   const copyLinkHandler = async () => {
     await Clipboard.setStringAsync(copyLink);
-    data.bottomSheetModalRef.current?.close();
+    props.bottomSheetModalRef.current?.close();
   };
 
-  const listingId = data.listingId;
+  const listingId = props.listingId;
   const renderBackdrop = useCallback(
     (propsBackdrop) => (
       <BottomSheetBackdrop
@@ -51,8 +51,7 @@ function ShareModal(data: any) {
     [],
   );
 
-  const { data: gqlData } = useQuery(meQuery);
-
+  const { data } = useQuery(meQuery);
   const openWeChat = async () => {
     const isInstalled = await Linking.canOpenURL("weixin://");
 
@@ -87,8 +86,11 @@ function ShareModal(data: any) {
   };
 
   const editHandler = () => {
-    router.navigate({ pathname: "/createlisting", params: { listingId } });
-    data.bottomSheetModalRef.current?.close();
+    router.navigate({
+      pathname: "/listing/step-1",
+      params: { listingId },
+    });
+    props.bottomSheetModalRef.current?.close();
   };
 
   const unpublishHandler = () => {
@@ -99,14 +101,14 @@ function ShareModal(data: any) {
       },
       refetchQueries: [{ query: meQuery }],
     });
-    data.bottomSheetModalRef.current?.close();
+    props.bottomSheetModalRef.current?.close();
     router.back();
   };
 
   return (
     <View style={styles.container}>
       <BottomSheetModal
-        ref={data.bottomSheetModalRef}
+        ref={props.bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
         backgroundStyle={{ backgroundColor: colors.back1 }}
@@ -161,7 +163,7 @@ function ShareModal(data: any) {
                 <Text style={styles.title}>Copy Link</Text>
               </TouchableOpacity>
 
-              {gqlData?.me?.id === data.userId && (
+              {data?.me?.id === props.userId && (
                 <TouchableOpacity style={styles.iconWrapper}>
                   <Ionicons
                     name="create-outline"
@@ -173,7 +175,7 @@ function ShareModal(data: any) {
                 </TouchableOpacity>
               )}
 
-              {gqlData?.me?.id === data.userId && (
+              {data?.me?.id === props.userId && (
                 <TouchableOpacity style={styles.iconWrapper}>
                   <Ionicons
                     name="trash-outline"
@@ -185,7 +187,7 @@ function ShareModal(data: any) {
                 </TouchableOpacity>
               )}
 
-              {gqlData?.me?.id !== data.userId && (
+              {data?.me?.id !== props.userId && (
                 <TouchableOpacity style={styles.iconWrapper}>
                   <Ionicons
                     name="warning-outline"

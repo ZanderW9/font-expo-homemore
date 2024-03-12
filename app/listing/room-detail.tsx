@@ -4,8 +4,9 @@ import { useCreateListingContext } from "@components/listing/create/CreateProvid
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
+import { CommonActions } from "@react-navigation/native";
 import { Button, CheckBox } from "@rneui/themed";
-import { router, Stack } from "expo-router";
+import { router, Stack, useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -13,8 +14,16 @@ import DropDownPicker from "react-native-dropdown-picker";
 DropDownPicker.setListMode("SCROLLVIEW");
 
 const updateListingMutation = gql`
-  mutation UpdateListing($updateListingId: String!, $bedRoomDetails: [Json]) {
-    updateListing(id: $updateListingId, bedRoomDetails: $bedRoomDetails) {
+  mutation UpdateListing(
+    $updateListingId: String!
+    $bedRoomDetails: [Json]
+    $published: Boolean
+  ) {
+    updateListing(
+      id: $updateListingId
+      bedRoomDetails: $bedRoomDetails
+      published: $published
+    ) {
       id
     }
   }
@@ -49,6 +58,26 @@ function RoomDetailScreen() {
     router.back();
   };
 
+  const navigation = useNavigation();
+  const handleResetAction = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        routes: [{ name: "save-success" }],
+      }),
+    );
+  };
+
+  const saveAndExitHandler = async () => {
+    await updateListingFunction({
+      variables: {
+        updateListingId: listingData.listingId,
+        serviceType: listingData.serviceType,
+        published: false,
+      },
+    });
+    handleResetAction();
+  };
+
   const addBedroomHandler = async () => {
     setOpen([...open, false]);
     const newBedroom = {
@@ -67,7 +96,7 @@ function RoomDetailScreen() {
       <Button
         title=" Save & Exit"
         type="clear"
-        onPress={backHandler}
+        onPress={saveAndExitHandler}
         buttonStyle={{
           justifyContent: "flex-start",
           marginTop: 40,
