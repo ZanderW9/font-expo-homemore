@@ -17,8 +17,8 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch", "remote-notification"],
-        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location.",
+        "UIBackgroundModes": ["fetch", "remote-notification"],
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location to show nearby rental properties and provide personalized recommendations.",
         "LSApplicationQueriesSchemes": [
           "weixin",
           "fb",
@@ -27,10 +27,13 @@
           "twitter"
         ]
       },
-      "associatedDomains": ["applinks:homemore.com.au"],
+      "associatedDomains": [
+        "applinks:homemore.com.au",
+        "applinks:www.homemore.com.au"
+      ],
       "bundleIdentifier": "au.com.homemore",
       "runtimeVersion": "1.1.5",
-      "buildNumber": "202403121"
+      "buildNumber": "202403141"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -42,8 +45,7 @@
         "android.permission.INTERNET",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.FOREGROUND_SERVICE",
-        "android.permission.ACCESS_BACKGROUND_LOCATION"
+        "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "au.com.homemore",
       "runtimeVersion": {
@@ -56,7 +58,12 @@
           "data": [
             {
               "scheme": "https",
-              "host": "*.homemore.com.au",
+              "host": "homemore.com.au",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "www.homemore.com.au",
               "pathPrefix": "/"
             }
           ],
