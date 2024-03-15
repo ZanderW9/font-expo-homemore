@@ -1,5 +1,5 @@
-import BookingProvider from "@components/booking/bookingProvider";
-import MyBooking from "@components/booking/myBooking";
+import BookingProvider from "@components/booking/BookingProvider";
+import MyBooking from "@components/booking/MyBooking";
 
 function Booking() {
   return (

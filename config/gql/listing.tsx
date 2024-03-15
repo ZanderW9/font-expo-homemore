@@ -74,6 +74,7 @@ export const BOOKING_PAGE_LISTING_QUERY = gql`
         smallUrl
         thumbhash
       }
+      description
       price
       address
       coordinate
@@ -83,6 +84,7 @@ export const BOOKING_PAGE_LISTING_QUERY = gql`
       rentType
       placeDetails
       device
+      discount
       safetyDevice
       owner {
         userName
