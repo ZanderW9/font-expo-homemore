@@ -81,6 +81,8 @@ export const BOOKING_PAGE_LISTING_QUERY = gql`
       unavailability
       placeType
       rentType
+      description
+      discount
       placeDetails
       device
       safetyDevice

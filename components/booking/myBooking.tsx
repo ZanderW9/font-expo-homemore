@@ -1,6 +1,7 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View, Text, SafeAreaView } from "@components/Themed";
+import Payment from "@components/booking/Payment";
 import BaseInfo from "@components/booking/baseInformation";
 import { useBookingContext } from "@components/booking/bookingProvider";
 import CheckIn from "@components/booking/checkIn";
@@ -96,7 +97,8 @@ function MyBooking() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <BaseInfo
           title={data?.listingById.title}
-          price={data?.listingById.price}
+          description={data?.listingById.description}
+          address={data?.listingById.address}
           placeType={data?.listingById.placeType}
           rentType={data?.listingById.rentType}
           image={data?.listingById.images[0]}
@@ -106,7 +108,11 @@ function MyBooking() {
           unavailability={data?.listingById.unavailability}
           guestCount={data?.listingById.placeDetails.guestCount}
         />
-        <PriceInfo price={data?.listingById.price} />
+        <PriceInfo
+          price={data?.listingById.price}
+          discount={data?.listingById.discount}
+        />
+        <Payment />
       </ScrollView>
 
       <SafeAreaView style={styles.safeArea} edges={["bottom"]}>

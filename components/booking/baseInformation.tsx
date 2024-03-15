@@ -6,12 +6,16 @@ import { StyleSheet } from "react-native";
 function BaseInfo(props: any) {
   const colors = useThemedColors();
 
-  let rentType = "";
-  if (props.rentType === "ARoom") {
-    rentType = "A Separate Room";
-  } else {
-    rentType = "An Entire Place";
-  }
+  const placeTypeDir = {
+    apartment: "Apartment",
+    house: "House",
+    hotel: "Hotel",
+  };
+  const rentTypeDir = {
+    aRoom: "A Separate Room",
+    anEntirePlace: "Entire Place",
+  };
+  const address = `${props.address.city}, ${props.address.state}, ${props.address.country}, ${props.address.postCode}`;
 
   return (
     <View style={styles.container}>
@@ -51,14 +55,22 @@ function BaseInfo(props: any) {
             flexDirection: "column",
             width: "70%",
             paddingLeft: 10,
-            justifyContent: "space-between",
+            justifyContent: "flex-start",
           }}
         >
           <Text style={styles.title}>{props.title}</Text>
-          <Text style={styles.price}>${props.price} / day</Text>
-          <Text style={[styles.placeType, { color: colors.textSub1 }]}>
-            {props.placeType} · {rentType}
+          <Text style={[styles.description, { color: colors.textSub1Reverse }]}>
+            {props.description}
           </Text>
+
+          <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <Text style={[styles.placeType, { color: colors.textSub1 }]}>
+              {address}
+            </Text>
+            <Text style={[styles.placeType, { color: colors.textSub1 }]}>
+              {placeTypeDir[props.placeType]} · {rentTypeDir[props.rentType]}
+            </Text>
+          </View>
         </View>
       </View>
     </View>
@@ -74,18 +86,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginHorizontal: 10,
   },
-  separator: {
-    marginBottom: 3,
-    height: 1,
-    width: "100%",
-  },
   placeType: {
     fontSize: 13,
   },
   title: {
     fontSize: 14,
   },
-  price: {
+  description: {
+    fontSize: 14,
+  },
+  address: {
     fontSize: 14,
   },
 });
