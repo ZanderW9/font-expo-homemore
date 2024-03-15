@@ -34,7 +34,7 @@
       ],
       "bundleIdentifier": "au.com.homemore",
       "runtimeVersion": "1.1.5",
-      "buildNumber": "202403141"
+      "buildNumber": "202403144"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -56,18 +56,12 @@
         {
           "action": "VIEW",
           "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "homemore.com.au",
-              "pathPrefix": "/"
-            },
-            {
-              "scheme": "https",
-              "host": "www.homemore.com.au",
-              "pathPrefix": "/"
-            }
-          ],
+          "data": {
+            "scheme": "https",
+            "host": "*.homemore.com.au",
+            "pathPrefix": "/"
+          },
+
           "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
@@ -77,9 +71,12 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to access your location to show nearby properties and provide personalized recommendations.",
+          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to access your location to show nearby properties and provide personalized recommendations.",
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to access your location to show nearby properties and provide personalized recommendations.",
           "isIosBackgroundLocationEnabled": false,
-          "isAndroidBackgroundLocationEnabled": false
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": true
         }
       ],
       "expo-font",
@@ -95,7 +92,8 @@
         {
           "username": "marclu"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

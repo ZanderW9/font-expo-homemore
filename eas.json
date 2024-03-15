@@ -21,7 +21,7 @@
         "simulator": true
       },
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au"
+        "EXPO_PUBLIC_BACKEND_URL": "https://bf91-103-120-10-184.ngrok-free.app"
       }
     },
     "preview2": {
