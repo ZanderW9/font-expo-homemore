@@ -7,13 +7,13 @@ import {
 } from "@expo/vector-icons";
 import { StyleSheet, Dimensions } from "react-native";
 
-function PreferredRoomer(props: any) {
+function PreferredGuest(props: any) {
   const colors = useThemedColors();
   const PAGE_WIDTH = Dimensions.get("window").width * 0.95;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Preferred Roomer</Text>
+      <Text style={styles.title}>Preferred Guest</Text>
       <View
         style={{
           display: "flex",
@@ -35,7 +35,7 @@ function PreferredRoomer(props: any) {
             }}
           >
             <MaterialIcons name="smoke-free" size={30} color={colors.text} />
-            <Text style={styles.iconDescription}>non-smoker</Text>
+            <Text style={styles.iconDescription}>Non-smoker</Text>
           </View>
         )}
 
@@ -55,7 +55,7 @@ function PreferredRoomer(props: any) {
               size={30}
               color={colors.text}
             />
-            <Text style={styles.iconDescription}>without pet</Text>
+            <Text style={styles.iconDescription}>Without pet</Text>
           </View>
         )}
 
@@ -75,7 +75,7 @@ function PreferredRoomer(props: any) {
               size={30}
               color={colors.text}
             />
-            <Text style={styles.iconDescription}>family</Text>
+            <Text style={styles.iconDescription}>Family</Text>
           </View>
         )}
 
@@ -159,4 +159,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PreferredRoomer;
+export default PreferredGuest;

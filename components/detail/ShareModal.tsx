@@ -29,7 +29,7 @@ const modifyPublishMutation = gql`
 function ShareModal(props: any) {
   const colors = useThemedColors();
   const snapPoints = useMemo(() => ["30%"], []);
-  const copyLink = `https://192.168.50.242:8081/detail/${props.listingId}`;
+  const copyLink = `https://homemore.com.au/detail/${props.listingId}`;
   const [modifyPublishFunction] = useMutation(modifyPublishMutation);
 
   const copyLinkHandler = async () => {

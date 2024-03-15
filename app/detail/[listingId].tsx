@@ -17,7 +17,7 @@ import ReviewInputModal from "@components/detail/InputModal";
 import Location from "@components/detail/Location";
 import MyCarousel from "@components/detail/MyCarousel";
 import OverView from "@components/detail/OverView";
-import PreferredRoomer from "@components/detail/PreferredRoomer";
+import PreferredGuest from "@components/detail/PreferredGuest";
 import Review from "@components/detail/Review";
 import ShareModal from "@components/detail/ShareModal";
 import AddModal from "@components/wishlist/AddModal";
@@ -183,7 +183,7 @@ function ListingDetailScreen() {
 
           {data?.listingById?.guestType?.length > 0 && (
             <View>
-              <PreferredRoomer
+              <PreferredGuest
                 guestType={data ? data.listingById?.guestType : []}
               />
               <Divider width={1} color={colors.textReverse} />
