@@ -6,15 +6,12 @@ import { StyleSheet } from "react-native";
 function BaseInfo(props: any) {
   const colors = useThemedColors();
 
-  const placeTypeDir = {
-    apartment: "Apartment",
-    house: "House",
-    hotel: "Hotel",
-  };
-  const rentTypeDir = {
-    aRoom: "A Separate Room",
-    anEntirePlace: "Entire Place",
-  };
+  let rentType = "";
+  if (props.rentType === "ARoom") {
+    rentType = "A Separate Room";
+  } else {
+    rentType = "An Entire Place";
+  }
 
   return (
     <View style={styles.container}>
@@ -54,18 +51,14 @@ function BaseInfo(props: any) {
             flexDirection: "column",
             width: "70%",
             paddingLeft: 10,
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
           }}
         >
           <Text style={styles.title}>{props.title}</Text>
-          <Text style={[styles.description, { color: colors.textSub1Reverse }]}>
-            {props.description}
+          <Text style={styles.price}>${props.price} / day</Text>
+          <Text style={[styles.placeType, { color: colors.textSub1 }]}>
+            {props.placeType} · {rentType}
           </Text>
-          <View style={{ flex: 1, justifyContent: "flex-end" }}>
-            <Text style={[styles.placeType, { color: colors.textSub1 }]}>
-              {placeTypeDir[props.placeType]} · {rentTypeDir[props.rentType]}
-            </Text>
-          </View>
         </View>
       </View>
     </View>
@@ -92,10 +85,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
   },
-  description: {
-    fontSize: 14,
-  },
-  address: {
+  price: {
     fontSize: 14,
   },
 });

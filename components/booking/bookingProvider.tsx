@@ -8,7 +8,6 @@ const BookingProvider = ({ children }) => {
   const [childNum, setChildNum] = useState(0);
   const [infantNum, setInfantNum] = useState(0);
   const [selectedDates, setSelectedDates] = useState([]);
-  const [discount, setDiscount] = useState(0);
 
   return (
     <BookingContext.Provider
@@ -23,8 +22,6 @@ const BookingProvider = ({ children }) => {
         setInfantNum,
         selectedDates,
         setSelectedDates,
-        discount,
-        setDiscount,
       }}
     >
       {children}

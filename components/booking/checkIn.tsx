@@ -1,5 +1,5 @@
 import { Text, View } from "@components/Themed";
-import { useBookingContext } from "@components/booking/BookingProvider";
+import { useBookingContext } from "@components/booking/bookingProvider";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
@@ -84,7 +84,7 @@ function CheckIn(props: any) {
       return result;
     }, {});
 
-    const selectedDateMarks = selectedDates?.reduce((result, date, index) => {
+    const selectedDateMarks = selectedDates.reduce((result, date, index) => {
       result[date] = {
         selected: true,
         color: "rgb(236, 76, 96)",

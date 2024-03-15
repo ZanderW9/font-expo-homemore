@@ -56,7 +56,7 @@ const CustomHeaderTitle = (data: any) => {
           titleStyle={{
             justifyContent: "center",
             alignSelf: "center",
-            fontSize: 25,
+            fontSize: 20,
           }}
         />
       )}

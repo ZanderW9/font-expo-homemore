@@ -1,11 +1,10 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { GlobalContext } from "@app/_layout";
 import { View, Text, SafeAreaView } from "@components/Themed";
-import BaseInfo from "@components/booking/BaseInformation";
-import { useBookingContext } from "@components/booking/BookingProvider";
-import CheckIn from "@components/booking/CheckIn";
-import Payment from "@components/booking/Payment";
-import PriceInfo from "@components/booking/PriceInfo";
+import BaseInfo from "@components/booking/baseInformation";
+import { useBookingContext } from "@components/booking/bookingProvider";
+import CheckIn from "@components/booking/checkIn";
+import PriceInfo from "@components/booking/priceInfo";
 import { BOOKING_PAGE_LISTING_QUERY } from "@config/gql/listing";
 import { useThemedColors } from "@constants/theme";
 import { Divider } from "@rneui/themed";
@@ -97,7 +96,7 @@ function MyBooking() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <BaseInfo
           title={data?.listingById.title}
-          description={data?.listingById.description}
+          price={data?.listingById.price}
           placeType={data?.listingById.placeType}
           rentType={data?.listingById.rentType}
           image={data?.listingById.images[0]}
@@ -107,11 +106,7 @@ function MyBooking() {
           unavailability={data?.listingById.unavailability}
           guestCount={data?.listingById.placeDetails.guestCount}
         />
-        <PriceInfo
-          price={data?.listingById.price}
-          discount={data?.listingById.discount}
-        />
-        <Payment />
+        <PriceInfo price={data?.listingById.price} />
       </ScrollView>
 
       <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
