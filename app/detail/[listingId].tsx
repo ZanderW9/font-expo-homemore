@@ -79,7 +79,11 @@ function ListingDetailScreen() {
   );
 
   const weekPrice = weekDiscount
-    ? data?.listingById?.price * 7 * (1 - weekDiscount.discountValue / 100)
+    ? (
+        data?.listingById?.price *
+        7 *
+        (1 - weekDiscount.discountValue / 100)
+      ).toFixed()
     : data?.listingById?.price * 7;
 
   const inputRef = useRef(null);
@@ -305,17 +309,24 @@ function ListingDetailScreen() {
               {data?.listingById?.serviceType === "rent" && (
                 <View
                   style={{
-                    alignItems: "flex-start",
+                    alignItems: "center",
                     justifyContent: "flex-start",
+                    flexDirection: "row",
                   }}
                 >
+                  <Fontisto
+                    name="dollar"
+                    size={7}
+                    color={colors.textSub1Reverse}
+                    style={{ marginRight: 1, marginBottom: -1 }}
+                  />
                   <Text
                     style={{
                       fontSize: 10,
                       color: colors.textSub1Reverse,
                     }}
                   >
-                    ${data?.listingById?.price} / night
+                    {data?.listingById?.price} / night
                   </Text>
                 </View>
               )}
