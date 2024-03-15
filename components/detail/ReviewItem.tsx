@@ -88,7 +88,9 @@ const RenderReviw = (props: any) => {
               </Text>
               <Text style={styles.reviewText}>{subReview?.text}</Text>
               <View style={styles.reviewEndWrapper}>
-                <Text style={styles.reviewEnd}>
+                <Text
+                  style={[styles.reviewEnd, { color: colors.textSub1Reverse }]}
+                >
                   {formatTime(subReview.createdAt)}
                 </Text>
                 <Pressable
@@ -101,7 +103,14 @@ const RenderReviw = (props: any) => {
                     });
                   }}
                 >
-                  <Text style={styles.reviewEnd}>Reply</Text>
+                  <Text
+                    style={[
+                      styles.reviewEnd,
+                      { color: colors.textSub1Reverse },
+                    ]}
+                  >
+                    Reply
+                  </Text>
                 </Pressable>
               </View>
             </TouchableOpacity>
@@ -159,12 +168,12 @@ const RenderReviw = (props: any) => {
             });
           }}
         >
-          <Text style={[styles.senderName, { color: colors.text }]}>
+          <Text style={[styles.senderName, { color: colors.textSub1Reverse }]}>
             {props.review.sender.userName}
           </Text>
           <Text style={styles.reviewText}>{props.review.text}</Text>
           <View style={styles.reviewEndWrapper}>
-            <Text style={styles.reviewEnd}>
+            <Text style={[styles.reviewEnd, { color: colors.textSub1Reverse }]}>
               {formatTime(props.review.createdAt)}
             </Text>
             {/* 一个回复按钮，点击回复消息 */}
@@ -178,7 +187,11 @@ const RenderReviw = (props: any) => {
                 });
               }}
             >
-              <Text style={styles.reviewEnd}>Reply</Text>
+              <Text
+                style={[styles.reviewEnd, { color: colors.textSub1Reverse }]}
+              >
+                Reply
+              </Text>
             </Pressable>
           </View>
         </TouchableOpacity>

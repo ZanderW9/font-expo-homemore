@@ -73,6 +73,15 @@ function ListingDetailScreen() {
     variables: { listingId },
     errorPolicy: "all",
   });
+
+  const weekDiscount = data?.listingById?.discount?.find(
+    (discount: any) => discount.discountType === "week",
+  );
+
+  const weekPrice = weekDiscount
+    ? data?.listingById?.price * 7 * (1 - weekDiscount.discountValue / 100)
+    : data?.listingById?.price * 7;
+
   const inputRef = useRef(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const bottomSheetAddModalRef = useRef<BottomSheetModal>(null);
@@ -274,7 +283,11 @@ function ListingDetailScreen() {
                     marginLeft: 5,
                   }}
                 >
-                  {data ? data.listingById?.price : 0} AUD
+                  {data
+                    ? data.listingById?.serviceType === "rent"
+                      ? weekPrice
+                      : data.listingById?.price
+                    : 0}
                 </Text>
                 <Text
                   style={{
@@ -283,37 +296,29 @@ function ListingDetailScreen() {
                     marginLeft: 5,
                   }}
                 >
-                  / night
+                  {data?.listingById?.serviceType === "rent"
+                    ? "/ week"
+                    : "/ night"}
                 </Text>
               </View>
-              {/* discount */}
-              <View
-                style={{
-                  alignItems: "flex-start",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text
+
+              {data?.listingById?.serviceType === "rent" && (
+                <View
                   style={{
-                    fontSize: 10,
-                    color: colors.textSub1Reverse,
+                    alignItems: "flex-start",
+                    justifyContent: "flex-start",
                   }}
                 >
-                  {data?.listingById?.discount?.map((discount: any) => {
-                    return (
-                      <Text
-                        key={discount.discountType}
-                        style={{
-                          fontSize: 10,
-                          color: colors.textSub1Reverse,
-                        }}
-                      >
-                        {discount.discountValue}% per {discount.discountType}{" "}
-                      </Text>
-                    );
-                  })}
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      color: colors.textSub1Reverse,
+                    }}
+                  >
+                    ${data?.listingById?.price} / night
+                  </Text>
+                </View>
+              )}
             </Pressable>
             <View
               style={{

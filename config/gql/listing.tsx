@@ -30,6 +30,7 @@ export const DETAIL_PAGE_LISTING_QUERY = gql`
       discount
       orderType
       guestType
+      serviceType
       owner {
         userName
         avatar
