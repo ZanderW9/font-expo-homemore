@@ -4,7 +4,7 @@ import { View, Text, SafeAreaView, ScrollView } from "@components/Themed";
 import { useCreateListingContext } from "@components/listing/create/CreateProvider";
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { compressImage } from "@config/media";
-import { signImageUrl, deleteImageFromS3 } from "@config/requests";
+import { signImageUrl } from "@config/requests";
 import { uploadImage } from "@config/s3";
 import { useThemedColors } from "@constants/theme";
 import { CommonActions } from "@react-navigation/native";
@@ -42,7 +42,7 @@ function UploadPhotos() {
   const [updateListingFunction] = useMutation(updateListingMutation);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [deleteKey, setDeleteKey] = useState("");
 
   const nextHandler = async () => {
     await updateListingFunction({
@@ -78,15 +78,15 @@ function UploadPhotos() {
     handleResetAction();
   };
 
-  const deleteImage = (index: number) => {
+  const deleteImage = (key: string) => {
     setShowDeleteDialog(true);
-    setDeleteIndex(index);
+    setDeleteKey(key);
   };
 
   const confirmDelete = () => {
-    deleteImageFromS3(httpLinkUrl, listingData.images[deleteIndex]);
-    const updatedImages = [...listingData.images];
-    updatedImages.splice(deleteIndex, 1);
+    const updatedImages = listingData.images?.filter(
+      (image) => image !== deleteKey,
+    );
     dispatchListingData({ ...listingData, images: updatedImages });
     setShowDeleteDialog(false);
   };
@@ -127,12 +127,12 @@ function UploadPhotos() {
           images: [...listingData.images, ...newImages],
         });
       }
-    } catch (error) {
-      console.log("Error picking image:", error);
+    } catch {
+      // do nothing
     }
   };
 
-  function renderImageGridItem(item) {
+  function renderImageGridItem(item, index) {
     return (
       <View style={[styles.imageContainer, { borderColor: colors.border1 }]}>
         <Image source={{ uri: item.uri }} style={[styles.image]} />
@@ -181,13 +181,12 @@ function UploadPhotos() {
           <DraggableGrid
             numColumns={2}
             style={{ flex: 1 }}
-            onItemPress={(index) => deleteImage(index)}
+            onItemPress={(item) => deleteImage(item.uri)}
             onDragStart={() => setScrollEnabled(false)}
-            renderItem={renderImageGridItem}
+            renderItem={(item, index) => renderImageGridItem(item, index)}
             data={listingData.images.map((uri, index) => ({ uri, key: uri }))}
             onDragRelease={(data) => {
               const newImages = data.map((item) => item.uri);
-              console.log("newImages", newImages);
               dispatchListingData({ ...listingData, images: newImages });
               setScrollEnabled(true);
             }}
