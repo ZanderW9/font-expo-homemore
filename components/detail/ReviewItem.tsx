@@ -82,7 +82,9 @@ const RenderReviw = (props: any) => {
                 });
               }}
             >
-              <Text style={styles.senderName}>
+              <Text
+                style={[styles.senderName, { color: colors.textSub1Reverse }]}
+              >
                 {subReview?.sender?.userName} {">"}{" "}
                 {subReview?.receiver?.userName}
               </Text>

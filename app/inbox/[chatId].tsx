@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { ChatContext } from "@app/_layout";
 import { CHAT_QUERY, SEND_MESSAGE_MUTATION } from "@config/gql/chat";
+import { useThemedColors } from "@constants/theme";
 import { Avatar, Input } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useState, useRef, useEffect, useContext } from "react";
@@ -9,6 +10,7 @@ import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChatScreen = () => {
+  const colors = useThemedColors();
   const { refetchChatId, setRefetchChatId } = useContext(ChatContext);
   const messageContainerRef = useRef();
 
@@ -42,18 +44,28 @@ const ChatScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: colors.back1 }}
+      edges={["bottom"]}
+    >
       <Stack.Screen
         options={{
           title: userName,
           animation: "slide_from_right",
           headerBackTitleVisible: false,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
         }}
       />
       <GiftedChat
         messageContainerRef={messageContainerRef}
         messagesContainerStyle={{
-          backgroundColor: "#f5f5f5",
+          backgroundColor: colors.back2,
         }}
         messages={messages}
         inverted={false}
@@ -67,7 +79,7 @@ const ChatScreen = () => {
             <Input
               placeholder=""
               inputContainerStyle={{
-                backgroundColor: "white",
+                backgroundColor: colors.back2,
                 borderBottomWidth: 0,
                 borderRadius: 30,
                 height: 45,
@@ -112,11 +124,16 @@ const ChatScreen = () => {
               {...props}
               wrapperStyle={{
                 left: {
-                  backgroundColor: "white",
+                  backgroundColor: colors.back1,
                   marginBottom: 6,
                 },
                 right: {
                   marginBottom: 6,
+                },
+              }}
+              textStyle={{
+                left: {
+                  color: colors.text,
                 },
               }}
             />
@@ -138,6 +155,12 @@ const ChatScreen = () => {
               <Avatar
                 size={44}
                 rounded
+                titleStyle={{
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  fontSize: 30,
+                  bottom: 3,
+                }}
                 onPress={() => onPressAvatar(props.currentMessage.user)}
                 containerStyle={styles.avatar}
                 title={props.currentMessage.user.userName?.slice(0, 2) ?? ""}
@@ -156,8 +179,7 @@ const styles = StyleSheet.create({
   avatar: {
     borderWidth: 0.5,
     bottom: 6,
-    borderColor: "gray",
-    borderStyle: "dashed",
+    borderColor: "rgba(0,0,0,0.1)",
     backgroundColor: "#F3EED9",
   },
 });
