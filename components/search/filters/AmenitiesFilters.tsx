@@ -17,7 +17,7 @@ const AmenitiesFilters = () => {
   const amenities = [
     {
       name: "Wi-Fi",
-      value: "wifi",
+      value: "Wi-Fi",
       icon: <FontAwesome6 name="wifi" size={24} color={colors.text} />,
     },
 
@@ -39,7 +39,7 @@ const AmenitiesFilters = () => {
     },
     {
       name: "Washer",
-      value: "washer",
+      value: "washingMachine",
       icon: (
         <MaterialCommunityIcons
           name="washing-machine"

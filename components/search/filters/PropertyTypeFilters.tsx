@@ -44,11 +44,11 @@ const PropertyTypeFilters = () => {
   const placeTypes = [
     {
       name: <Text style={{ width: 80 }}>Entire Place</Text>,
-      value: "entire",
+      value: "anEntirePlace",
     },
     {
       name: <Text style={{ width: 40 }}>Room</Text>,
-      value: "room",
+      value: "aRoom",
     },
   ];
 
@@ -215,7 +215,7 @@ const PropertyTypeFilters = () => {
                 key={item.value}
                 onPress={() => {
                   dispatchFilters({
-                    placeType: item.value,
+                    serviceType: item.value,
                   });
                 }}
                 style={{

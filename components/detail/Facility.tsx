@@ -21,6 +21,7 @@ function Facility(data: any) {
     firstAidKit: "First Aid Kit",
     fireExtinguisher: "Fire Extinguisher",
     carbonMonoxideAlarm: "Carbon Monoxide Alarm",
+    fridge: "Fridge",
   };
 
   return (
