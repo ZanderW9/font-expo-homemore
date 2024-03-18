@@ -6,7 +6,7 @@ import { useThemedColors } from "@constants/theme";
 import { Button } from "@rneui/themed";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 
 const createListingMutation = gql`
   mutation Mutation {
@@ -48,7 +48,9 @@ function Step1() {
     variables: { listingId },
   });
 
-  const [createListingFunction, { data }] = useMutation(createListingMutation);
+  const [createListingFunction, { data, loading }] = useMutation(
+    createListingMutation,
+  );
 
   const nextHandler = async () => {
     if (listingData.listingId) {
@@ -79,7 +81,7 @@ function Step1() {
         discount: queriedListingData?.listingById?.discount,
       });
     } else {
-      createListingFunction();
+      await createListingFunction();
     }
   };
 
@@ -182,7 +184,13 @@ function Step1() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             buttonStyle={{
               backgroundColor: colors.mainColor,

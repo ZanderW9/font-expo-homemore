@@ -7,7 +7,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { CommonActions } from "@react-navigation/native";
 import { Button, Input, CheckBox } from "@rneui/themed";
 import { router, Stack, useNavigation } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 
 const updateListingMutation = gql`
   mutation Mutation(
@@ -39,7 +39,9 @@ function DiscountScreen() {
     );
   };
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
 
   const nextHandler = async () => {
     await updateListingFunction({
@@ -252,7 +254,13 @@ function DiscountScreen() {
             }}
           />
           <Button
-            title="Post"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Post"
+              )
+            }
             onPress={nextHandler}
             buttonStyle={{
               backgroundColor: "rgb(236, 76, 96)",

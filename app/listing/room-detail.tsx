@@ -8,7 +8,7 @@ import { CommonActions } from "@react-navigation/native";
 import { Button, CheckBox } from "@rneui/themed";
 import { router, Stack, useNavigation } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
 DropDownPicker.setListMode("SCROLLVIEW");
@@ -33,7 +33,9 @@ function RoomDetailScreen() {
   const { listingData, dispatchListingData } = useCreateListingContext();
   const colors = useThemedColors();
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
 
   const [open, setOpen] = useState([]);
   const [bedType, setBedType] = useState([
@@ -45,7 +47,7 @@ function RoomDetailScreen() {
   ]);
 
   const nextHandler = async () => {
-    updateListingFunction({
+    await updateListingFunction({
       variables: {
         updateListingId: listingData.listingId,
         bedRoomDetails: listingData.bedRoomDetails,
@@ -392,7 +394,13 @@ function RoomDetailScreen() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             buttonStyle={{
               backgroundColor: "rgb(236, 76, 96)",

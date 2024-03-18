@@ -3,12 +3,12 @@ import { View, Text, SafeAreaView, TouchableOpacity } from "@components/Themed";
 import { useCreateListingContext } from "@components/listing/create/CreateProvider";
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { FlashList } from "@shopify/flash-list";
 import { router, Stack, useNavigation } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 
 const updateListingMutation = gql`
   mutation UpdateListing(
@@ -30,7 +30,9 @@ function TypeOfPalceScreen() {
   const colors = useThemedColors();
   const { listingData, dispatchListingData } = useCreateListingContext();
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
   const nextHandler = async () => {
     await updateListingFunction({
       variables: {
@@ -69,7 +71,13 @@ function TypeOfPalceScreen() {
     {
       name: "House",
       value: "house",
-      icon: <MaterialIcons name="house-siding" size={30} color={colors.text} />,
+      icon: (
+        <MaterialCommunityIcons
+          name="greenhouse"
+          size={30}
+          color={colors.text}
+        />
+      ),
     },
 
     {
@@ -80,7 +88,13 @@ function TypeOfPalceScreen() {
     {
       name: "Unit",
       value: "unit",
-      icon: <MaterialIcons name="domain" size={30} color={colors.text} />,
+      icon: (
+        <MaterialCommunityIcons
+          name="home-modern"
+          size={30}
+          color={colors.text}
+        />
+      ),
     },
   ];
 
@@ -217,7 +231,13 @@ function TypeOfPalceScreen() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             disabled={!listingData.placeType}
             buttonStyle={{

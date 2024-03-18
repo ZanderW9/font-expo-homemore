@@ -20,7 +20,7 @@ import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { FlashList } from "@shopify/flash-list";
 import { router, Stack, useNavigation } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 
 const updateListingMutation = gql`
   mutation UpdateListing(
@@ -44,7 +44,9 @@ function AmenityScreen() {
   const colors = useThemedColors();
   const { listingData, dispatchListingData } = useCreateListingContext();
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
   const nextHandler = async () => {
     await updateListingFunction({
       variables: {
@@ -112,6 +114,17 @@ function AmenityScreen() {
       name: "Air Conditioner",
       value: "airConditioner",
       icon: <Ionicons name="snow" size={30} color={colors.text} />,
+    },
+    {
+      name: "Fridge",
+      value: "fridge",
+      icon: (
+        <MaterialCommunityIcons
+          name="fridge-outline"
+          size={30}
+          color={colors.text}
+        />
+      ),
     },
     {
       name: "parking",
@@ -406,7 +419,13 @@ function AmenityScreen() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             buttonStyle={{
               backgroundColor: "rgb(236, 76, 96)",

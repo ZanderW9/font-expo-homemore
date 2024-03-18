@@ -7,7 +7,12 @@ import { CommonActions } from "@react-navigation/native";
 import { Button, Input } from "@rneui/themed";
 import { router, Stack, useNavigation } from "expo-router";
 import React from "react";
-import { StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ActivityIndicator,
+} from "react-native";
 
 const updateListingMutation = gql`
   mutation Mutation(
@@ -25,7 +30,9 @@ function UploadTitle() {
   const colors = useThemedColors();
   const { listingData, dispatchListingData } = useCreateListingContext();
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
   const nextHandler = async () => {
     await updateListingFunction({
       variables: {
@@ -114,10 +121,15 @@ function UploadTitle() {
               color: colors.text,
             }}
             returnKeyType="done"
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === "Enter") {
+                Keyboard.dismiss();
+              }
+            }}
             multiline
             textAlignVertical="top"
             numberOfLines={4}
-            value={listingData.title}
+            value={listingData.title?.trim()}
             onChangeText={(text) => {
               dispatchListingData({ ...listingData, title: text });
             }}
@@ -154,7 +166,13 @@ function UploadTitle() {
               }}
             />
             <Button
-              title="Next"
+              title={
+                loading ? (
+                  <ActivityIndicator color={colors.textReverse} size="small" />
+                ) : (
+                  "Next"
+                )
+              }
               onPress={nextHandler}
               disabled={listingData?.title === ""}
               buttonStyle={{

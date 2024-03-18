@@ -7,7 +7,7 @@ import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { router, Stack, useNavigation } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 import { CalendarList } from "react-native-calendars";
 
 const updateListingMutation = gql`
@@ -34,7 +34,9 @@ function ChooseDate() {
   const [selectedDates, setSelectedDates] = useState([]);
   const [nightStayCount, setNightStayCount] = useState(0);
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
 
   const toggleStartingEndingDays = (day) => {
     if (day.dateString < today) {
@@ -285,7 +287,13 @@ function ChooseDate() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             disabled={selectedDates.length === 0}
             buttonStyle={{

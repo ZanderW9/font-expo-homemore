@@ -8,7 +8,7 @@ import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { router, Stack, useNavigation } from "expo-router";
 import React from "react";
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet, Pressable, ActivityIndicator } from "react-native";
 
 const updateListingMutation = gql`
   mutation UpdateListing(
@@ -29,7 +29,9 @@ const updateListingMutation = gql`
 function LocationScreen() {
   const colors = useThemedColors();
   const { listingData } = useCreateListingContext();
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
 
   const nextHandler = async () => {
     router.navigate("/listing/basic-of-place");
@@ -175,7 +177,13 @@ function LocationScreen() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             disabled={listingData?.address?.street === ""}
             buttonStyle={{

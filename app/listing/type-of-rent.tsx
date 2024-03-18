@@ -8,7 +8,7 @@ import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { FlashList } from "@shopify/flash-list";
 import { router, Stack, useNavigation } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 
 const updateListingMutation = gql`
   mutation UpdateListing(
@@ -30,7 +30,9 @@ function TypeOfRentScreen() {
   const colors = useThemedColors();
   const { listingData, dispatchListingData } = useCreateListingContext();
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
   const nextHandler = async () => {
     await updateListingFunction({
       variables: {
@@ -230,7 +232,13 @@ function TypeOfRentScreen() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             disabled={!listingData.rentType}
             buttonStyle={{

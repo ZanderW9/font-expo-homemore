@@ -28,6 +28,17 @@ const PropertyTypeFilters = () => {
         />
       ),
     },
+    {
+      name: "Unit",
+      value: "unit",
+      icon: (
+        <MaterialCommunityIcons
+          name="home-modern"
+          size={30}
+          color={colors.text}
+        />
+      ),
+    },
   ];
 
   const placeTypes = [

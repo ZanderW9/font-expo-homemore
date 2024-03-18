@@ -2,11 +2,12 @@ import { gql, useMutation } from "@apollo/client";
 import { View, Text, SafeAreaView } from "@components/Themed";
 import { useCreateListingContext } from "@components/listing/create/CreateProvider";
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
+import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
 import { router, Stack, useNavigation } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 
 const updateListingMutation = gql`
   mutation UpdateListing(
@@ -25,9 +26,12 @@ const updateListingMutation = gql`
 `;
 
 function LocationScreen() {
+  const colors = useThemedColors();
   const { listingData, dispatchListingData } = useCreateListingContext();
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
 
   const nextHandler = async () => {
     await updateListingFunction({
@@ -340,7 +344,13 @@ function LocationScreen() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             disabled={!listingData.rentType}
             buttonStyle={{

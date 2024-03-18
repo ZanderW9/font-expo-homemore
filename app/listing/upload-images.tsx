@@ -13,7 +13,7 @@ import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useNavigation } from "expo-router";
 import React, { useContext, useState } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { DraggableGrid } from "react-native-draggable-grid";
 
 const updateListingMutation = gql`
@@ -39,7 +39,9 @@ function UploadPhotos() {
 
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
-  const [updateListingFunction] = useMutation(updateListingMutation);
+  const [updateListingFunction, { loading }] = useMutation(
+    updateListingMutation,
+  );
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteKey, setDeleteKey] = useState("");
@@ -230,7 +232,13 @@ function UploadPhotos() {
             }}
           />
           <Button
-            title="Next"
+            title={
+              loading ? (
+                <ActivityIndicator color={colors.textReverse} size="small" />
+              ) : (
+                "Next"
+              )
+            }
             onPress={nextHandler}
             disabled={listingData?.images?.length === 0}
             buttonStyle={{
