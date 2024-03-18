@@ -30,6 +30,11 @@ const signUpMutation = gql`
       veriCode: $veriCode
     ) {
       token
+      user {
+        id
+        userName
+        avatar
+      }
     }
   }
 `;
@@ -42,7 +47,8 @@ const sendVeriCodeMutation = gql`
 
 function LoginScreen() {
   const colors = useThemedColors();
-  const { setIsLoggedIn } = useContext(GlobalContext);
+  const { httpLinkUrl, setToken, setIsLoggedIn, setApolloClient, setMe } =
+    useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -145,6 +151,9 @@ function LoginScreen() {
     if (!loading && data) {
       storeLocalItem("userToken", data.SignUp.token);
       setIsLoggedIn(true);
+      setToken(data.SignUp.token);
+      setApolloClient(data.SignUp.token, httpLinkUrl);
+      setMe(data.SignUp.user);
       router.replace("/profile");
     }
     signUpFunction({ variables: { userName, email, password, veriCode } });
