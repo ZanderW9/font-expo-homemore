@@ -1,5 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import { Text, View } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { Dialog } from "@rneui/themed";
 import { Image } from "expo-image";
 import React, { useState } from "react";
@@ -58,6 +59,7 @@ function formatTime(timestamp) {
 }
 
 function PendingCard(data: any) {
+  const colors = useThemedColors();
   const adultNum = data.guestType.Adults;
   const childNum = data.guestType.Children;
   const infantNum = data.guestType.Infants;
@@ -124,7 +126,7 @@ function PendingCard(data: any) {
           width: "100%",
           justifyContent: "space-between",
           borderWidth: 1,
-          borderColor: "rgba(0,0,0,0.1)",
+          borderColor: colors.border1,
           padding: 10,
           borderRadius: 15,
         }}
@@ -132,7 +134,7 @@ function PendingCard(data: any) {
         <View
           style={{
             width: "35%",
-            backgroundColor: "rgba(0,0,0,0.1)",
+            backgroundColor: colors.back1,
             aspectRatio: 1,
             borderRadius: 10,
           }}
@@ -230,7 +232,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     paddingTop: 5,
-    backgroundColor: "#f5f5f5",
   },
   separator: {
     marginBottom: 3,
@@ -239,7 +240,6 @@ const styles = StyleSheet.create({
   },
   guestContent: {
     fontSize: 13,
-    color: "gray",
   },
   userName: {
     fontSize: 14,
@@ -256,7 +256,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   processButtonText: {
-    color: "white",
     fontSize: 13,
     alignSelf: "center",
     justifyContent: "center",

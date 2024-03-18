@@ -1,13 +1,8 @@
-import { Text, View } from "@components/Themed";
+import { Text, View, ScrollView } from "@components/Themed";
 import PendingCard from "@components/order/PendingCard";
 import ProcessedCard from "@components/order/ProcessedCard";
 import React, { useState, useRef, useCallback } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, RefreshControl } from "react-native";
 import PagerView from "react-native-pager-view";
 
 function OwnerContent(data: any) {
@@ -57,7 +52,7 @@ function OwnerContent(data: any) {
         onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
         ref={pagerRef}
       >
-        <View key="1" style={{ backgroundColor: "#f5f5f5" }}>
+        <View key="1">
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
@@ -81,7 +76,7 @@ function OwnerContent(data: any) {
               ))}
           </ScrollView>
         </View>
-        <View key="2" style={{ backgroundColor: "#f5f5f5" }}>
+        <View key="2">
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
@@ -114,7 +109,6 @@ function OwnerContent(data: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
     padding: 10,
   },
   pagerView: {
@@ -123,30 +117,16 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
   },
   tabItem: {
     padding: 10,
   },
   tabText: {
-    color: "rgba(0,0,0,0.5)",
     fontSize: 14,
   },
   activeTabText: {
-    color: "rgba(0,0,0,1)",
     fontSize: 18,
     fontWeight: "bold",
-  },
-  separator: {
-    marginBottom: 3,
-    height: 1,
-  },
-  title: {
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-    padding: 10,
-    borderRadius: 5,
   },
 });
 

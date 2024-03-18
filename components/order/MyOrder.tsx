@@ -1,10 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
-import { Text } from "@components/Themed";
+import { Text, View } from "@components/Themed";
 import GuestContent from "@components/order/Guest";
 import OwnerContent from "@components/order/Owner";
+import { useThemedColors } from "@constants/theme";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 const meQuery = gql`
   query Query {
@@ -52,6 +53,7 @@ const meQuery = gql`
 `;
 
 function MyOrder() {
+  const colors = useThemedColors();
   const { data, refetch } = useQuery(meQuery);
 
   const [role, setRole] = useState("guest");
@@ -61,13 +63,19 @@ function MyOrder() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
           title: "My Order",
           animation: "slide_from_right",
           headerBackTitleVisible: false,
           headerBackButtonMenuEnabled: false,
+          headerStyle: {
+            backgroundColor: colors.back1,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
           headerRight: () => (
             <TouchableOpacity
               style={{
@@ -99,14 +107,13 @@ function MyOrder() {
           refetch={refetch}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   safeArea: {
     width: "100%",

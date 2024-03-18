@@ -1,4 +1,5 @@
 import { Text, View } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { Image } from "expo-image";
 import { StyleSheet } from "react-native";
 
@@ -19,6 +20,7 @@ function formatTime(timestamp) {
 }
 
 function ProcessedCard(data: any) {
+  const colors = useThemedColors();
   const adultNum = data.guestType.Adults;
   const childNum = data.guestType.Children;
   const infantNum = data.guestType.Infants;
@@ -31,7 +33,7 @@ function ProcessedCard(data: any) {
           width: "100%",
           justifyContent: "space-between",
           borderWidth: 1,
-          borderColor: "rgba(0,0,0,0.1)",
+          borderColor: colors.border1,
           padding: 10,
           borderRadius: 15,
         }}
@@ -39,7 +41,7 @@ function ProcessedCard(data: any) {
         <View
           style={{
             width: "35%",
-            backgroundColor: "rgba(0,0,0,0.1)",
+            backgroundColor: colors.back1,
             aspectRatio: 1,
             borderRadius: 10,
           }}
@@ -89,17 +91,23 @@ function ProcessedCard(data: any) {
             Order time: {formatTime(data.createdAt)}
           </Text>
           {data.status === "pending" && (
-            <View style={styles.pendingButton}>
+            <View
+              style={[styles.statusButton, { backgroundColor: colors.border1 }]}
+            >
               <Text style={styles.processButtonText}>Status: Pending</Text>
             </View>
           )}
           {data.status === "accepted" && (
-            <View style={styles.acceptedButton}>
+            <View
+              style={[styles.statusButton, { backgroundColor: colors.border1 }]}
+            >
               <Text style={styles.processButtonText}>Status: Accepted</Text>
             </View>
           )}
           {data.status === "rejected" && (
-            <View style={styles.rejectedButton}>
+            <View
+              style={[styles.statusButton, { backgroundColor: colors.border1 }]}
+            >
               <Text style={styles.processButtonText}>Status: Rejected</Text>
             </View>
           )}
@@ -116,7 +124,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     paddingTop: 5,
-    backgroundColor: "#f5f5f5",
   },
   separator: {
     marginBottom: 3,
@@ -125,7 +132,6 @@ const styles = StyleSheet.create({
   },
   guestContent: {
     fontSize: 13,
-    color: "gray",
   },
   userName: {
     fontSize: 14,
@@ -136,23 +142,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  pendingButton: {
-    backgroundColor: "rgb(255, 160, 122)",
-    padding: 6,
-    borderRadius: 5,
-  },
-  acceptedButton: {
-    backgroundColor: "rgb(152, 251, 152)",
-    padding: 6,
-    borderRadius: 5,
-  },
-  rejectedButton: {
-    backgroundColor: "rgb(255, 182, 193)",
+  statusButton: {
     padding: 6,
     borderRadius: 5,
   },
   processButtonText: {
-    color: "white",
     fontSize: 13,
     alignSelf: "center",
     justifyContent: "center",

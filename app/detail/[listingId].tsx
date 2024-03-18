@@ -331,7 +331,7 @@ function ListingDetailScreen() {
                 </View>
               )}
             </Pressable>
-            <View
+            <Pressable
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -339,27 +339,27 @@ function ListingDetailScreen() {
                 alignItems: "center",
                 paddingHorizontal: 5,
               }}
+              onPress={() => {
+                const chatId = [data?.listingById?.owner.id, me?.id]
+                  .sort()
+                  .join("__");
+                router.navigate({
+                  pathname: "/inbox/[chatId]",
+                  params: {
+                    chatId,
+                    userId: data?.listingById?.owner.id,
+                    userName: data?.listingById?.owner.userName,
+                  },
+                });
+              }}
             >
               <Ionicons
                 name="chatbubble-ellipses-outline"
                 size={32}
                 color={colors.text}
-                onPress={() => {
-                  const chatId = [data?.listingById?.owner.id, me?.id]
-                    .sort()
-                    .join("__");
-                  router.navigate({
-                    pathname: "/inbox/[chatId]",
-                    params: {
-                      chatId,
-                      userId: data?.listingById?.owner.id,
-                      userName: data?.listingById?.owner.userName,
-                    },
-                  });
-                }}
               />
               <Text style={{ fontSize: 12, color: colors.text }}>Chat</Text>
-            </View>
+            </Pressable>
 
             <View
               style={{

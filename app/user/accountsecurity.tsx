@@ -1,8 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
-import { View } from "@components/Themed";
-import { ListItem } from "@rneui/themed";
+import { SafeAreaView, Text } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
+import { ListItem, Divider } from "@rneui/themed";
 import { Stack, router } from "expo-router";
-import { StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 
 const meQuery = gql`
   query Query {
@@ -18,6 +19,7 @@ const meQuery = gql`
 `;
 
 function AccountAndSecurityScreen() {
+  const colors = useThemedColors();
   const { data } = useQuery(meQuery);
 
   const changePasswordHandler = () => {
@@ -34,7 +36,11 @@ function AccountAndSecurityScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
+    <SafeAreaView
+      style={styles.container}
+      edges={["bottom"]}
+      theme={{ background: "back2" }}
+    >
       <ScrollView showsVerticalScrollIndicator={false}>
         <Stack.Screen
           options={{
@@ -42,25 +48,37 @@ function AccountAndSecurityScreen() {
             headerTitleAlign: "center",
             headerBackTitleVisible: false,
             animation: "slide_from_right",
+            headerStyle: {
+              backgroundColor: colors.back1,
+            },
+            headerTitleStyle: {
+              color: colors.text,
+            },
           }}
         />
 
-        <ListItem onPress={changePasswordHandler}>
+        <ListItem
+          onPress={changePasswordHandler}
+          containerStyle={{ backgroundColor: colors.back1 }}
+        >
           <ListItem.Content style={styles.subtitleWrapper}>
-            <ListItem.Title>Password</ListItem.Title>
+            <ListItem.Title>
+              <Text>Password</Text>
+            </ListItem.Title>
           </ListItem.Content>
           <ListItem.Chevron />
         </ListItem>
 
-        <View
-          style={styles.separatorThin}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
+        <Divider width={0.5} color={colors.border1} />
 
-        <ListItem onPress={terminateHandler}>
+        <ListItem
+          onPress={terminateHandler}
+          containerStyle={{ backgroundColor: colors.back1 }}
+        >
           <ListItem.Content style={styles.subtitleWrapper}>
-            <ListItem.Title>Terminate Account</ListItem.Title>
+            <ListItem.Title>
+              <Text>Terminate Account</Text>
+            </ListItem.Title>
           </ListItem.Content>
           <ListItem.Chevron />
         </ListItem>
@@ -85,14 +103,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: "gray",
     fontSize: 16,
-  },
-  separatorThin: {
-    height: 1,
-    width: "95%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignSelf: "flex-end",
   },
   userInfo: {
     display: "flex",

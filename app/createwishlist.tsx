@@ -1,10 +1,10 @@
 import { gql, useMutation } from "@apollo/client";
-import { Text, View } from "@components/Themed";
+import { Text, View, SafeAreaView, ScrollView } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Input, Switch } from "@rneui/themed";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, Pressable, ScrollView } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const createFavoriteMutation = gql`

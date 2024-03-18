@@ -1,9 +1,10 @@
 import { gql, useMutation } from "@apollo/client";
-import { View, Text } from "@components/Themed";
+import { View, Text, SafeAreaView, ScrollView } from "@components/Themed";
+import { useThemedColors } from "@constants/theme";
 import { Input } from "@rneui/themed";
 import { Stack, router } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, ScrollView, SafeAreaView, Pressable } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const updateMutation = gql`
@@ -15,6 +16,7 @@ const updateMutation = gql`
 `;
 
 function EditPasswordScreen() {
+  const colors = useThemedColors();
   const [updateFunction] = useMutation(updateMutation);
   const [oldPassword, setOldPassword] = useState("");
   const [text, setText] = useState("");
@@ -54,14 +56,27 @@ function EditPasswordScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView
+      style={styles.container}
+      edges={["bottom"]}
+      theme={{ background: "back2" }}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        theme={{ background: "back2" }}
+      >
         <Stack.Screen
           options={{
             title: "Set Password",
             headerTitleAlign: "center",
             headerBackTitleVisible: false,
             animation: "slide_from_right",
+            headerStyle: {
+              backgroundColor: colors.back1,
+            },
+            headerTitleStyle: {
+              color: colors.text,
+            },
             headerRight: () => (
               <Pressable onPress={updateHandler}>
                 <Text>Save</Text>
@@ -73,7 +88,11 @@ function EditPasswordScreen() {
           <Input
             placeholder="Old Password"
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={{
+              borderBottomWidth: 1,
+              borderBottomColor: colors.border1,
+            }}
+            inputStyle={{ color: colors.text }}
             value={oldPassword}
             secureTextEntry
             onChangeText={(text) => {
@@ -84,7 +103,11 @@ function EditPasswordScreen() {
           <Input
             placeholder="New Password"
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={{
+              borderBottomWidth: 1,
+              borderBottomColor: colors.border1,
+            }}
+            inputStyle={{ color: colors.text }}
             value={text}
             secureTextEntry
             onChangeText={(text) => {
@@ -95,7 +118,11 @@ function EditPasswordScreen() {
           <Input
             placeholder="Confirm Password"
             containerStyle={styles.inputWrapper}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={{
+              borderBottomWidth: 1,
+              borderBottomColor: colors.border1,
+            }}
+            inputStyle={{ color: colors.text }}
             value={text2}
             secureTextEntry
             onChangeText={(text) => {
@@ -119,11 +146,6 @@ const styles = StyleSheet.create({
   content: {
     paddingVertical: 10,
     paddingHorizontal: 13,
-    backgroundColor: "white",
-  },
-  inputContainer: {
-    borderColor: "rgba(0,0,0,0.2)",
-    borderRadius: 5,
   },
   inputWrapper: {
     marginBottom: -20,
