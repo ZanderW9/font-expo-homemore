@@ -21,20 +21,13 @@
         "simulator": true
       },
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://bf91-103-120-10-184.ngrok-free.app"
+        "EXPO_PUBLIC_BACKEND_URL": "https://8a2f-103-120-10-184.ngrok-free.app"
       }
-    },
-    "preview2": {
-      "distribution": "internal",
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      },
-      "channel": "preview2"
     },
     "production": {
       "channel": "production",
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://bf91-103-120-10-184.ngrok-free.app"
+        "EXPO_PUBLIC_BACKEND_URL": "https://8a2f-103-120-10-184.ngrok-free.app"
       }
     }
   }

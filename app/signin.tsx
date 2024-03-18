@@ -12,7 +12,6 @@ import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const signInMutation = gql`
-  # Increments a back-end counter and gets its resulting value
   mutation SignIn($email: String!, $password: String!) {
     SignIn(email: $email, password: $password) {
       token
