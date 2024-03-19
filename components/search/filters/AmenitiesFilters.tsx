@@ -94,11 +94,11 @@ const AmenitiesFilters = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              const newAmenities = filters.amenities?.includes(item.value)
-                ? filters.amenities?.filter((amenity) => amenity !== item.value)
-                : [...(filters.amenities || []), item.value];
+              const newAmenities = filters.devices?.includes(item.value)
+                ? filters.devices?.filter((amenity) => amenity !== item.value)
+                : [...(filters.devices || []), item.value];
               dispatchFilters({
-                amenities: newAmenities,
+                devices: newAmenities,
               });
             }}
             style={{
@@ -117,11 +117,11 @@ const AmenitiesFilters = () => {
                 borderRadius: 8,
                 paddingBottom: 5,
                 paddingTop: 6,
-                borderColor: filters.amenities?.includes(item.value)
+                borderColor: filters.devices?.includes(item.value)
                   ? "#888"
                   : colors.border1,
                 height: 85,
-                backgroundColor: filters.amenities?.includes(item.value)
+                backgroundColor: filters.devices?.includes(item.value)
                   ? colors.back2
                   : colors.back1,
               }}

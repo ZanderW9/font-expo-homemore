@@ -5,7 +5,7 @@ function BasicInfo(props: any) {
   const placeTypeDir = {
     apartment: "Apartment",
     house: "House",
-    hotel: "Hotel",
+    unit: "Unit",
   };
 
   const rentTypeDir = {

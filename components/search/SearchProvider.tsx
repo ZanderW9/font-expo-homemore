@@ -16,10 +16,10 @@ type SearchState = {
   price?: { gte: number; lte: number };
   boundary?: object;
   // priceBy?: string;
-  propertyType?: string;
+  rentType?: string;
   placeType?: string;
   serviceType?: string;
-  amenities?: string[];
+  devices?: string[];
 };
 
 const initialState: SearchState = {
@@ -27,10 +27,10 @@ const initialState: SearchState = {
   price: { gte: 0, lte: 1500 },
   boundary: {},
   // priceBy: "week",
-  placeType: "aRoom",
-  propertyType: "apartment",
+  rentType: "aRoom",
+  placeType: "apartment",
   serviceType: "rent",
-  amenities: [],
+  devices: [],
 };
 
 type CenterProps = {

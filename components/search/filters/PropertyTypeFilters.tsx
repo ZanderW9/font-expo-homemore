@@ -11,7 +11,7 @@ import { TouchableOpacity } from "react-native";
 const PropertyTypeFilters = () => {
   const colors = useThemedColors();
   const { filters, dispatchFilters } = useSearchContext();
-  const propertyTypes = [
+  const placeTypes = [
     {
       name: "Apartment",
       value: "apartment",
@@ -41,7 +41,7 @@ const PropertyTypeFilters = () => {
     },
   ];
 
-  const placeTypes = [
+  const rentTypes = [
     {
       name: <Text style={{ width: 80 }}>Entire Place</Text>,
       value: "anEntirePlace",
@@ -86,13 +86,13 @@ const PropertyTypeFilters = () => {
 
       <FlashList
         estimatedItemSize={100}
-        data={propertyTypes}
+        data={placeTypes}
         numColumns={2}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
               dispatchFilters({
-                propertyType: item.value,
+                placeType: item.value,
               });
             }}
             style={{
@@ -112,10 +112,10 @@ const PropertyTypeFilters = () => {
                 paddingBottom: 5,
                 paddingTop: 6,
                 borderColor:
-                  filters.propertyType === item.value ? "#888" : colors.border1,
+                  filters.placeType === item.value ? "#888" : colors.border1,
                 height: 85,
                 backgroundColor:
-                  filters.propertyType === item.value
+                  filters.placeType === item.value
                     ? colors.back2
                     : colors.back1,
               }}
@@ -157,13 +157,13 @@ const PropertyTypeFilters = () => {
         <Text style={styles.titleStyle}>Place Type</Text>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {placeTypes.map((item) => {
+          {rentTypes.map((item) => {
             return (
               <TouchableOpacity
                 key={item.value}
                 onPress={() => {
                   dispatchFilters({
-                    placeType: item.value,
+                    rentType: item.value,
                   });
                 }}
                 style={{
@@ -180,10 +180,10 @@ const PropertyTypeFilters = () => {
                     padding: 0,
                     backgroundColor: "transparent",
                   }}
-                  checked={filters.placeType === item.value}
+                  checked={filters.rentType === item.value}
                   onPress={() => {
                     dispatchFilters({
-                      placeType: item.value,
+                      rentType: item.value,
                     });
                   }}
                 />
