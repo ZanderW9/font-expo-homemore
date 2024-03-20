@@ -39,9 +39,9 @@ const signUpMutation = gql`
   }
 `;
 
-const sendVeriCodeMutation = gql`
-  mutation SendVeriCode($email: String!) {
-    SendVeriCode(email: $email)
+const SEND_VERICODE_MUTATION = gql`
+  mutation sendcode($email: String!, $type: String!) {
+    SendVeriCode(email: $email, type: $type)
   }
 `;
 
@@ -65,7 +65,7 @@ function LoginScreen() {
     { errorPolicy: "all" },
   );
 
-  const [sendVeriCodeFunction] = useMutation(sendVeriCodeMutation, {
+  const [sendVeriCodeFunction] = useMutation(SEND_VERICODE_MUTATION, {
     errorPolicy: "all",
   });
 
@@ -95,7 +95,7 @@ function LoginScreen() {
         return;
       }
       setIsButtonDisabled(true);
-      sendVeriCodeFunction({ variables: { email } });
+      sendVeriCodeFunction({ variables: { email, type: "signUp" } });
       setTimeout(() => {
         setIsButtonDisabled(false);
       }, 60000);
