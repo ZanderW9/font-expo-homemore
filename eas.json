@@ -30,5 +30,12 @@
         "EXPO_PUBLIC_BACKEND_URL": "https://8a2f-103-120-10-184.ngrok-free.app"
       }
     }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "releaseStatus": "draft"
+      }
+    }
   }
 }

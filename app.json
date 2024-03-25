@@ -37,11 +37,16 @@
       "buildNumber": "202403144"
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 202403202,
       "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDq3UkkY4zOP1O-Dwa58IzxGXyZBU_lV5w"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ec4c60"
       },
       "permissions": [
         "android.permission.INTERNET",
@@ -50,9 +55,6 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "au.com.homemore",
-      "runtimeVersion": {
-        "policy": "appVersion"
-      },
       "intentFilters": [
         {
           "action": "VIEW",
