@@ -177,7 +177,6 @@ function ListingDetailScreen() {
             }}
             color={colors.disabled}
           />
-          <Divider width={1} color={colors.textReverse} />
           {/* Part3 */}
           <Location
             lat={data ? data.listingById?.coordinate.lat : 0}
@@ -199,7 +198,13 @@ function ListingDetailScreen() {
               <PreferredGuest
                 guestType={data ? data.listingById?.guestType : []}
               />
-              <Divider width={1} color={colors.textReverse} />
+              <Divider
+                width={1}
+                style={{
+                  marginHorizontal: 10,
+                }}
+                color={colors.disabled}
+              />
             </View>
           )}
           {/* Part5 */}
@@ -340,17 +345,21 @@ function ListingDetailScreen() {
                 paddingHorizontal: 5,
               }}
               onPress={() => {
-                const chatId = [data?.listingById?.owner.id, me?.id]
-                  .sort()
-                  .join("__");
-                router.navigate({
-                  pathname: "/inbox/[chatId]",
-                  params: {
-                    chatId,
-                    userId: data?.listingById?.owner.id,
-                    userName: data?.listingById?.owner.userName,
-                  },
-                });
+                if (!isLoggedIn) {
+                  router.navigate("/signin");
+                } else {
+                  const chatId = [data?.listingById?.owner.id, me?.id]
+                    .sort()
+                    .join("__");
+                  router.navigate({
+                    pathname: "/inbox/[chatId]",
+                    params: {
+                      chatId,
+                      userId: data?.listingById?.owner.id,
+                      userName: data?.listingById?.owner.userName,
+                    },
+                  });
+                }
               }}
             >
               <Ionicons

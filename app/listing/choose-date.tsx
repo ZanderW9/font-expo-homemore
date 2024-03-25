@@ -5,6 +5,7 @@ import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
 import { CommonActions } from "@react-navigation/native";
 import { Button } from "@rneui/themed";
+import { format, startOfDay, addDays, differenceInDays } from "date-fns";
 import { router, Stack, useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, ActivityIndicator } from "react-native";
@@ -39,56 +40,52 @@ function ChooseDate() {
   );
 
   const toggleStartingEndingDays = (day) => {
-    if (day.dateString < today) {
+    const today = startOfDay(new Date()); // 今天的开始时间
+    const selectedDateObjs = selectedDates.map((dateString) =>
+      startOfDay(new Date(dateString)),
+    );
+    const dayDateObj = startOfDay(new Date(day.dateString));
+
+    if (dayDateObj < today) {
       // 今天之前的日期不进行处理
       return;
     }
 
-    if (selectedDates.length === 1 && selectedDates[0] === day.dateString) {
+    if (
+      selectedDateObjs.length === 1 &&
+      selectedDateObjs[0].getTime() === dayDateObj.getTime()
+    ) {
       // 点击同一天两次，该天既是startingDay也是endingDay
-      setSelectedDates([day.dateString]);
+      setSelectedDates([format(dayDateObj, "yyyy-MM-dd")]);
       setNightStayCount(0);
-    } else if (selectedDates.length === 0) {
-      setSelectedDates([day.dateString]);
+    } else if (selectedDateObjs.length === 0 || selectedDateObjs.length > 1) {
+      setSelectedDates([format(dayDateObj, "yyyy-MM-dd")]);
       setNightStayCount(0);
-    } else if (selectedDates.length === 1) {
-      const firstSelectedDate = selectedDates[0];
-      const secondSelectedDate = day.dateString;
+    } else if (selectedDateObjs.length === 1) {
+      const firstSelectedDate = selectedDateObjs[0];
+      const secondSelectedDate = dayDateObj;
 
       if (firstSelectedDate > secondSelectedDate) {
-        setSelectedDates([secondSelectedDate]);
+        setSelectedDates([format(dayDateObj, "yyyy-MM-dd")]);
         setNightStayCount(0);
       } else {
-        const datesBetween = getDatesBetween(
-          firstSelectedDate,
+        const datesBetweenCount = differenceInDays(
           secondSelectedDate,
+          firstSelectedDate,
+        );
+        const datesBetween = Array.from(
+          { length: datesBetweenCount - 1 },
+          (_, index) =>
+            format(addDays(firstSelectedDate, index + 1), "yyyy-MM-dd"),
         );
         setSelectedDates([
-          firstSelectedDate,
+          format(firstSelectedDate, "yyyy-MM-dd"),
           ...datesBetween,
-          secondSelectedDate,
+          format(secondSelectedDate, "yyyy-MM-dd"),
         ]);
-        setNightStayCount(datesBetween.length + 1);
+        setNightStayCount(datesBetweenCount);
       }
-    } else {
-      setSelectedDates([day.dateString]);
-      setNightStayCount(0);
     }
-  };
-
-  const getDatesBetween = (startDate, endDate) => {
-    const dates = [];
-    const currentDate = new Date(startDate);
-    const end = new Date(endDate);
-
-    while (currentDate <= end) {
-      dates.push(currentDate.toISOString().split("T")[0]);
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    // setNightStayCount(dates.length - 1);
-
-    return dates.slice(1, -1);
   };
 
   const nextHandler = async () => {

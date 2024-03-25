@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { Text, View, Pressable, TouchableOpacity } from "@components/Themed";
 import { useThemedColors } from "@constants/theme";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { Card } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -141,25 +141,11 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
           />
 
           <View style={styles.cardContent}>
-            {data.price ? (
-              <Card.Title style={styles.price}>
-                <Text>${data.price}</Text>
-              </Card.Title>
-            ) : (
-              <></>
-            )}
             {data.address?.city || data.address?.state ? (
               <View style={styles.titleAndIconContainer}>
-                <Ionicons
-                  name="location"
-                  size={13}
-                  color={colors.text}
-                  style={styles.icon}
-                />
-                <Card.Title style={styles.address}>
-                  <Text theme={{ color: "textSub1" }}>
-                    {data.address.city + ", " + data.address.state}
-                  </Text>
+                <Ionicons name="location" size={13} style={styles.icon} />
+                <Card.Title style={styles.address} numberOfLines={2}>
+                  <Text>{data.address.city + ", " + data.address.state}</Text>
                 </Card.Title>
               </View>
             ) : (
@@ -167,17 +153,34 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
             )}
 
             {styles.title ? (
-              <Card.Title style={styles.title} numberOfLines={2}>
-                <Text>{data.title}</Text>
+              <Card.Title style={styles.title} numberOfLines={1}>
+                <Text> {data.title}</Text>
               </Card.Title>
             ) : (
               <></>
             )}
 
             {styles.description ? (
-              <Text style={styles.description} numberOfLines={3}>
+              <Text style={styles.description} numberOfLines={2}>
                 {data.description}
               </Text>
+            ) : (
+              <></>
+            )}
+
+            {data.price ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <FontAwesome name="dollar" size={13} color={colors.mainColor} />
+                <Card.Title style={styles.price}>
+                  <Text style={{ color: colors.mainColor }}>{data.price}</Text>
+                </Card.Title>
+              </View>
             ) : (
               <></>
             )}
@@ -233,9 +236,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 0,
-    marginLeft: 0,
-    marginTop: -14,
+    marginLeft: -5,
+    marginTop: -12,
     marginBottom: 0,
+    color: "#1e88e5",
   },
   address: {
     fontSize: 13,
@@ -246,19 +250,18 @@ const styles = StyleSheet.create({
     marginBottom: -13,
   },
   price: {
-    fontSize: 15,
-    fontWeight: "400",
+    fontSize: 14,
     marginBottom: 3,
     marginTop: 4,
     textAlign: "left",
   },
   title: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "400",
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,
-    marginLeft: 2,
+    marginLeft: -3,
     textAlign: "left",
   },
   description: {
@@ -266,7 +269,6 @@ const styles = StyleSheet.create({
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,
-    marginLeft: 2,
     textAlign: "left",
   },
   overlay: {

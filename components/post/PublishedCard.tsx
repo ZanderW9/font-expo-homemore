@@ -2,7 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import { Text, View, Pressable, TouchableOpacity } from "@components/Themed";
 import AddModal from "@components/wishlist/AddModal";
 import { useThemedColors } from "@constants/theme";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
@@ -139,28 +139,30 @@ const PublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
             contentFit="cover"
           />
           <View style={styles.cardContent}>
-            <Card.Title style={styles.price}>
-              <Text>${data.price}</Text>
-            </Card.Title>
             <View style={styles.titleAndIconContainer}>
-              <Ionicons
-                name="location"
-                size={13}
-                color={colors.text}
-                style={styles.icon}
-              />
-              <Card.Title style={styles.address}>
-                <Text theme={{ color: "textSub1" }}>
-                  {data.address.city + ", " + data.address.state}
-                </Text>
+              <Ionicons name="location" size={13} style={styles.icon} />
+              <Card.Title style={styles.address} numberOfLines={2}>
+                <Text>{data.address.city + ", " + data.address.state}</Text>
               </Card.Title>
             </View>
-            <Card.Title style={styles.title} numberOfLines={2}>
-              <Text>{data.title}</Text>
+            <Card.Title style={styles.title} numberOfLines={1}>
+              <Text> {data.title}</Text>
             </Card.Title>
-            <Text style={styles.description} numberOfLines={3}>
-              <Text>{data.description}</Text>
+            <Text style={styles.description} numberOfLines={2}>
+              {data.description}
             </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              <FontAwesome name="dollar" size={13} color={colors.mainColor} />
+              <Card.Title style={styles.price}>
+                <Text style={{ color: colors.mainColor }}>{data.price}</Text>
+              </Card.Title>
+            </View>
           </View>
           <View style={styles.checkboxContainer}>
             <CheckBox
@@ -224,8 +226,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 0,
-    marginLeft: 0,
-    marginTop: -14,
+    marginLeft: -5,
+    marginTop: -12,
     marginBottom: 0,
     color: "#1e88e5",
   },
@@ -238,30 +240,25 @@ const styles = StyleSheet.create({
     marginBottom: -13,
   },
   price: {
-    fontSize: 15,
-    color: "black",
-    fontWeight: "400",
+    fontSize: 14,
     marginBottom: 3,
     marginTop: 4,
     textAlign: "left",
   },
   title: {
-    fontSize: 13,
-    color: "black",
+    fontSize: 14,
     fontWeight: "400",
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,
-    marginLeft: 2,
+    marginLeft: -3,
     textAlign: "left",
   },
   description: {
     fontSize: 12,
-    color: "black",
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,
-    marginLeft: 2,
     textAlign: "left",
   },
   checkboxContainer: {

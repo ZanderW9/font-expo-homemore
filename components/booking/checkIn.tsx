@@ -4,6 +4,7 @@ import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { Divider } from "@rneui/themed";
+import { format, startOfDay, addDays, differenceInDays } from "date-fns";
 import React, {
   useRef,
   useCallback,
@@ -63,19 +64,6 @@ function CheckIn(props: any) {
     [],
   );
 
-  const getDatesBetween = (startDate, endDate) => {
-    const dates = [];
-    const currentDate = new Date(startDate);
-    const end = new Date(endDate);
-
-    while (currentDate <= end) {
-      dates.push(currentDate.toISOString().split("T")[0]);
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates.slice(1, -1);
-  };
-
   const markedDates = useMemo(() => {
     const unavailabilityMarks = props.unavailability?.reduce((result, date) => {
       result[date] = {
@@ -98,42 +86,51 @@ function CheckIn(props: any) {
   }, [props.unavailability, selectedDates]);
 
   const toggleStartingEndingDays = (day) => {
-    if (day.dateString < today || markedDates[day.dateString]?.disabled) {
-      // Ignore clicks on past dates or disabled dates
+    const today = startOfDay(new Date()); // 今天的开始时间
+    const selectedDateObjs = selectedDates.map((dateString) =>
+      startOfDay(new Date(dateString)),
+    );
+    const dayDateObj = startOfDay(new Date(day.dateString));
+
+    if (dayDateObj < today) {
+      // 今天之前的日期不进行处理
       return;
     }
 
-    if (selectedDates.length === 1 && selectedDates[0] === day.dateString) {
-      // Clicking the same date twice, treat it as a new startDay
-      setSelectedDates([day.dateString]);
-    } else if (selectedDates.length === 1) {
-      // Second click
-      const firstSelectedDate = selectedDates[0];
-      const secondSelectedDate = day.dateString;
+    if (
+      selectedDateObjs.length === 1 &&
+      selectedDateObjs[0].getTime() === dayDateObj.getTime()
+    ) {
+      // 点击同一天两次，该天既是startingDay也是endingDay
+      setSelectedDates([format(dayDateObj, "yyyy-MM-dd")]);
+      setNightStayCount(0);
+    } else if (selectedDateObjs.length === 0 || selectedDateObjs.length > 1) {
+      setSelectedDates([format(dayDateObj, "yyyy-MM-dd")]);
+      setNightStayCount(0);
+    } else if (selectedDateObjs.length === 1) {
+      const firstSelectedDate = selectedDateObjs[0];
+      const secondSelectedDate = dayDateObj;
 
       if (firstSelectedDate > secondSelectedDate) {
-        // Swap if the dates are selected in reverse order
-        setSelectedDates([secondSelectedDate]);
+        setSelectedDates([format(dayDateObj, "yyyy-MM-dd")]);
+        setNightStayCount(0);
       } else {
-        const datesBetween = getDatesBetween(
-          firstSelectedDate,
+        const datesBetweenCount = differenceInDays(
           secondSelectedDate,
+          firstSelectedDate,
         );
-
-        // Check if any disabled dates are in between, if yes, reset
-        if (datesBetween.some((date) => markedDates[date]?.disabled)) {
-          setSelectedDates([day.dateString]);
-        } else {
-          setSelectedDates([
-            firstSelectedDate,
-            ...datesBetween,
-            secondSelectedDate,
-          ]);
-        }
+        const datesBetween = Array.from(
+          { length: datesBetweenCount - 1 },
+          (_, index) =>
+            format(addDays(firstSelectedDate, index + 1), "yyyy-MM-dd"),
+        );
+        setSelectedDates([
+          format(firstSelectedDate, "yyyy-MM-dd"),
+          ...datesBetween,
+          format(secondSelectedDate, "yyyy-MM-dd"),
+        ]);
+        setNightStayCount(datesBetweenCount);
       }
-    } else {
-      // First click
-      setSelectedDates([day.dateString]);
     }
   };
 
