@@ -61,7 +61,7 @@
           "autoVerify": true,
           "data": {
             "scheme": "https",
-            "host": "*.homemore.com.au",
+            "host": "homemore.com.au",
             "pathPrefix": "/"
           },
 
