@@ -28,6 +28,7 @@ const allListingsQuery = gql`
       price
       favorited
       address
+      serviceType
     }
   }
 `;

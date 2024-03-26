@@ -2,7 +2,7 @@ import { GlobalContext } from "@app/_layout";
 import { Text, View, TouchableOpacity } from "@components/Themed";
 import AddModal from "@components/wishlist/AddModal";
 import { useThemedColors } from "@constants/theme";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { Fontisto } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
@@ -27,6 +27,11 @@ type CardsComponentsProps = {
       city: string;
       street: string;
     };
+    serviceType: string;
+    discount: {
+      discountType: string;
+      discountValue: number;
+    }[];
   };
 };
 
@@ -36,6 +41,12 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   const { isLoggedIn } = useContext(GlobalContext);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const colors = useThemedColors();
+  const weekDiscount = data?.discount?.find(
+    (discount: any) => discount.discountType === "week",
+  );
+  const weekPrice = weekDiscount
+    ? (data?.price * 7 * (1 - weekDiscount.discountValue / 100)).toFixed()
+    : data?.price * 7;
 
   const toggleCheckboxHandler = () => {
     if (!isLoggedIn) {
@@ -71,30 +82,73 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
             source={{ uri: imageData?.smallUrl }}
           />
           <View style={styles.cardContent}>
-            <View style={styles.titleAndIconContainer}>
-              <Ionicons name="location" size={13} style={styles.icon} />
-              <Card.Title style={styles.address} numberOfLines={2}>
-                <Text>{data.address.city + ", " + data.address.state}</Text>
-              </Card.Title>
-            </View>
             <Card.Title style={styles.title} numberOfLines={1}>
               <Text> {data.title}</Text>
             </Card.Title>
+
+            <Text style={styles.description} numberOfLines={2}>
+              {data.address.city + ", " + data.address.state}
+            </Text>
+
             <Text style={styles.description} numberOfLines={2}>
               {data.description}
             </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            >
-              <FontAwesome name="dollar" size={13} color={colors.mainColor} />
-              <Card.Title style={styles.price}>
-                <Text style={{ color: colors.mainColor }}>{data.price}</Text>
-              </Card.Title>
+
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Fontisto
+                name="dollar"
+                size={12}
+                color={colors.text}
+                style={{ marginRight: -5 }}
+              />
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: colors.text,
+                  marginLeft: 5,
+                }}
+              >
+                {data
+                  ? data?.serviceType === "rent"
+                    ? weekPrice
+                    : data?.price
+                  : 0}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: colors.textSub1Reverse,
+                  marginLeft: 5,
+                }}
+              >
+                {data?.serviceType === "rent" ? "/ week" : "/ night"}
+              </Text>
             </View>
+
+            {data?.serviceType === "rent" && (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  flexDirection: "row",
+                }}
+              >
+                <Fontisto
+                  name="dollar"
+                  size={7}
+                  color={colors.textSub1Reverse}
+                  style={{ marginRight: 1 }}
+                />
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: colors.textSub1Reverse,
+                  }}
+                >
+                  {data?.price} / night
+                </Text>
+              </View>
+            )}
           </View>
           <View style={styles.checkboxContainer}>
             <CheckBox
@@ -137,6 +191,7 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     paddingHorizontal: 8,
+    paddingTop: 8,
     marginBottom: 8,
     borderWidth: 0,
   },
@@ -148,7 +203,11 @@ const styles = StyleSheet.create({
     color: "#1e88e5",
   },
   address: {
-    fontSize: 13,
+    fontSize: 12,
+    marginBottom: 1,
+    marginTop: 1,
+    marginRight: 2,
+    textAlign: "left",
   },
   titleAndIconContainer: {
     flexDirection: "row",
@@ -163,7 +222,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    fontWeight: "400",
     marginBottom: 1,
     marginTop: 1,
     marginRight: 2,
