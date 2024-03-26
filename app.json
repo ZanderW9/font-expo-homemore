@@ -59,12 +59,18 @@
         {
           "action": "VIEW",
           "autoVerify": true,
-          "data": {
-            "scheme": "https",
-            "host": "homemore.com.au",
-            "pathPrefix": "/"
-          },
-
+          "data": [
+            {
+              "scheme": "https",
+              "host": "homemore.com.au",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "www.homemore.com.au",
+              "pathPrefix": "/"
+            }
+          ],
           "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
