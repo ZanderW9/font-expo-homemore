@@ -53,6 +53,7 @@ import Animated, {
   interpolate,
   runOnJS,
 } from "react-native-reanimated";
+
 const meQuery = gql`
   query Query {
     me {
@@ -527,7 +528,6 @@ function useNotificationObserver() {
       const data = notification.request.content.data;
       const msgType = data?.msgType;
       if (msgType === "inbox") {
-        router.navigate(`/inbox/${data?.chatId}`);
         router.navigate({
           pathname: "/inbox/[chatId]",
           params: {
