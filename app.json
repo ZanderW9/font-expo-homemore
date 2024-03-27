@@ -2,7 +2,7 @@
   "expo": {
     "name": "HomeMore",
     "slug": "homemore",
-    "version": "1.1.6",
+    "version": "1.1.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "au.com.homemore",
@@ -33,7 +33,7 @@
         "applinks:www.homemore.com.au"
       ],
       "bundleIdentifier": "au.com.homemore",
-      "runtimeVersion": "1.1.6",
+      "runtimeVersion": "1.1.5",
       "buildNumber": "202403271"
     },
     "android": {
