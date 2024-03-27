@@ -34,10 +34,10 @@
       ],
       "bundleIdentifier": "au.com.homemore",
       "runtimeVersion": "1.1.5",
-      "buildNumber": "202403144"
+      "buildNumber": "202403271"
     },
     "android": {
-      "versionCode": 202403202,
+      "versionCode": 202403271,
       "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {

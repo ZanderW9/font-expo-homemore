@@ -26,6 +26,9 @@
     },
     "production": {
       "channel": "production",
+      "android": {
+        "buildType": "apk"
+      },
       "env": {
         "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au"
       }
