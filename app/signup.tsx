@@ -245,7 +245,7 @@ function LoginScreen() {
                 <Ionicons
                   name={showPassword ? "eye-outline" : "eye-off-outline"}
                   size={24}
-                  color="black"
+                  color={colors.text}
                   onPress={togglePasswordVisibility}
                 />
               )
@@ -267,7 +267,7 @@ function LoginScreen() {
                 <Ionicons
                   name={showPassword ? "eye-outline" : "eye-off-outline"}
                   size={24}
-                  color="black"
+                  color={colors.text}
                   onPress={togglePasswordVisibility}
                 />
               )
@@ -295,7 +295,7 @@ function LoginScreen() {
                 <Ionicons
                   name={countdown ? "lock-closed-outline" : "send-outline"}
                   size={24}
-                  color="black"
+                  color={colors.text}
                   onPress={sendCodeHandler}
                   disabled={isButtonDisabled}
                 />
