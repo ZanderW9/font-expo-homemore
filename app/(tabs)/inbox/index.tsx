@@ -1,15 +1,16 @@
-import { GlobalContext } from "@app/_layout";
 import NotLogIn from "@components/NotLogIn";
 import { View } from "@components/Themed";
 import InboxView from "@components/inbox/InboxView";
 import { useThemedColors } from "@constants/theme";
 import { Stack } from "expo-router";
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
+
+import { RootState, useSelector } from "@/config/state/store";
 
 export default function TabInboxScreen() {
   const colors = useThemedColors();
-  const { isLoggedIn } = useContext(GlobalContext);
+  const { token } = useSelector((state: RootState) => state.appMeta);
   return (
     <View style={styles.container} theme={{ background: "back2" }}>
       <Stack.Screen
@@ -24,7 +25,7 @@ export default function TabInboxScreen() {
           },
         }}
       />
-      {isLoggedIn ? (
+      {token ? (
         <InboxView />
       ) : (
         <NotLogIn

@@ -6,7 +6,7 @@ const fatchData = async (
   method: string,
   body = undefined,
 ) => {
-  const token = await getLocalItem("userToken");
+  const token = await getLocalItem("token");
 
   const requestOption = {
     headers: {

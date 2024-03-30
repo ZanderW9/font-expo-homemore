@@ -1,5 +1,4 @@
 import { gql, useQuery } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
 import NotLogIn from "@components/NotLogIn";
 import { View } from "@components/Themed";
 import CreateModal from "@components/wishlist/CreateModal";
@@ -8,7 +7,9 @@ import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
-import React, { useRef, useContext } from "react";
+import React, { useRef } from "react";
+
+import { RootState, useSelector } from "@/config/state/store";
 
 const favoriteByUserQuery = gql`
   query Query {
@@ -38,7 +39,7 @@ function TabWishlistScreen() {
   const inputRef = useRef(null);
   const { data } = useQuery(favoriteByUserQuery);
 
-  const { isLoggedIn } = useContext(GlobalContext);
+  const { token } = useSelector((state: RootState) => state.appMeta);
 
   return (
     <View
@@ -63,7 +64,7 @@ function TabWishlistScreen() {
               size={30}
               color="gray"
               onPress={() => {
-                if (isLoggedIn) {
+                if (token) {
                   bottomSheetModalRef.current?.present();
                   setTimeout(() => {
                     inputRef.current?.focus();
@@ -74,7 +75,7 @@ function TabWishlistScreen() {
           ),
         }}
       />
-      {isLoggedIn ? (
+      {token ? (
         <FavoriteCardContainer data={data?.myFavorites} />
       ) : (
         <NotLogIn

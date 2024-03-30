@@ -15,6 +15,25 @@ export const storeLocalItem = async (key: string, value: any) => {
   }
 };
 
+// 获取多个 local items
+export const getLocalItems = async (keys: string[]) => {
+  try {
+    const values = await AsyncStorage.multiGet(keys);
+    const result = {};
+    values.forEach(([key, value]) => {
+      if (value) {
+        result[key] = JSON.parse(value);
+      } else {
+        AsyncStorage.removeItem(key);
+      }
+    });
+    return result;
+  } catch (error) {
+    await AsyncStorage.multiRemove(keys);
+    console.error("Error getting tokens: ", error);
+  }
+};
+
 // 获取 local item
 export const getLocalItem = async (key: string) => {
   try {
@@ -37,5 +56,14 @@ export const clearLocalItems = async () => {
     await AsyncStorage.clear();
   } catch (error) {
     console.error("Error clearing local items: ", error);
+  }
+};
+
+// 清除指定 local item
+export const removeLocalItem = async (key: string) => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (error) {
+    console.error("Error removing local item: ", error);
   }
 };

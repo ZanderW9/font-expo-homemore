@@ -1,5 +1,4 @@
 import { gql, useMutation } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
 import { View, Text, SafeAreaView, ScrollView } from "@components/Themed";
 import { useCreateListingContext } from "@components/listing/create/CreateProvider";
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
@@ -12,7 +11,7 @@ import { Button, Dialog } from "@rneui/themed";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useNavigation } from "expo-router";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { DraggableGrid } from "react-native-draggable-grid";
 
@@ -34,7 +33,7 @@ const updateListingMutation = gql`
 
 function UploadPhotos() {
   const { listingData, dispatchListingData } = useCreateListingContext();
-  const { httpLinkUrl } = useContext(GlobalContext);
+  const httpLinkUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
   const colors = useThemedColors();
 
   const [scrollEnabled, setScrollEnabled] = useState(true);

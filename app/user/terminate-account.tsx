@@ -1,11 +1,13 @@
-import { gql, useMutation } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
+import { gql, useMutation, useApolloClient } from "@apollo/client";
+import { createApolloLink } from "@components/ApolloClient";
 import { View, Text, SafeAreaView } from "@components/Themed";
+import { updateAppMeta } from "@config/state/appMetaSlice";
+import { useDispatch } from "@config/state/store";
 import { clearLocalItems } from "@config/storageManager";
 import { useThemedColors } from "@constants/theme";
 import { Button, Dialog } from "@rneui/themed";
 import { Stack, router } from "expo-router";
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 
 const deleteAccountMutation = gql`
@@ -16,19 +18,21 @@ const deleteAccountMutation = gql`
   }
 `;
 
-function SignOutScreen() {
+export default function Screen() {
   const colors = useThemedColors();
+  const client = useApolloClient();
+  const dispatch = useDispatch();
+
   const [showSaveDraftDialog, setShowSaveDraftDialog] = useState(false);
-  const { setIsLoggedIn, setToken, httpLinkUrl, setApolloClient } =
-    useContext(GlobalContext);
+
   const [deleteAccountFunction] = useMutation(deleteAccountMutation);
 
   const deleteAccountHandler = async () => {
     await deleteAccountFunction();
     await clearLocalItems();
-    setIsLoggedIn(false);
-    setToken(null);
-    setApolloClient("", httpLinkUrl);
+
+    client.setLink(createApolloLink(null));
+    dispatch(updateAppMeta({ user: null, token: null }));
     router.replace("/profile");
   };
 
@@ -233,5 +237,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-
-export default SignOutScreen;

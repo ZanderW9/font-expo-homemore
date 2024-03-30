@@ -1,18 +1,19 @@
-import { GlobalContext } from "@app/_layout";
 import { Text, View, Pressable } from "@components/Themed";
 import { useDetailContext } from "@components/detail/DetailProvider";
 import RenderReviw from "@components/detail/ReviewItem";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
+
+import { RootState, useSelector } from "@/config/state/store";
 
 function Review(props: { openBottomSheet: Function; reviews: any[] }) {
   const colors = useThemedColors();
-  const { isLoggedIn } = useContext(GlobalContext);
+  const { token } = useSelector((state: RootState) => state.appMeta);
   const openModalHandler = () => {
-    if (!isLoggedIn) {
+    if (!token) {
       router.navigate("/signin");
     } else {
       props.openBottomSheet();

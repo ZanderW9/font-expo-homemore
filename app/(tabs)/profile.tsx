@@ -1,10 +1,10 @@
-import { gql } from "@apollo/client";
+import { gql, useApolloClient } from "@apollo/client";
 import { ListItem, Avatar } from "@rneui/themed";
 import { router, usePathname } from "expo-router";
-import React, { useEffect, useContext } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
 
-import { GlobalContext } from "@/app/_layout";
+import { createApolloLink } from "@/components/ApolloClient";
 import NotLogIn from "@/components/NotLogIn";
 import {
   View,
@@ -14,7 +14,9 @@ import {
   Pressable,
 } from "@/components/Themed";
 import { LinkPreview } from "@/components/inbox/LinkPreview";
-import { clearLocalItems, getLocalItem } from "@/config/storageManager";
+import { updateAppMeta } from "@/config/state/appMetaSlice";
+import { RootState, useDispatch, useSelector } from "@/config/state/store";
+import { clearLocalItems } from "@/config/storageManager";
 import useCachedQuery from "@/config/useCachedQuery";
 import { useThemedColors } from "@/constants/theme";
 
@@ -31,40 +33,16 @@ const meQuery = gql`
 
 function TabProfileScreen() {
   const colors = useThemedColors();
-  const {
-    setIsLoggedIn,
-    isLoggedIn,
-    setToken,
-    httpLinkUrl,
-    setApolloClient,
-    setMe,
-  } = useContext(GlobalContext);
+  const client = useApolloClient();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state: RootState) => state.appMeta);
 
-  const { data: gqlData } = useCachedQuery(meQuery, usePathname());
-
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const token = await getLocalItem("userToken");
-      if (token) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    };
-
-    checkLoginStatus();
-  }, []);
+  const { data } = useCachedQuery(meQuery, usePathname());
 
   const logOutHandler = async () => {
     await clearLocalItems();
-    setIsLoggedIn(false);
-    setToken(null);
-    setApolloClient("", httpLinkUrl);
-    setMe({
-      id: "",
-      userName: "",
-      avatar: "",
-    });
+    dispatch(updateAppMeta({ user: null, token: null }));
+    client.setLink(createApolloLink(null));
     router.replace("/profile");
   };
 
@@ -87,7 +65,7 @@ function TabProfileScreen() {
         style={{ flex: 1 }}
         theme={{ background: "back2" }}
       >
-        {!isLoggedIn && (
+        {!token && (
           <SafeAreaView style={{ flex: 1 }} theme={{ background: "back2" }}>
             <NotLogIn
               title="Find your next home from here!"
@@ -96,7 +74,7 @@ function TabProfileScreen() {
           </SafeAreaView>
         )}
 
-        {isLoggedIn && (
+        {token && (
           <View theme={{ background: "back2" }}>
             <Pressable
               style={styles.userInfo}
@@ -104,11 +82,11 @@ function TabProfileScreen() {
                 router.navigate("/user/user-info");
               }}
             >
-              {gqlData?.me?.avatar ? (
+              {data?.me?.avatar ? (
                 <Avatar
                   size={64}
                   rounded
-                  source={{ uri: gqlData?.me?.avatar }}
+                  source={{ uri: data?.me?.avatar }}
                   containerStyle={styles.avatar}
                 >
                   <Avatar.Accessory size={20} />
@@ -117,7 +95,7 @@ function TabProfileScreen() {
                 <Avatar
                   size={64}
                   rounded
-                  title={gqlData?.me?.userName?.slice(0, 2) ?? ""}
+                  title={data?.me?.userName?.slice(0, 2) ?? ""}
                   containerStyle={styles.avatar}
                 >
                   <Avatar.Accessory size={20} />
@@ -125,9 +103,9 @@ function TabProfileScreen() {
               )}
 
               <View style={styles.usernameWrapper}>
-                <Text style={styles.username}>{gqlData?.me?.userName}</Text>
+                <Text style={styles.username}>{data?.me?.userName}</Text>
                 <Text style={{ color: "gray", fontSize: 12 }}>
-                  Joined on {gqlData?.me?.createdAt?.slice(0, 10)}
+                  Joined on {data?.me?.createdAt?.slice(0, 10)}
                 </Text>
               </View>
             </Pressable>

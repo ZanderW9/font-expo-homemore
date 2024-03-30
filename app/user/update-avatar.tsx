@@ -1,5 +1,4 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
 import { Text, View, ScrollView, TouchableOpacity } from "@components/Themed";
 import { compressImage } from "@config/media";
 import { signImageUrl, deleteImageFromS3 } from "@config/requests";
@@ -8,7 +7,7 @@ import { useThemedColors } from "@constants/theme";
 import { Avatar } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, router } from "expo-router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
@@ -35,7 +34,7 @@ function EditAvatarScreen() {
   const { data: gqlData } = useQuery(meQuery);
   const [updateFunction] = useMutation(updateMutation);
   const [imageUri, setImageUri] = useState(gqlData?.me?.avatar);
-  const { httpLinkUrl } = useContext(GlobalContext);
+  const httpLinkUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
 
   const pickImage = async () => {
     try {

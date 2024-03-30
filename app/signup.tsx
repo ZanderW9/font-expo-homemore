@@ -1,5 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
+import { gql, useMutation, useApolloClient } from "@apollo/client";
 import {
   Text,
   View,
@@ -12,9 +11,13 @@ import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router, Stack } from "expo-router";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Platform } from "react-native";
 import { showMessage } from "react-native-flash-message";
+
+import { createApolloLink } from "@/components/ApolloClient";
+import { updateAppMeta } from "@/config/state/appMetaSlice";
+import { useDispatch } from "@/config/state/store";
 
 const signUpMutation = gql`
   mutation (
@@ -47,8 +50,9 @@ const SEND_VERICODE_MUTATION = gql`
 
 function LoginScreen() {
   const colors = useThemedColors();
-  const { httpLinkUrl, setToken, setIsLoggedIn, setApolloClient, setMe } =
-    useContext(GlobalContext);
+  const dispatch = useDispatch();
+  const client = useApolloClient();
+
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -98,7 +102,7 @@ function LoginScreen() {
       sendVeriCodeFunction({ variables: { email, type: "signUp" } });
       setTimeout(() => {
         setIsButtonDisabled(false);
-      }, 60000);
+      }, 30000);
       startCountDown();
     } catch {
       setIsButtonDisabled(false);
@@ -111,13 +115,13 @@ function LoginScreen() {
 
   const startCountDown = () => {
     setIsButtonDisabled(true);
-    setCountdown(60);
+    setCountdown(30);
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev === 0) {
           clearInterval(timer);
           restoreSendButton();
-          return 60;
+          return 30;
         } else {
           return prev - 1;
         }
@@ -149,11 +153,12 @@ function LoginScreen() {
     }
 
     if (!loading && data) {
-      storeLocalItem("userToken", data.SignUp.token);
-      setIsLoggedIn(true);
-      setToken(data.SignUp.token);
-      setApolloClient(data.SignUp.token, httpLinkUrl);
-      setMe(data.SignUp.user);
+      storeLocalItem("token", data.SignUp.token);
+
+      client.setLink(createApolloLink(data.SignUp.token));
+      dispatch(
+        updateAppMeta({ user: data.SignUp.user, token: data.SignUp.token }),
+      );
       router.replace("/profile");
     }
     signUpFunction({ variables: { userName, email, password, veriCode } });

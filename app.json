@@ -32,6 +32,16 @@
         "applinks:homemore.com.au",
         "applinks:www.homemore.com.au"
       ],
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "image": "./assets/images/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#111"
+        }
+      },
       "bundleIdentifier": "au.com.homemore",
       "runtimeVersion": "1.1.5",
       "buildNumber": "202403271"
@@ -54,6 +64,16 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "image": "./assets/images/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#111"
+        }
+      },
       "package": "au.com.homemore",
       "intentFilters": [
         {

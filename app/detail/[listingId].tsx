@@ -1,5 +1,4 @@
 import { useQuery } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
 import {
   View,
   Text,
@@ -27,8 +26,10 @@ import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Avatar, Divider } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
-import React, { useRef, useCallback, useContext } from "react";
+import React, { useRef, useCallback } from "react";
 import { StyleSheet } from "react-native";
+
+import { RootState, useSelector } from "@/config/state/store";
 
 const CustomHeaderTitle = (data: any) => {
   const owner = data ? data?.listingById?.owner : null;
@@ -67,7 +68,7 @@ const CustomHeaderTitle = (data: any) => {
 
 function ListingDetailScreen() {
   const colors = useThemedColors();
-  const { isLoggedIn, me } = useContext(GlobalContext);
+  const { token, user } = useSelector((state: RootState) => state.appMeta);
   const { listingId } = useLocalSearchParams();
   const { data } = useQuery(DETAIL_PAGE_LISTING_QUERY, {
     variables: { listingId },
@@ -107,7 +108,7 @@ function ListingDetailScreen() {
   }, []);
 
   const toggleCheckboxHandler = () => {
-    if (!isLoggedIn) {
+    if (!token) {
       router.navigate("/signin");
     } else {
       bottomSheetAddModalRef.current?.present();
@@ -345,10 +346,10 @@ function ListingDetailScreen() {
                 paddingHorizontal: 5,
               }}
               onPress={() => {
-                if (!isLoggedIn) {
+                if (!token) {
                   router.navigate("/signin");
                 } else {
-                  const chatId = [data?.listingById?.owner.id, me?.id]
+                  const chatId = [data?.listingById?.owner.id, user?.id]
                     .sort()
                     .join("__");
                   router.navigate({

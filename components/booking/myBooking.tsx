@@ -1,18 +1,19 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
-import { View, Text, SafeAreaView } from "@components/Themed";
-import Payment from "@components/booking/Payment";
-import BaseInfo from "@components/booking/baseInformation";
-import { useBookingContext } from "@components/booking/bookingProvider";
-import CheckIn from "@components/booking/checkIn";
-import PriceInfo from "@components/booking/priceInfo";
-import { BOOKING_PAGE_LISTING_QUERY } from "@config/gql/listing";
-import { useThemedColors } from "@constants/theme";
 import { Divider } from "@rneui/themed";
 import { Stack, useLocalSearchParams, router } from "expo-router";
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { showMessage } from "react-native-flash-message";
+
+import { View, Text, SafeAreaView } from "@/components/Themed";
+import Payment from "@/components/booking/Payment";
+import BaseInfo from "@/components/booking/baseInformation";
+import { useBookingContext } from "@/components/booking/bookingProvider";
+import CheckIn from "@/components/booking/checkIn";
+import PriceInfo from "@/components/booking/priceInfo";
+import { BOOKING_PAGE_LISTING_QUERY } from "@/config/gql/listing";
+import { RootState, useSelector } from "@/config/state/store";
+import { useThemedColors } from "@/constants/theme";
 
 const createBookingMutation = gql`
   mutation Mutation(
@@ -34,7 +35,7 @@ const createBookingMutation = gql`
 
 function MyBooking() {
   const colors = useThemedColors();
-  const { isLoggedIn } = useContext(GlobalContext);
+  const { token } = useSelector((state: RootState) => state.appMeta);
   const { adultNum, childNum, infantNum, selectedDates } = useBookingContext();
 
   const { listingId } = useLocalSearchParams();
@@ -48,7 +49,7 @@ function MyBooking() {
   });
 
   const confirmHandler = () => {
-    if (!isLoggedIn) {
+    if (!token) {
       router.navigate("/signin");
     } else {
       if (selectedDates.length === 0) {

@@ -1,15 +1,18 @@
-import { gql, useMutation } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
+import { gql, useMutation, useApolloClient } from "@apollo/client";
 import { Text, View } from "@components/Themed";
-import { storeLocalItem, getLocalItem } from "@config/storageManager";
+import { storeLocalItem } from "@config/storageManager";
 import Colors from "@constants/Colors";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router, Stack } from "expo-router";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
+
+import { createApolloLink } from "@/components/ApolloClient";
+import { updateAppMeta } from "@/config/state/appMetaSlice";
+import { RootState, useDispatch, useSelector } from "@/config/state/store";
 
 const signInMutation = gql`
   mutation SignIn($email: String!, $password: String!) {
@@ -26,8 +29,10 @@ const signInMutation = gql`
 
 function LoginScreen() {
   const colors = useThemedColors();
-  const { httpLinkUrl, setToken, setIsLoggedIn, setApolloClient, setMe } =
-    useContext(GlobalContext);
+  const dispatch = useDispatch();
+  const client = useApolloClient();
+  const { token } = useSelector((state: RootState) => state.appMeta);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -50,11 +55,14 @@ function LoginScreen() {
 
   useEffect(() => {
     if (!loading && data) {
-      storeLocalItem("userToken", data.SignIn.token);
-      setIsLoggedIn(true);
-      setToken(data.SignIn.token);
-      setApolloClient(data.SignIn.token, httpLinkUrl);
-      setMe(data.SignIn.user);
+      storeLocalItem("token", data.SignIn.token);
+
+      client.setLink(createApolloLink(data.SignIn.token));
+
+      dispatch(
+        updateAppMeta({ user: data.SignIn.user, token: data.SignIn.token }),
+      );
+
       router.canGoBack() && router.back();
       router.replace("/profile");
     }
@@ -81,11 +89,8 @@ function LoginScreen() {
   };
 
   const autoLogin = async () => {
-    const token = await getLocalItem("userToken");
     if (token) {
-      setIsLoggedIn(true);
-      setToken(token);
-      setApolloClient(token, httpLinkUrl);
+      client.setLink(createApolloLink(token));
       router.replace("/profile");
     }
   };

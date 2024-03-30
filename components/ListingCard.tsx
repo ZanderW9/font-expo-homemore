@@ -1,4 +1,3 @@
-import { GlobalContext } from "@app/_layout";
 import { Text, View, TouchableOpacity } from "@components/Themed";
 import AddModal from "@components/wishlist/AddModal";
 import { useThemedColors } from "@constants/theme";
@@ -7,8 +6,10 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Card, CheckBox } from "@rneui/themed";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useContext, useRef } from "react";
+import React, { useRef } from "react";
 import { StyleSheet } from "react-native";
+
+import { RootState, useSelector } from "@/config/state/store";
 
 type CardsComponentsProps = {
   data: {
@@ -38,7 +39,7 @@ type CardsComponentsProps = {
 const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
   data,
 }) => {
-  const { isLoggedIn } = useContext(GlobalContext);
+  const token = useSelector((state: RootState) => state.appMeta.token);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const colors = useThemedColors();
   const weekDiscount = data?.discount?.find(
@@ -49,7 +50,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
     : data?.price * 7;
 
   const toggleCheckboxHandler = () => {
-    if (!isLoggedIn) {
+    if (!token) {
       router.navigate("/signin");
     } else {
       bottomSheetModalRef.current?.present();
