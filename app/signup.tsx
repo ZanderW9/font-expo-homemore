@@ -156,6 +156,8 @@ function LoginScreen() {
       storeLocalItem("token", data.SignUp.token);
 
       client.setLink(createApolloLink(data.SignUp.token));
+      client.resetStore();
+
       dispatch(
         updateAppMeta({ user: data.SignUp.user, token: data.SignUp.token }),
       );

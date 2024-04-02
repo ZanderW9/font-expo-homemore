@@ -43,6 +43,7 @@ function TabProfileScreen() {
     await clearLocalItems();
     dispatch(updateAppMeta({ user: null, token: null }));
     client.setLink(createApolloLink(null));
+    client.resetStore();
     router.replace("/profile");
   };
 
@@ -150,6 +151,20 @@ function TabProfileScreen() {
 
             <ListItem
               containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
+              onPress={() => {
+                router.navigate("/profile/settings");
+              }}
+            >
+              <ListItem.Content>
+                <ListItem.Title>
+                  <Text>Settings</Text>
+                </ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+
+            <ListItem
+              containerStyle={{ backgroundColor: colors.back1 }}
               onPress={AccountHandler}
             >
               <ListItem.Content>

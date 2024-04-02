@@ -3,8 +3,10 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as Font from "expo-font";
 import * as Localization from "expo-localization";
 import * as SplashScreen from "expo-splash-screen";
+import * as Updates from "expo-updates";
 import React, { ReactNode, useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import { Provider as ReduxProvider } from "react-redux";
 
 import {
@@ -46,6 +48,29 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { token } = useSelector((state: RootState) => state.appMeta);
 
   const client = useApolloClient();
+
+  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
+
+  useEffect(() => {
+    if (isUpdateAvailable) {
+      showMessage({
+        message: "Update Available",
+        description: "App is being updated",
+        type: "info",
+      });
+      Updates.fetchUpdateAsync();
+    }
+
+    if (isUpdatePending) {
+      showMessage({
+        message: "Update Downloaded",
+        description: "App is being reloaded",
+        type: "info",
+      });
+
+      Updates.reloadAsync();
+    }
+  }, [isUpdatePending, isUpdateAvailable]);
 
   // 获取用户 push token 并更新到后端
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
@@ -112,7 +137,9 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
       }
       if (token) {
         client.setLink(createApolloLink(token));
+        client.resetStore();
       }
+
       dispatch(updateAppMeta({ token, user, locale: appLocale, width }));
 
       /* 加载字体 */

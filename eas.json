@@ -21,7 +21,17 @@
         "simulator": true
       },
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://7890-103-120-10-184.ngrok-free.app"
+        "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au"
+      }
+    },
+    "device-test": {
+      "channel": "device-test",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_BACKEND_URL": "https://server.homemore.com.au"
       }
     },
     "production": {

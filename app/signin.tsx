@@ -58,6 +58,7 @@ function LoginScreen() {
       storeLocalItem("token", data.SignIn.token);
 
       client.setLink(createApolloLink(data.SignIn.token));
+      client.resetStore();
 
       dispatch(
         updateAppMeta({ user: data.SignIn.user, token: data.SignIn.token }),
@@ -91,6 +92,7 @@ function LoginScreen() {
   const autoLogin = async () => {
     if (token) {
       client.setLink(createApolloLink(token));
+      await client.resetStore();
       router.replace("/profile");
     }
   };

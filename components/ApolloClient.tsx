@@ -9,11 +9,11 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
+import * as Updates from "expo-updates";
 import { createClient } from "graphql-ws";
+import { Platform } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
-import { signOut } from "@/config/state/appMetaSlice";
-import { store } from "@/config/state/store";
 import { removeLocalItem } from "@/config/storageManager";
 
 /*
@@ -31,18 +31,29 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
           type: "danger",
         });
 
-        // 如果错误信息为 "danger:Invalid user"，则登出
-        if (message === "Invalid user") {
-          store.dispatch(signOut());
-          removeLocalItem("token");
-          removeLocalItem("user");
+        // 如果错误信息为 "danger:Invalid user"，则重新加载 app
+        if (message === "Invalid User") {
+          (async () => {
+            await removeLocalItem("token");
+            await removeLocalItem("user");
+            Updates.reloadAsync();
+          })();
         }
       } else if (error.message.startsWith("info:")) {
         const message = error.message.replace(/^info:/, "");
+        if (message === "App New Hotfix" || message === "App New Version") {
+          showMessage({
+            message: "Update Available",
+            description: "App is being updated",
+            type: "info",
+          });
+          Updates.checkForUpdateAsync();
+        }
         showMessage({
           message,
           icon: "info",
           type: "info",
+          duration: 3000,
         });
       }
     });
@@ -76,11 +87,17 @@ const offsetFromCursor = (merged, incoming, readField) => {
 
 export const createApolloLink = (token: string | null = null) => {
   const httpLinkUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
+
+  // header 中添加 token 以及 app 版本信息
   const authLink = setContext(async (_, { headers }) => {
     return {
       headers: {
         ...headers,
         authorization: token ? `Bearer ${token}` : "",
+        app_version: Updates.runtimeVersion,
+        update_id: Updates.updateId,
+        channel: Updates.channel,
+        platform: Platform.OS,
       },
     };
   });

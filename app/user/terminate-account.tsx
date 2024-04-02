@@ -32,6 +32,7 @@ export default function Screen() {
     await clearLocalItems();
 
     client.setLink(createApolloLink(null));
+    client.resetStore();
     dispatch(updateAppMeta({ user: null, token: null }));
     router.replace("/profile");
   };
