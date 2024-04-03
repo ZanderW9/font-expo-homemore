@@ -68,7 +68,7 @@ function ListingCardsContainer() {
     <MasonryList
       style={{ margin: 3 }}
       data={data ? data.allListings : []}
-      numColumns={2}
+      numColumns={1}
       renderItem={({ item }) => <ListingCard data={item} />}
       onEndReached={fetchMoreNew}
       refreshing={loading}

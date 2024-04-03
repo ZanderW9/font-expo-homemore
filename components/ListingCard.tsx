@@ -78,78 +78,82 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           }}
         >
           <Image
-            style={{ ...styles.image, aspectRatio: imageData?.ratio || 1 }}
+            style={{ ...styles.image, aspectRatio: 1.5 }}
             placeholder={{ thumbhash: imageData?.thumbhash }}
             source={{ uri: imageData?.smallUrl }}
           />
           <View style={styles.cardContent}>
-            <Card.Title style={styles.title} numberOfLines={1}>
-              <Text> {data.title}</Text>
-            </Card.Title>
+            <View>
+              <Card.Title style={styles.title} numberOfLines={1}>
+                <Text> {data.title}</Text>
+              </Card.Title>
 
-            <Text style={styles.description} numberOfLines={2}>
-              {data.address.city + ", " + data.address.state}
-            </Text>
-
-            <Text style={styles.description} numberOfLines={2}>
-              {data.description}
-            </Text>
-
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Fontisto
-                name="dollar"
-                size={12}
-                color={colors.text}
-                style={{ marginRight: -5 }}
-              />
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: colors.text,
-                  marginLeft: 5,
-                }}
-              >
-                {data
-                  ? data?.serviceType === "rent"
-                    ? weekPrice
-                    : data?.price
-                  : 0}
+              <Text style={styles.description} numberOfLines={2}>
+                {data.address.city + ", " + data.address.state}
               </Text>
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: colors.textSub1Reverse,
-                  marginLeft: 5,
-                }}
-              >
-                {data?.serviceType === "rent" ? "/ week" : "/ night"}
+
+              <Text style={styles.description} numberOfLines={2}>
+                {data.description}
               </Text>
             </View>
 
-            {data?.serviceType === "rent" && (
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  flexDirection: "row",
-                }}
-              >
+            <View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Fontisto
                   name="dollar"
-                  size={7}
-                  color={colors.textSub1Reverse}
-                  style={{ marginRight: 1 }}
+                  size={12}
+                  color={colors.text}
+                  style={{ marginRight: -5 }}
                 />
                 <Text
                   style={{
-                    fontSize: 10,
-                    color: colors.textSub1Reverse,
+                    fontSize: 15,
+                    color: colors.text,
+                    marginLeft: 5,
                   }}
                 >
-                  {data?.price} / night
+                  {data
+                    ? data?.serviceType === "rent"
+                      ? weekPrice
+                      : data?.price
+                    : 0}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: colors.textSub1Reverse,
+                    marginLeft: 5,
+                  }}
+                >
+                  {data?.serviceType === "rent" ? "/ week" : "/ night"}
                 </Text>
               </View>
-            )}
+
+              {data?.serviceType === "rent" && (
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Fontisto
+                    name="dollar"
+                    size={7}
+                    color={colors.textSub1Reverse}
+                    style={{ marginRight: 1 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      color: colors.textSub1Reverse,
+                    }}
+                  >
+                    {data?.price} / night
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
           <View style={styles.checkboxContainer}>
             <CheckBox
