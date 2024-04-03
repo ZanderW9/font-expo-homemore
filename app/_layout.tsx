@@ -9,6 +9,7 @@ import { useLocation } from "@config/hooks/location";
 // import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
 // import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { Dialog } from "@rneui/themed";
 import {
   // useNavigationContainerRef,
   Stack,
@@ -21,6 +22,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { EventProvider } from "react-native-outside-press";
 
 import GlobalProvider from "@/components/GlobalProvider";
+import { RootState, useSelector } from "@/config/state/store";
+import { useThemedColors } from "@/constants/theme";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -96,6 +99,10 @@ export const ChatProvider = ({ children }) => {
 
 function RootLayoutNav() {
   useLocation();
+  const colors = useThemedColors();
+  const { openDialog, dialogComponent } = useSelector(
+    (state: RootState) => state.appMeta,
+  );
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -162,6 +169,15 @@ function RootLayoutNav() {
                     }}
                   />
                 </Stack>
+                <Dialog
+                  overlayStyle={{
+                    borderRadius: 10,
+                    backgroundColor: colors.back1,
+                  }}
+                  isVisible={openDialog}
+                >
+                  {dialogComponent}
+                </Dialog>
                 <FlashMessage
                   position="top"
                   floating

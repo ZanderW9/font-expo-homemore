@@ -46,6 +46,7 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
 
+  /* 检测热更新 */
   useEffect(() => {
     if (isUpdateAvailable) {
       showMessage({
@@ -178,17 +179,17 @@ const ApolloLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
-const GlobalLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
+const ReduxLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   useNotificationObserver();
   return <ReduxProvider store={store}>{children}</ReduxProvider>;
 };
 
 export default function GlobalProvider({ children }: { children: ReactNode }) {
   return (
-    <GlobalLoader>
+    <ReduxLoader>
       <ApolloLoader>
         <AppLoader>{children}</AppLoader>
       </ApolloLoader>
-    </GlobalLoader>
+    </ReduxLoader>
   );
 }

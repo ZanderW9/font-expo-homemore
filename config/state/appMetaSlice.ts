@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import React from "react";
 
 // 这是一个全局的状态管理，用于存储一些全局的状态，比如用户信息，页面宽度等
 
@@ -12,6 +13,8 @@ interface AppMetaState {
     createdAt: string;
   } | null;
   locale: string;
+  dialogComponent: React.ReactNode | null;
+  openDialog: boolean;
 }
 
 const initialState: AppMetaState = {
@@ -19,6 +22,8 @@ const initialState: AppMetaState = {
   token: null,
   user: null,
   locale: "en",
+  dialogComponent: null,
+  openDialog: false,
 };
 
 export const appMetaSlice = createSlice({

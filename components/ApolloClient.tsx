@@ -9,12 +9,63 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { Dialog } from "@rneui/themed";
+import * as Linking from "expo-linking";
 import * as Updates from "expo-updates";
 import { createClient } from "graphql-ws";
 import { Platform } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
+import { View, Text } from "@/components/Themed";
+import { updateAppMeta } from "@/config/state/appMetaSlice";
+import { store } from "@/config/state/store";
 import { removeLocalItem } from "@/config/storageManager";
+
+const dialogComponent = (
+  <View
+    style={{
+      alignItems: "center",
+    }}
+  >
+    <Text
+      style={{
+        textAlign: "center",
+        padding: 5,
+        paddingBottom: 20,
+        fontWeight: "bold",
+        fontSize: 16,
+      }}
+    >
+      A New Version is Available
+    </Text>
+
+    <Text
+      style={{
+        textAlign: "center",
+        padding: 5,
+      }}
+    >
+      Thank you for using Homemore!
+    </Text>
+    <Text style={{ textAlign: "center", padding: 5 }}>
+      A new version of our app is available now with new features and
+      improvements.{" "}
+    </Text>
+    <Text
+      style={{
+        textAlign: "center",
+        padding: 5,
+        paddingBottom: 20,
+      }}
+    >
+      Please update to the latest version to enjoy the best experience.
+    </Text>
+    <Dialog.Button
+      title="OPEN APP STORE"
+      onPress={() => Linking.openURL("https://apps.apple.com/app/6477903880")}
+    />
+  </View>
+);
 
 /*
  * 添加错误处理链接
@@ -41,20 +92,36 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
         }
       } else if (error.message.startsWith("info:")) {
         const message = error.message.replace(/^info:/, "");
-        if (message === "App New Hotfix" || message === "App New Version") {
-          showMessage({
-            message: "Update Available",
-            description: "App is being updated",
-            type: "info",
-          });
-          Updates.checkForUpdateAsync();
-        } else {
-          showMessage({
-            message,
-            icon: "info",
-            type: "info",
-            duration: 3000,
-          });
+
+        switch (message) {
+          case "App New Hotfix":
+            showMessage({
+              message: "Update Available",
+              description: "App is being updated",
+              type: "info",
+            });
+            Updates.checkForUpdateAsync();
+            break;
+
+          case "App New Version":
+            if (Platform.OS === "ios") {
+              store.dispatch(
+                updateAppMeta({
+                  openDialog: true,
+                  dialogComponent,
+                }),
+              );
+            }
+            break;
+
+          default:
+            showMessage({
+              message,
+              icon: "info",
+              type: "info",
+              duration: 3000,
+            });
+            break;
         }
       }
     });
