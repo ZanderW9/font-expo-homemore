@@ -116,11 +116,11 @@ function LocationScreen() {
         >
           <Ionicons name="search" size={24} color="black" />
 
-          {listingData.address.street ? (
+          {listingData?.address?.street ? (
             <Text style={styles.search}>
-              {listingData.address.street}, {listingData.address.city},{" "}
-              {listingData.address.state}, {listingData.address.postCode},{" "}
-              {listingData.address.country}
+              {listingData?.address?.street}, {listingData?.address?.city},{" "}
+              {listingData?.address?.state}, {listingData?.address?.postCode},{" "}
+              {listingData?.address?.country}
             </Text>
           ) : (
             <Text style={styles.search}>Enter your address</Text>

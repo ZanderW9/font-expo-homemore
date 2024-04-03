@@ -25,7 +25,7 @@ function InputLocation() {
 
   const [open, setOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(
-    listingData.address.country,
+    listingData?.address?.country,
   );
   const [country, setCountry] = useState([
     { label: "Australia", value: "Australia" },
@@ -40,28 +40,28 @@ function InputLocation() {
       });
       return;
     }
-    if (listingData.address.street === "") {
+    if (listingData?.address?.street === "") {
       showMessage({
         message: "Please enter street",
         type: "danger",
       });
       return;
     }
-    if (listingData.address.city === "") {
+    if (listingData?.address?.city === "") {
       showMessage({
         message: "Please enter city",
         type: "danger",
       });
       return;
     }
-    if (listingData.address.state === "") {
+    if (listingData?.address?.state === "") {
       showMessage({
         message: "Please enter state",
         type: "danger",
       });
       return;
     }
-    if (listingData.address.postCode === "") {
+    if (listingData?.address?.postCode === "") {
       showMessage({
         message: "Please enter postcode",
         type: "danger",
@@ -71,8 +71,8 @@ function InputLocation() {
 
     updateListingFunction({
       variables: {
-        updateListingId: listingData.listingId,
-        address: listingData.address,
+        updateListingId: listingData?.listingId,
+        address: listingData?.address,
       },
     });
     router.navigate("/listing/location");
@@ -145,12 +145,12 @@ function InputLocation() {
             styles.inputContainer,
             { borderColor: colors.border1 },
           ]}
-          value={listingData.address.unit}
+          value={listingData?.address?.unit}
           inputStyle={{ color: colors.text }}
           onChangeText={(text) => {
             dispatchListingData({
               ...listingData,
-              address: { ...listingData.address, unit: text },
+              address: { ...listingData?.address, unit: text },
             });
           }}
         />
@@ -163,12 +163,12 @@ function InputLocation() {
             styles.inputContainer,
             { borderColor: colors.border1 },
           ]}
-          value={listingData.address.street}
+          value={listingData?.address?.street}
           inputStyle={{ color: colors.text }}
           onChangeText={(text) => {
             dispatchListingData({
               ...listingData,
-              address: { ...listingData.address, street: text },
+              address: { ...listingData?.address, street: text },
             });
           }}
         />
@@ -181,12 +181,12 @@ function InputLocation() {
             styles.inputContainer,
             { borderColor: colors.border1 },
           ]}
-          value={listingData.address.city}
+          value={listingData?.address?.city}
           inputStyle={{ color: colors.text }}
           onChangeText={(text) => {
             dispatchListingData({
               ...listingData,
-              address: { ...listingData.address, city: text },
+              address: { ...listingData?.address, city: text },
             });
           }}
         />
@@ -199,12 +199,12 @@ function InputLocation() {
             styles.inputContainer,
             { borderColor: colors.border1 },
           ]}
-          value={listingData.address.state}
+          value={listingData?.address?.state}
           inputStyle={{ color: colors.text }}
           onChangeText={(text) => {
             dispatchListingData({
               ...listingData,
-              address: { ...listingData.address, state: text },
+              address: { ...listingData?.address, state: text },
             });
           }}
         />
@@ -217,12 +217,12 @@ function InputLocation() {
             styles.inputContainer,
             { borderColor: colors.border1 },
           ]}
-          value={listingData.address.postCode}
+          value={listingData?.address?.postCode}
           inputStyle={{ color: colors.text }}
           onChangeText={(text) => {
             dispatchListingData({
               ...listingData,
-              address: { ...listingData.address, postCode: text },
+              address: { ...listingData?.address, postCode: text },
             });
           }}
         />

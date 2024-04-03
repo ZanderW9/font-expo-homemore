@@ -177,7 +177,7 @@ function LoginScreen() {
             loading ? (
               <ActivityIndicator color={colors.textReverse} size="small" />
             ) : (
-              "Sign Up"
+              "Sign In"
             )
           }
         />

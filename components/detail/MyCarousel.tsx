@@ -17,8 +17,8 @@ function MyCarousel(data: any) {
 
   const MAX_IMAGE_HEIGHT = PAGE_HEIGHT * 0.6;
   let maxImageHeight = 300;
-  if (data.images.length > 0) {
-    const imagesHeights = data.images.map(
+  if (data?.images?.length > 0) {
+    const imagesHeights = data?.images?.map(
       (image) => (PAGE_WIDTH / image.width) * image.height,
     );
     maxImageHeight = Math.min(Math.max(...imagesHeights), MAX_IMAGE_HEIGHT);
@@ -63,12 +63,12 @@ function MyCarousel(data: any) {
             marginTop: 5,
           }}
         >
-          {data.images.map((_, index) => {
+          {data?.images?.map((_, index) => {
             return (
               <PaginationItem
                 key={index}
                 index={index}
-                length={data.images.length}
+                length={data?.images?.length || 1}
                 backgroundColor="rgb(236, 76, 96)"
                 animValue={progressValue}
               />

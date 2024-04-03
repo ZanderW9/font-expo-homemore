@@ -32,7 +32,7 @@ function Facility(data: any) {
         Basic Amenities
       </Text>
       <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-        {device.map((amenity: any, index: number) => {
+        {device?.map((amenity: any, index: number) => {
           return (
             <View
               key={index}
@@ -69,7 +69,7 @@ function Facility(data: any) {
         Safety Devices
       </Text>
       <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-        {safetyDevice.map((amenity: any, index: number) => {
+        {safetyDevice?.map((amenity: any, index: number) => {
           return (
             <View
               key={index}

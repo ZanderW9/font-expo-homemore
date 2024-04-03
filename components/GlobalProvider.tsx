@@ -119,8 +119,16 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
      *读取本地存储的token, user, locale 等...
      *读取字体, 图片等资源
      *设置app的宽度
+     *检查更新
      */
     async function prepare() {
+      // const checkUpdateTask = setInterval(
+      //   async () => {
+      //     Updates.checkForUpdateAsync();
+      //   },
+      //   1000 * 60 * 10 // 10分钟检查一次更新
+      // );
+
       const { token, user, locale, width } = await getLocalItems([
         "token",
         "user",
@@ -144,7 +152,10 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
         SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
         ...FontAwesome.font,
       });
+
+      // return () => clearInterval(checkUpdateTask);
     }
+
     prepare();
 
     const subscription = Dimensions.addEventListener("change", ({ window }) => {

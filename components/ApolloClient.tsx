@@ -48,13 +48,14 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
             type: "info",
           });
           Updates.checkForUpdateAsync();
+        } else {
+          showMessage({
+            message,
+            icon: "info",
+            type: "info",
+            duration: 3000,
+          });
         }
-        showMessage({
-          message,
-          icon: "info",
-          type: "info",
-          duration: 3000,
-        });
       }
     });
   }

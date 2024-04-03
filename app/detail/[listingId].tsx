@@ -167,10 +167,10 @@ function ListingDetailScreen() {
           />
           {/* Part2 */}
           <OverView
-            bathRooms={data ? data.listingById?.placeDetails.bathCount : 0}
-            bedRooms={data ? data.listingById?.placeDetails.bedroomCount : 0}
-            bed={data ? data.listingById?.placeDetails.bedCount : 0}
-            guests={data ? data.listingById?.placeDetails.guestCount : 0}
+            bathRooms={data ? data.listingById?.placeDetails?.bathCount : 0}
+            bedRooms={data ? data.listingById?.placeDetails?.bedroomCount : 0}
+            bed={data ? data.listingById?.placeDetails?.bedCount : 0}
+            guests={data ? data.listingById?.placeDetails?.guestCount : 0}
             bedroomDetails={data ? data.listingById?.bedRoomDetails : []}
           />
           <Divider
@@ -182,8 +182,8 @@ function ListingDetailScreen() {
           />
           {/* Part3 */}
           <Location
-            lat={data ? data.listingById?.coordinate.lat : 0}
-            lng={data ? data.listingById?.coordinate.lng : 0}
+            lat={data ? data.listingById?.coordinate?.lat : 0}
+            lng={data ? data.listingById?.coordinate?.lng : 0}
             address={data ? data.listingById?.address : ""}
             listing={data ? data.listingById : {}}
           />

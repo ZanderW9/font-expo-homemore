@@ -24,13 +24,13 @@ export const formatTime = (timestamp) => {
 const RenderReviw = (props: any) => {
   const colors = useThemedColors();
   const renderSubReview = (subReview: any) => {
-    if (!subReview || !subReview.length) {
+    if (!subReview || !subReview?.length) {
       return;
     }
 
     return (
       <View style={styles.subReviewWrapper}>
-        {subReview.map((subReview: any) => (
+        {subReview?.map((subReview: any) => (
           <View key={subReview.id} style={styles.reviewWrapper}>
             {subReview?.sender?.avatar ? (
               <Avatar

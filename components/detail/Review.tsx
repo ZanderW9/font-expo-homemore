@@ -25,7 +25,7 @@ function Review(props: { openBottomSheet: Function; reviews: any[] }) {
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { color: colors.text }]}>
-        {props.reviews.length} Reviews
+        {props?.reviews?.length} Reviews
       </Text>
       <Pressable
         style={[styles.inputWrapper, { backgroundColor: colors.back2 }]}
@@ -42,7 +42,7 @@ function Review(props: { openBottomSheet: Function; reviews: any[] }) {
           Leave a review ···
         </Text>
       </Pressable>
-      {props.reviews.map((review: any) => (
+      {props?.reviews?.map((review: any) => (
         <RenderReviw
           key={review.id}
           review={review}

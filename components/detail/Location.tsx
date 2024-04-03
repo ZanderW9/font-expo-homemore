@@ -8,10 +8,9 @@ import { showMessage } from "react-native-flash-message";
 
 const Location = (props: any) => {
   const { listing } = props;
-  const { coordinate } = listing;
-  const lat = coordinate?.lat || 0;
-  const lng = coordinate?.lng || 0;
-  const address = listing.address || {};
+  const lat = listing?.coordinate?.lat || 0;
+  const lng = listing?.coordinate?.lng || 0;
+  const address = listing?.address || {};
   const center = {
     lat,
     lng,
@@ -50,7 +49,7 @@ const Location = (props: any) => {
           })
         }
       >
-        {coordinate?.lat && (
+        {listing?.coordinate?.lat && (
           <MapView
             center={center}
             setCenter={() => {}}
