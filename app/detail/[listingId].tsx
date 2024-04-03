@@ -27,7 +27,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Avatar, Divider } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useRef, useCallback } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 import { RootState, useSelector } from "@/config/state/store";
 
@@ -53,11 +53,12 @@ const CustomHeaderTitle = (data: any) => {
           size={35}
           rounded
           containerStyle={styles.Avatar}
-          title={owner?.userName?.slice(0, 2) ?? ""}
+          title={owner?.userName?.slice(0, 1) ?? ""}
           titleStyle={{
             justifyContent: "center",
             alignSelf: "center",
-            fontSize: 24,
+            paddingTop: Platform.OS === "ios" ? 5 : 0,
+            fontSize: 20,
           }}
         />
       )}
@@ -155,6 +156,7 @@ function ListingDetailScreen() {
             rentType={data ? data.listingById?.rentType : ""}
             title={data ? data.listingById?.title : ""}
             description={data ? data.listingById?.description : ""}
+            createdAt={data ? data.listingById?.createdAt : ""}
           />
           <Divider
             width={1}

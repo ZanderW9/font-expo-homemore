@@ -20,6 +20,14 @@ function BasicInfo(props: any) {
       </Text>
       <Text style={styles.title}>{props.title}</Text>
       <Text style={styles.description}>{props.description}</Text>
+      <Text style={styles.time}>
+        Create at{" "}
+        {new Date(props.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })}
+      </Text>
     </View>
   );
 }
@@ -34,18 +42,29 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   placeType: {
-    fontSize: 13,
+    fontSize: 16,
     color: "gray",
     marginBottom: 3,
+    paddingBottom: 5,
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: "500",
     marginBottom: 3,
+    lineHeight: 24,
+    paddingBottom: 5,
   },
   description: {
     fontSize: 16,
     marginBottom: 3,
+    lineHeight: 24,
+    paddingBottom: 10,
+  },
+  time: {
+    fontSize: 13,
+    color: "gray",
+    marginBottom: 3,
+    paddingBottom: 10,
   },
 });
 

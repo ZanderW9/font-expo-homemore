@@ -12,7 +12,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router, Stack } from "expo-router";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Platform } from "react-native";
+import {
+  StyleSheet,
+  Platform,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 import { updateAppMeta } from "@/config/state/appMetaSlice";
@@ -294,13 +299,23 @@ function LoginScreen() {
             inputStyle={{ color: colors.text }}
             rightIcon={
               isValidEmail && (
-                <Ionicons
-                  name={countdown ? "lock-closed-outline" : "send-outline"}
-                  size={24}
-                  color={colors.text}
+                <Pressable
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    borderColor: colors.border1,
+                    padding: 10,
+                    width: 80,
+                    backgroundColor: colors.back2,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                   onPress={sendCodeHandler}
-                  disabled={isButtonDisabled}
-                />
+                >
+                  <Text style={{ color: colors.text, fontSize: 15 }}>
+                    {countdown ? "Resend" : "Send"}
+                  </Text>
+                </Pressable>
               )
             }
             onChangeText={(text) => setVeriCode(text)}
@@ -326,9 +341,15 @@ function LoginScreen() {
                 marginVertical: 10,
               }}
               onPress={SignUpHandler}
-            >
-              Sign Up
-            </Button>
+              disabled={isButtonDisabled}
+              title={
+                loading ? (
+                  <ActivityIndicator color={colors.textReverse} size="small" />
+                ) : (
+                  "Sign Up"
+                )
+              }
+            />
           </View>
 
           <Text style={styles.title} onPress={gotoSigninHandler}>
