@@ -15,7 +15,7 @@ function TabExploreScreen() {
       <FAB
         size="small"
         title="Map"
-        style={{ position: "absolute", bottom: 20 }}
+        placement="center"
         icon={
           <Ionicons
             name="map-outline"

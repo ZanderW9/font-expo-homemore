@@ -78,7 +78,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           }}
         >
           <Image
-            style={{ ...styles.image, aspectRatio: 1.5 }}
+            style={{ ...styles.image, aspectRatio: 1.68 }}
             placeholder={{ thumbhash: imageData?.thumbhash }}
             source={{ uri: imageData?.smallUrl }}
           />
@@ -88,16 +88,19 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
                 <Text> {data.title}</Text>
               </Card.Title>
 
-              <Text style={styles.description} numberOfLines={2}>
+              <Text style={styles.description} numberOfLines={1}>
                 {data.address.city + ", " + data.address.state}
               </Text>
 
-              <Text style={styles.description} numberOfLines={2}>
+              <Text
+                style={{ ...styles.description, color: colors.textSub1 }}
+                numberOfLines={2}
+              >
                 {data.description}
               </Text>
             </View>
 
-            <View>
+            <View style={{ marginTop: 4 }}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Fontisto
                   name="dollar"
@@ -175,7 +178,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    margin: 3,
+    marginBottom: 10,
     borderRadius: 9,
     borderWidth: 0,
     shadowColor: "#000",
@@ -193,11 +196,12 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopLeftRadius: 7,
     borderTopRightRadius: 7,
+    maxHeight: 240,
   },
   cardContent: {
-    paddingHorizontal: 8,
-    paddingTop: 8,
-    marginBottom: 8,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    marginBottom: 10,
     borderWidth: 0,
   },
   icon: {
@@ -236,7 +240,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 12,
     marginBottom: 1,
-    marginTop: 1,
+    marginTop: 4,
     marginRight: 2,
     textAlign: "left",
   },

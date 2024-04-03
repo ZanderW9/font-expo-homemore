@@ -66,7 +66,7 @@ function ListingCardsContainer() {
 
   return (
     <MasonryList
-      style={{ margin: 3 }}
+      style={{ margin: 10 }}
       data={data ? data.allListings : []}
       numColumns={1}
       renderItem={({ item }) => <ListingCard data={item} />}

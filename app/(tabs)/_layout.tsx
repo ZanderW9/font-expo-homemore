@@ -1,15 +1,8 @@
-import { SafeAreaView } from "@components/Themed";
+import { SafeAreaView, View } from "@components/Themed";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof Ionicons>["name"];
-  color: string;
-}) {
-  return <AntDesign size={28} style={{ marginBottom: -3 }} {...props} />;
-}
 
 export default function () {
   const colors = useThemedColors();
@@ -29,7 +22,14 @@ export default function () {
         options={{
           headerShadowVisible: false,
           title: "Explore",
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <AntDesign
+              name="home"
+              color={color}
+              size={28}
+              style={{ marginBottom: -3 }}
+            />
+          ),
           headerShown: false,
         }}
       />
@@ -39,7 +39,50 @@ export default function () {
         options={{
           title: "Wishlist",
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="hearto" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <AntDesign
+              name="hearto"
+              color={color}
+              size={28}
+              style={{ marginBottom: -3 }}
+            />
+          ),
+        }}
+      />
+
+      {/* <Tabs.Screen
+        name="services"
+        options={{
+          title: "Services",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons
+              name="apps-outline"
+              color={color}
+              size={30}
+              style={{ marginBottom: -3 }}
+            />
+          ),
+        }}
+      /> */}
+
+      <Tabs.Screen
+        name="post"
+        options={{
+          title: "",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <View
+              style={{
+                marginBottom: -18,
+                padding: 7,
+                borderRadius: 8,
+                backgroundColor: colors.tint,
+              }}
+            >
+              <Ionicons name="add" color={colors.textReverse} size={30} />
+            </View>
+          ),
         }}
       />
 
@@ -49,7 +92,12 @@ export default function () {
           title: "Inbox",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="message1" color={color} />
+            <AntDesign
+              name="message1"
+              color={color}
+              size={28}
+              style={{ marginBottom: -3 }}
+            />
           ),
         }}
       />
@@ -63,7 +111,14 @@ export default function () {
             return <SafeAreaView edges={["top"]} />;
           },
           // headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <AntDesign
+              name="user"
+              color={color}
+              size={28}
+              style={{ marginBottom: -3 }}
+            />
+          ),
         }}
       />
     </Tabs>
