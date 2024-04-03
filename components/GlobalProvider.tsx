@@ -1,4 +1,4 @@
-import { useQuery, gql, ApolloProvider, useApolloClient } from "@apollo/client";
+import { useQuery, gql, ApolloProvider } from "@apollo/client";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as Font from "expo-font";
 import * as Localization from "expo-localization";
@@ -9,10 +9,7 @@ import { Dimensions, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import { Provider as ReduxProvider } from "react-redux";
 
-import {
-  createApolloClient,
-  createApolloLink,
-} from "@/components/ApolloClient";
+import { createApolloClient } from "@/components/ApolloClient";
 import {
   registerForPushNotificationsAsync,
   useNotificationObserver,
@@ -47,8 +44,6 @@ const VALIDATE_USER_QUERY = gql`
 const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { token } = useSelector((state: RootState) => state.appMeta);
 
-  const client = useApolloClient();
-
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
 
   useEffect(() => {
@@ -81,6 +76,7 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
   const dispatch = useDispatch();
   const { fetchFunc: updatePushToken } = useFetch();
+
   useEffect(() => {
     async function sendPushToken() {
       if (expoPushToken) {
@@ -114,6 +110,9 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [data, dispatch]);
 
   useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 500);
     /*
      *读取本地存储的token, user, locale 等...
      *读取字体, 图片等资源
@@ -135,10 +134,6 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
         }
         await storeLocalItem("locale", appLocale);
       }
-      if (token) {
-        client.setLink(createApolloLink(token));
-        client.resetStore();
-      }
 
       dispatch(updateAppMeta({ token, user, locale: appLocale, width }));
 
@@ -147,10 +142,6 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
         SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
         ...FontAwesome.font,
       });
-
-      setTimeout(() => {
-        SplashScreen.hideAsync();
-      }, 500);
     }
     prepare();
 
@@ -163,16 +154,28 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   return <View style={{ flex: 1 }}>{children}</View>;
 };
 
-const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  useNotificationObserver();
-  const client = createApolloClient(null);
-  return (
-    <ReduxProvider store={store}>
-      <ApolloProvider client={client}>
-        <AppLoader>{children}</AppLoader>
-      </ApolloProvider>
-    </ReduxProvider>
-  );
+const ApolloLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { token } = useSelector((state: RootState) => state.appMeta);
+  const [client, setClient] = useState(createApolloClient(token));
+
+  useEffect(() => {
+    setClient(createApolloClient(token));
+  }, [token]);
+
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
-export default GlobalProvider;
+const GlobalLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
+  useNotificationObserver();
+  return <ReduxProvider store={store}>{children}</ReduxProvider>;
+};
+
+export default function GlobalProvider({ children }: { children: ReactNode }) {
+  return (
+    <GlobalLoader>
+      <ApolloLoader>
+        <AppLoader>{children}</AppLoader>
+      </ApolloLoader>
+    </GlobalLoader>
+  );
+}

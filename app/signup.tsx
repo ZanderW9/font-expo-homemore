@@ -1,4 +1,4 @@
-import { gql, useMutation, useApolloClient } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import {
   Text,
   View,
@@ -15,7 +15,6 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Platform } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
-import { createApolloLink } from "@/components/ApolloClient";
 import { updateAppMeta } from "@/config/state/appMetaSlice";
 import { useDispatch } from "@/config/state/store";
 
@@ -51,7 +50,6 @@ const SEND_VERICODE_MUTATION = gql`
 function LoginScreen() {
   const colors = useThemedColors();
   const dispatch = useDispatch();
-  const client = useApolloClient();
 
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
@@ -153,10 +151,7 @@ function LoginScreen() {
     }
 
     if (!loading && data) {
-      storeLocalItem("token", data.SignUp.token);
-
-      client.setLink(createApolloLink(data.SignUp.token));
-      client.resetStore();
+      await storeLocalItem("token", data.SignUp.token);
 
       dispatch(
         updateAppMeta({ user: data.SignUp.user, token: data.SignUp.token }),

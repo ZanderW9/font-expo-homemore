@@ -1,10 +1,9 @@
-import { gql, useApolloClient } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { ListItem, Avatar } from "@rneui/themed";
-import { router, usePathname } from "expo-router";
+import { router } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 
-import { createApolloLink } from "@/components/ApolloClient";
 import NotLogIn from "@/components/NotLogIn";
 import {
   View,
@@ -17,7 +16,6 @@ import { LinkPreview } from "@/components/inbox/LinkPreview";
 import { updateAppMeta } from "@/config/state/appMetaSlice";
 import { RootState, useDispatch, useSelector } from "@/config/state/store";
 import { clearLocalItems } from "@/config/storageManager";
-import useCachedQuery from "@/config/useCachedQuery";
 import { useThemedColors } from "@/constants/theme";
 
 const meQuery = gql`
@@ -33,17 +31,14 @@ const meQuery = gql`
 
 function TabProfileScreen() {
   const colors = useThemedColors();
-  const client = useApolloClient();
   const dispatch = useDispatch();
   const { token } = useSelector((state: RootState) => state.appMeta);
 
-  const { data } = useCachedQuery(meQuery, usePathname());
+  const { data } = useQuery(meQuery);
 
   const logOutHandler = async () => {
     await clearLocalItems();
     dispatch(updateAppMeta({ user: null, token: null }));
-    client.setLink(createApolloLink(null));
-    client.resetStore();
     router.replace("/profile");
   };
 

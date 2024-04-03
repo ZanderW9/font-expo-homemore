@@ -1,5 +1,4 @@
-import { gql, useMutation, useApolloClient } from "@apollo/client";
-import { createApolloLink } from "@components/ApolloClient";
+import { gql, useMutation } from "@apollo/client";
 import { View, Text, SafeAreaView } from "@components/Themed";
 import { updateAppMeta } from "@config/state/appMetaSlice";
 import { useDispatch } from "@config/state/store";
@@ -20,7 +19,6 @@ const deleteAccountMutation = gql`
 
 export default function Screen() {
   const colors = useThemedColors();
-  const client = useApolloClient();
   const dispatch = useDispatch();
 
   const [showSaveDraftDialog, setShowSaveDraftDialog] = useState(false);
@@ -31,8 +29,6 @@ export default function Screen() {
     await deleteAccountFunction();
     await clearLocalItems();
 
-    client.setLink(createApolloLink(null));
-    client.resetStore();
     dispatch(updateAppMeta({ user: null, token: null }));
     router.replace("/profile");
   };

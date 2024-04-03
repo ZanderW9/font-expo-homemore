@@ -1,16 +1,15 @@
-import { gql, useMutation, useApolloClient } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { Text, View } from "@components/Themed";
 import { storeLocalItem } from "@config/storageManager";
 import Colors from "@constants/Colors";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
-import { router, Stack } from "expo-router";
+import { router, Stack, useFocusEffect } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
-import { createApolloLink } from "@/components/ApolloClient";
 import { updateAppMeta } from "@/config/state/appMetaSlice";
 import { RootState, useDispatch, useSelector } from "@/config/state/store";
 
@@ -30,7 +29,6 @@ const signInMutation = gql`
 function LoginScreen() {
   const colors = useThemedColors();
   const dispatch = useDispatch();
-  const client = useApolloClient();
   const { token } = useSelector((state: RootState) => state.appMeta);
 
   const [email, setEmail] = useState("");
@@ -54,19 +52,19 @@ function LoginScreen() {
   }, [error]);
 
   useEffect(() => {
-    if (!loading && data) {
-      storeLocalItem("token", data.SignIn.token);
+    async function signInAsync() {
+      if (!loading && data) {
+        storeLocalItem("token", data.SignIn.token);
 
-      client.setLink(createApolloLink(data.SignIn.token));
-      client.resetStore();
+        dispatch(
+          updateAppMeta({ user: data.SignIn.user, token: data.SignIn.token }),
+        );
 
-      dispatch(
-        updateAppMeta({ user: data.SignIn.user, token: data.SignIn.token }),
-      );
-
-      router.canGoBack() && router.back();
-      router.replace("/profile");
+        router.canGoBack() && router.back();
+        router.replace("/profile");
+      }
     }
+    signInAsync();
   }, [loading, data]);
 
   const SignInHandler = async () => {
@@ -91,15 +89,15 @@ function LoginScreen() {
 
   const autoLogin = async () => {
     if (token) {
-      client.setLink(createApolloLink(token));
-      await client.resetStore();
       router.replace("/profile");
     }
   };
 
-  useEffect(() => {
-    autoLogin();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      autoLogin();
+    }, []),
+  );
 
   return (
     <View style={styles.container} theme={{ background: "back2" }}>

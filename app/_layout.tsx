@@ -6,10 +6,13 @@ import {
   updateChatsWithNewMessage,
 } from "@config/gql/chat";
 import { useLocation } from "@config/hooks/location";
-import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
-import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
+// import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
+// import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { useNavigationContainerRef, Stack } from "expo-router";
+import {
+  // useNavigationContainerRef,
+  Stack,
+} from "expo-router";
 import React, { useState } from "react";
 import { Platform } from "react-native";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
@@ -30,10 +33,10 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  // dev tools
-  const navigationRef = useNavigationContainerRef();
-  useReactNavigationDevTools(navigationRef);
-  useAsyncStorageDevTools();
+  /* dev tools */
+  // const navigationRef = useNavigationContainerRef();
+  // useReactNavigationDevTools(navigationRef);
+  // useAsyncStorageDevTools();
 
   return (
     <GlobalProvider>
