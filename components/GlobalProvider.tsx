@@ -69,11 +69,13 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   // 获取用户 push token 并更新到后端
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
+
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token),
     );
   }, []);
+
   const dispatch = useDispatch();
   const { fetchFunc: updatePushToken } = useFetch();
 
