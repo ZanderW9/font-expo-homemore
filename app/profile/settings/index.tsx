@@ -1,17 +1,18 @@
 import { ListItem } from "@rneui/themed";
 import { router, Stack } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { View, Text } from "@/components/Themed";
 import { useThemedColors } from "@/constants/theme";
 
 export default function Screen() {
   const colors = useThemedColors();
-
+  const { t } = useTranslation();
   return (
     <View theme={{ background: "back2" }}>
       <Stack.Screen
         options={{
-          title: "Settings",
+          title: t("profile.settings.title"),
           headerTitleAlign: "center",
           headerTitleStyle: {
             color: colors.text,
@@ -31,7 +32,7 @@ export default function Screen() {
       >
         <ListItem.Content>
           <ListItem.Title>
-            <Text>About the App</Text>
+            <Text>{t("profile.settings.about_button")}</Text>
           </ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron />
@@ -45,7 +46,7 @@ export default function Screen() {
       >
         <ListItem.Content>
           <ListItem.Title>
-            <Text>language</Text>
+            <Text>{t("profile.settings.language_button")}</Text>
           </ListItem.Title>
         </ListItem.Content>
         <ListItem.Chevron />

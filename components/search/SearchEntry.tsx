@@ -2,9 +2,11 @@ import { SafeAreaView } from "@components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Text } from "@rneui/themed";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Pressable } from "react-native";
 
 const SearchEntry = (props: { text: string }) => {
+  const { t } = useTranslation();
   const { text } = props;
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -19,7 +21,7 @@ const SearchEntry = (props: { text: string }) => {
           containerStyle={{ marginRight: 3 }}
         />
         <Text style={{ color: "gray", fontSize: 18, flex: 1 }}>
-          {text || "Explore home from here~"}
+          {text || t("explore.search_placeholder")}
         </Text>
         <Button
           type="clear"

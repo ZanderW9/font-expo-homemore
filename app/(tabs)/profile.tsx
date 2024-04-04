@@ -13,6 +13,7 @@ import {
   Pressable,
 } from "@/components/Themed";
 import { LinkPreview } from "@/components/inbox/LinkPreview";
+import i18n from "@/config/localizations/i18n";
 import { updateAppMeta } from "@/config/state/appMetaSlice";
 import { RootState, useDispatch, useSelector } from "@/config/state/store";
 import { clearLocalItems } from "@/config/storageManager";
@@ -101,7 +102,8 @@ function TabProfileScreen() {
               <View style={styles.usernameWrapper}>
                 <Text style={styles.username}>{data?.me?.userName}</Text>
                 <Text style={{ color: "gray", fontSize: 12 }}>
-                  Joined on {data?.me?.createdAt?.slice(0, 10)}
+                  {i18n.t("profile.member_since")}
+                  {data?.me?.createdAt?.slice(0, 10)}
                 </Text>
               </View>
             </Pressable>
@@ -114,7 +116,7 @@ function TabProfileScreen() {
             >
               <ListItem.Content>
                 <ListItem.Title>
-                  <Text>Create Listing</Text>
+                  <Text>{i18n.t("profile.create_listing_button")}</Text>
                 </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
@@ -126,7 +128,7 @@ function TabProfileScreen() {
             >
               <ListItem.Content>
                 <ListItem.Title>
-                  <Text>Manage Listing</Text>
+                  <Text>{i18n.t("profile.manage_listing_button")}</Text>
                 </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
@@ -138,7 +140,7 @@ function TabProfileScreen() {
             >
               <ListItem.Content>
                 <ListItem.Title>
-                  <Text>My Order</Text>
+                  <Text>{i18n.t("profile.my_order_button")}</Text>
                 </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
@@ -152,7 +154,7 @@ function TabProfileScreen() {
             >
               <ListItem.Content>
                 <ListItem.Title>
-                  <Text>Settings</Text>
+                  <Text>{i18n.t("profile.settings_button")}</Text>
                 </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
@@ -164,7 +166,7 @@ function TabProfileScreen() {
             >
               <ListItem.Content>
                 <ListItem.Title>
-                  <Text>Account and Security</Text>
+                  <Text>{i18n.t("profile.account_security_button")}</Text>
                 </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
@@ -176,7 +178,7 @@ function TabProfileScreen() {
             >
               <ListItem.Content>
                 <ListItem.Title>
-                  <Text>Log Out</Text>
+                  <Text>{i18n.t("profile.sign_out_button")}</Text>
                 </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />

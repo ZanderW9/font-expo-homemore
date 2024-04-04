@@ -37,7 +37,7 @@ type CreateListingState = {
 
 const initialState: CreateListingState = {
   listingId: "",
-  serviceType: "",
+  serviceType: "rent",
   placeType: "",
   rentType: "",
   address: {

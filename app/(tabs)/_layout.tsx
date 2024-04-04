@@ -3,8 +3,10 @@ import { useThemedColors } from "@constants/theme";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function () {
+  const { t } = useTranslation();
   const colors = useThemedColors();
 
   return (
@@ -21,7 +23,7 @@ export default function () {
         name="(index)"
         options={{
           headerShadowVisible: false,
-          title: "Explore",
+          title: t("mainTab.explore"),
           tabBarIcon: ({ color }) => (
             <AntDesign
               name="home"
@@ -37,7 +39,7 @@ export default function () {
       <Tabs.Screen
         name="wishlist"
         options={{
-          title: "Wishlist",
+          title: t("mainTab.wishlist"),
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <AntDesign
@@ -53,7 +55,7 @@ export default function () {
       {/* <Tabs.Screen
         name="services"
         options={{
-          title: "Services",
+          title: t("mainTab.services"),
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons
@@ -89,7 +91,7 @@ export default function () {
       <Tabs.Screen
         name="inbox"
         options={{
-          title: "Inbox",
+          title: t("mainTab.inbox"),
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <AntDesign
@@ -105,7 +107,7 @@ export default function () {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: t("mainTab.profile"),
           headerTitleAlign: "center",
           header: () => {
             return <SafeAreaView edges={["top"]} />;

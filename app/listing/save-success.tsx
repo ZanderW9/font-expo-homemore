@@ -1,16 +1,28 @@
 import { View, Text } from "@components/Themed";
 import { useThemedColors } from "@constants/theme";
+import { Feather } from "@expo/vector-icons";
 import { Button } from "@rneui/themed";
-import { router, Stack } from "expo-router";
-import React from "react";
+import { router, Stack, useFocusEffect } from "expo-router";
+import React, { useCallback } from "react";
 import { StyleSheet } from "react-native";
+
+import i18n from "@/config/localizations/i18n";
 
 function SaveSuccessScreen() {
   const colors = useThemedColors();
 
   const returnHandler = async () => {
-    router.navigate("/");
+    router.replace("/");
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setTimeout(() => {
+        router.replace("/");
+      }, 1000);
+      return () => clearTimeout(timer);
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
@@ -30,9 +42,12 @@ function SaveSuccessScreen() {
           alignItems: "center",
         }}
       >
-        <Text style={styles.title}>Listing Saved in Draft</Text>
+        <Feather name="check-circle" size={36} color="green" />
+        <Text style={styles.title}>
+          {i18n.t("create_listing.save_success.title")}
+        </Text>
         <Text style={styles.subtitle}>
-          Your listing has been saved, but not yet published.
+          {i18n.t("create_listing.save_success.description")}
         </Text>
 
         <View
@@ -45,7 +60,7 @@ function SaveSuccessScreen() {
           theme={{ background: "back1" }}
         >
           <Button
-            title="Return Home"
+            title={i18n.t("create_listing.save_success.return_home")}
             onPress={returnHandler}
             buttonStyle={{
               backgroundColor: colors.mainColor,
@@ -72,11 +87,11 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   title: {
-    fontSize: 40,
-    paddingBottom: 10,
+    fontSize: 26,
+    paddingVertical: 16,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     paddingBottom: 10,
   },
 });

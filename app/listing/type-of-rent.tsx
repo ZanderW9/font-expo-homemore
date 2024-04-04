@@ -10,6 +10,8 @@ import { FlashList } from "@shopify/flash-list";
 import { router, Stack, useNavigation } from "expo-router";
 import { StyleSheet, ActivityIndicator } from "react-native";
 
+import i18n from "@/config/localizations/i18n";
+
 const updateListingMutation = gql`
   mutation UpdateListing(
     $updateListingId: String!
@@ -69,7 +71,7 @@ function TypeOfRentScreen() {
 
   const typeOfRent = [
     {
-      name: "An entire place",
+      name: i18n.t("create_listing.type_of_rent.an_entire_place"),
       value: "anEntirePlace",
       icon: (
         <MaterialCommunityIcons
@@ -81,7 +83,7 @@ function TypeOfRentScreen() {
     },
 
     {
-      name: "A room",
+      name: i18n.t("create_listing.type_of_rent.a_room"),
       value: "aRoom",
       icon: (
         <MaterialCommunityIcons name="door" size={30} color={colors.text} />
@@ -92,7 +94,7 @@ function TypeOfRentScreen() {
   return (
     <View style={styles.container}>
       <Button
-        title=" Save & Exit"
+        title={i18n.t("create_listing.save_and_exit")}
         type="clear"
         onPress={saveAndExitHandler}
         buttonStyle={{
@@ -122,7 +124,9 @@ function TypeOfRentScreen() {
           flex: 0.35,
         }}
       >
-        <Text style={styles.title}>What type of place will guests have?</Text>
+        <Text style={styles.title}>
+          {i18n.t("create_listing.type_of_rent.title")}
+        </Text>
 
         <FlashList
           showsVerticalScrollIndicator={false}
@@ -192,13 +196,13 @@ function TypeOfRentScreen() {
 
         {listingData.rentType === "anEntirePlace" && (
           <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
-            Guests will have the entire place to themselves.
+            {i18n.t("create_listing.type_of_rent.an_entire_place_description")}
           </Text>
         )}
 
         {listingData.rentType === "aRoom" && (
           <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
-            Guests will have their own room and share common areas.
+            {i18n.t("create_listing.type_of_rent.a_room_description")}
           </Text>
         )}
       </View>
@@ -215,7 +219,7 @@ function TypeOfRentScreen() {
           theme={{ background: "back1" }}
         >
           <Button
-            title="Back"
+            title={i18n.t("back")}
             type="outline"
             onPress={backHandler}
             buttonStyle={{
@@ -236,7 +240,7 @@ function TypeOfRentScreen() {
               loading ? (
                 <ActivityIndicator color={colors.textReverse} size="small" />
               ) : (
-                "Next"
+                i18n.t("next")
               )
             }
             onPress={nextHandler}

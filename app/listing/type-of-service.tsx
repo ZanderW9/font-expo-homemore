@@ -10,6 +10,8 @@ import { FlashList } from "@shopify/flash-list";
 import { router, Stack, useNavigation } from "expo-router";
 import { StyleSheet, ActivityIndicator } from "react-native";
 
+import i18n from "@/config/localizations/i18n";
+
 const updateListingMutation = gql`
   mutation Mutation(
     $updateListingId: String!
@@ -70,13 +72,13 @@ function TypeOfServiceScreen() {
 
   const typeOfService = [
     {
-      name: "Rent",
+      name: i18n.t("create_listing.type_of_service.rent"),
       value: "rent",
       icon: <Ionicons name="key-outline" size={30} color={colors.text} />,
     },
 
     {
-      name: "Travel",
+      name: i18n.t("create_listing.type_of_service.travel"),
       value: "travel",
       icon: <Fontisto name="holiday-village" size={30} color={colors.text} />,
     },
@@ -85,7 +87,7 @@ function TypeOfServiceScreen() {
   return (
     <View style={styles.container}>
       <Button
-        title=" Save & Exit"
+        title={i18n.t("create_listing.save_and_exit")}
         type="clear"
         onPress={saveAndExitHandler}
         buttonStyle={{
@@ -116,7 +118,7 @@ function TypeOfServiceScreen() {
         }}
       >
         <Text style={styles.title}>
-          Which type of services are you looking to offer?
+          {i18n.t("create_listing.type_of_service.title")}
         </Text>
 
         <FlashList
@@ -187,14 +189,13 @@ function TypeOfServiceScreen() {
 
         {listingData.serviceType === "rent" && (
           <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
-            Weekly rent with an option for daily payment. Suited for long-term
-            and short-term tenants.
+            {i18n.t("create_listing.type_of_service.rent_description")}
           </Text>
         )}
 
         {listingData.serviceType === "travel" && (
           <Text style={[styles.subtitle, { color: colors.textSub1 }]}>
-            Strictly daily payment. Ideal for short-term travelers.
+            {i18n.t("create_listing.type_of_service.travel_description")}
           </Text>
         )}
       </View>
@@ -211,7 +212,7 @@ function TypeOfServiceScreen() {
           theme={{ background: "back1" }}
         >
           <Button
-            title="Back"
+            title={i18n.t("back")}
             type="outline"
             onPress={backHandler}
             buttonStyle={{
@@ -232,7 +233,7 @@ function TypeOfServiceScreen() {
               loading ? (
                 <ActivityIndicator color={colors.textReverse} size="small" />
               ) : (
-                "Next"
+                i18n.t("next")
               )
             }
             onPress={nextHandler}

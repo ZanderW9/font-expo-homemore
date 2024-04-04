@@ -8,6 +8,8 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
 import { StyleSheet, ActivityIndicator } from "react-native";
 
+import i18n from "@/config/localizations/i18n";
+
 const createListingMutation = gql`
   mutation Mutation {
     createListing {
@@ -109,12 +111,16 @@ function Step1() {
     }
   }, [data]);
 
-  const labels = ["Step 1", "Step 2", "Step 3"];
+  const labels = [
+    i18n.t("create_listing.step_1_button"),
+    i18n.t("create_listing.step_2_button"),
+    i18n.t("create_listing.step_3_button"),
+  ];
 
   return (
     <View style={styles.container}>
       <Button
-        title=" Save & Exit"
+        title={i18n.t("create_listing.save_and_exit")}
         type="clear"
         onPress={backHandler}
         buttonStyle={{
@@ -144,12 +150,14 @@ function Step1() {
           flex: 0.8,
         }}
       >
-        <Text style={styles.subtitle}>Step 1</Text>
-        <Text style={styles.title}>Tell us about your place</Text>
         <Text style={styles.subtitle}>
-          In this step, we will ask you which type of property you have and if
-          guests will book the entire place or just a room. The let us know the
-          location and how many guests can stay.
+          {i18n.t("create_listing.step_1_button")}
+        </Text>
+        <Text style={styles.title}>
+          {i18n.t("create_listing.step_1.title")}
+        </Text>
+        <Text style={styles.subtitle}>
+          {i18n.t("create_listing.step_1.subtitle")}
         </Text>
       </View>
 
@@ -167,7 +175,7 @@ function Step1() {
           theme={{ background: "back1" }}
         >
           <Button
-            title="Back"
+            title={i18n.t("back")}
             type="outline"
             onPress={backHandler}
             buttonStyle={{
@@ -188,7 +196,7 @@ function Step1() {
               loading ? (
                 <ActivityIndicator color={colors.textReverse} size="small" />
               ) : (
-                "Next"
+                i18n.t("next")
               )
             }
             onPress={nextHandler}

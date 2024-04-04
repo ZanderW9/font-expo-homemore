@@ -3,6 +3,7 @@ import { Button } from "@rneui/themed";
 import { router } from "expo-router";
 
 import { Text, View, SafeAreaView } from "@/components/Themed";
+import i18n from "@/config/localizations/i18n";
 import { useThemedColors } from "@/constants/theme";
 
 export default function () {
@@ -46,7 +47,7 @@ export default function () {
               width: "100%",
             }}
           >
-            It's time for you to post a listing!
+            {i18n.t("post.post_listing.title")}
           </Text>
 
           <Text
@@ -56,8 +57,7 @@ export default function () {
               marginBottom: 20,
             }}
           >
-            Any kind of property, house or apartment, short or long term......
-            click below to get started!
+            {i18n.t("post.post_listing.description")}
           </Text>
 
           <Button
@@ -66,7 +66,7 @@ export default function () {
               borderRadius: 8,
               width: "100%",
             }}
-            title="Post your listing"
+            title={i18n.t("post.post_listing.button")}
             onPress={() => router.navigate("/listing/step-1")}
           />
         </View>

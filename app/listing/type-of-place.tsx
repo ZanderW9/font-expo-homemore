@@ -10,6 +10,8 @@ import { FlashList } from "@shopify/flash-list";
 import { router, Stack, useNavigation } from "expo-router";
 import { StyleSheet, ActivityIndicator } from "react-native";
 
+import i18n from "@/config/localizations/i18n";
+
 const updateListingMutation = gql`
   mutation UpdateListing(
     $updateListingId: String!
@@ -69,7 +71,7 @@ function TypeOfPalceScreen() {
 
   const typeOfPlace = [
     {
-      name: "House",
+      name: i18n.t("create_listing.type_of_place.house"),
       value: "house",
       icon: (
         <MaterialCommunityIcons
@@ -81,12 +83,12 @@ function TypeOfPalceScreen() {
     },
 
     {
-      name: "Apartment",
+      name: i18n.t("create_listing.type_of_place.apartment"),
       value: "apartment",
       icon: <MaterialIcons name="apartment" size={30} color={colors.text} />,
     },
     {
-      name: "Unit",
+      name: i18n.t("create_listing.type_of_place.unit"),
       value: "unit",
       icon: (
         <MaterialCommunityIcons
@@ -101,7 +103,7 @@ function TypeOfPalceScreen() {
   return (
     <View style={styles.container}>
       <Button
-        title=" Save & Exit"
+        title={i18n.t("create_listing.save_and_exit")}
         type="clear"
         onPress={saveAndExitHandler}
         buttonStyle={{
@@ -132,7 +134,7 @@ function TypeOfPalceScreen() {
         }}
       >
         <Text style={styles.title}>
-          Which of the following best describes your place?
+          {i18n.t("create_listing.type_of_place.title")}
         </Text>
 
         <FlashList
@@ -214,7 +216,7 @@ function TypeOfPalceScreen() {
           theme={{ background: "back1" }}
         >
           <Button
-            title="Back"
+            title={i18n.t("back")}
             type="outline"
             onPress={backHandler}
             buttonStyle={{
@@ -235,7 +237,7 @@ function TypeOfPalceScreen() {
               loading ? (
                 <ActivityIndicator color={colors.textReverse} size="small" />
               ) : (
-                "Next"
+                i18n.t("next")
               )
             }
             onPress={nextHandler}

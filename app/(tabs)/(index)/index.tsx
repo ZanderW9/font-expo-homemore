@@ -7,6 +7,8 @@ import { router } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 
+import i18n from "@/config/localizations/i18n";
+
 function TabExploreScreen() {
   return (
     <View style={styles.container} theme={{ background: "back2" }}>
@@ -14,7 +16,7 @@ function TabExploreScreen() {
       <ListingCardsContainer />
       <FAB
         size="small"
-        title="Map"
+        title={i18n.t("explore.map_button")}
         placement="center"
         icon={
           <Ionicons

@@ -3,6 +3,7 @@ import { ListItem } from "@rneui/themed";
 import { Stack } from "expo-router";
 
 import { View, Text } from "@/components/Themed";
+import i18n from "@/config/localizations/i18n";
 import { updateAppMeta } from "@/config/state/appMetaSlice";
 import { RootState, useDispatch, useSelector } from "@/config/state/store";
 import { storeLocalItem } from "@/config/storageManager";
@@ -22,7 +23,7 @@ export default function Screen() {
     <View style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          title: "Language Settings",
+          title: i18n.t("profile.settings.language.title") || "hello",
           headerTitleAlign: "center",
           headerTitleStyle: {
             color: colors.text,
