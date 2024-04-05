@@ -79,14 +79,22 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
             backgroundColor: colors.back1,
           }}
         >
-          <Image
+          <View
             style={{
-              ...styles.image,
-              aspectRatio: width >= 450 ? imageData?.ratio : 1.68,
+              maxHeight: 368,
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
             }}
-            placeholder={{ thumbhash: imageData?.thumbhash }}
-            source={{ uri: imageData?.smallUrl }}
-          />
+          >
+            <Image
+              style={{
+                ...styles.image,
+                aspectRatio: width >= 450 ? imageData?.ratio : 1.68,
+              }}
+              placeholder={{ thumbhash: imageData?.thumbhash }}
+              source={{ uri: imageData?.smallUrl }}
+            />
+          </View>
           <View style={styles.cardContent}>
             <View>
               <Card.Title style={styles.title} numberOfLines={1}>
@@ -202,9 +210,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
-    maxHeight: 350,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   cardContent: {
     paddingHorizontal: 10,
