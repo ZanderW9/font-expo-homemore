@@ -208,19 +208,16 @@ export const createApolloClient = (token: string | null = null) => {
         Query: {
           fields: {
             allListings: {
+              keyArgs: false,
               merge(existing, incoming, { args, readField }) {
-                const merged = existing ? existing.slice(0) : [];
+                const merged = existing || [];
                 const offset = offsetFromCursor(merged, incoming, readField);
+
                 if (offset >= incoming.length) return merged;
 
-                const newmerged = [...merged, ...incoming.slice(offset)];
-                return newmerged;
-              },
-              // 读取所有数据
-              read(existing, { args, readField }) {
-                if (existing && Array.isArray(existing)) {
-                  return existing;
-                }
+                const newIncoming = incoming.slice(offset);
+                const newMerged = [...merged, ...newIncoming];
+                return newMerged;
               },
             },
             searchListings: {

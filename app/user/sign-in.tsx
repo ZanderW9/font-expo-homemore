@@ -7,7 +7,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Input, Button } from "@rneui/themed";
 import { router, Stack, useFocusEffect } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, ActivityIndicator } from "react-native";
+import { useTranslation } from "react-i18next";
+import { StyleSheet, ActivityIndicator, Keyboard } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 import { updateAppMeta } from "@/config/state/appMetaSlice";
@@ -27,6 +28,7 @@ const signInMutation = gql`
 `;
 
 function LoginScreen() {
+  const { t } = useTranslation();
   const colors = useThemedColors();
   const dispatch = useDispatch();
   const { token } = useSelector((state: RootState) => state.appMeta);
@@ -100,13 +102,13 @@ function LoginScreen() {
   );
 
   return (
-    <View style={styles.container} theme={{ background: "back2" }}>
+    <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: "Sign In",
+          title: "",
           animation: "slide_from_right",
-          headerTitleAlign: "center",
           headerBackTitleVisible: false,
+          headerShadowVisible: false,
           headerBackButtonMenuEnabled: false,
           headerStyle: {
             backgroundColor: colors.back1,
@@ -116,8 +118,12 @@ function LoginScreen() {
           },
         }}
       />
+
+      <Text style={{ fontSize: 20, color: colors.text, marginBottom: 20 }}>
+        {t("sign_in_options.with_email")}
+      </Text>
       <Input
-        label="Email"
+        label={t("email")}
         labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
         containerStyle={styles.inputWrapper}
         inputContainerStyle={[
@@ -130,13 +136,14 @@ function LoginScreen() {
             <Ionicons name="checkmark" size={24} color={colors.text} />
           )
         }
+        enterKeyHint="done"
         onChangeText={(text) => {
           setEmail(text);
           validateEmail(text);
         }}
       />
       <Input
-        label="Password"
+        label={t("password")}
         labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
         containerStyle={styles.inputWrapper}
         inputContainerStyle={[
@@ -145,6 +152,8 @@ function LoginScreen() {
         ]}
         inputStyle={{ color: colors.text }}
         secureTextEntry={!showPassword}
+        enterKeyHint="done"
+        onBlur={() => Keyboard.dismiss()}
         rightIcon={
           password && (
             <Ionicons
@@ -162,14 +171,12 @@ function LoginScreen() {
           flexDirection: "row",
           justifyContent: "center",
         }}
-        theme={{ background: "back2" }}
       >
         <Button
           buttonStyle={{
             backgroundColor: "rgb(236, 76, 96)",
-            height: 50,
-            width: 100,
-            borderRadius: 7,
+            width: "100%",
+            borderRadius: 10,
             marginVertical: 10,
           }}
           onPress={SignInHandler}
@@ -183,8 +190,7 @@ function LoginScreen() {
         />
       </View>
       <Text style={styles.title} onPress={gotoSignupHandler}>
-        <Text>Don't have an account? </Text>
-        Register
+        <Text>{t("dont_have_account")}</Text> {t("sign_up")}
       </Text>
     </View>
   );
@@ -193,8 +199,7 @@ function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
-    paddingBottom: 20,
+    alignItems: "center",
     paddingHorizontal: 30,
     paddingVertical: 20,
   },
@@ -202,7 +207,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.light.tint,
     marginTop: 20,
-    marginLeft: 10,
   },
   separator: {
     marginVertical: 30,

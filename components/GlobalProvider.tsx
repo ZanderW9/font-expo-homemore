@@ -1,4 +1,5 @@
-import { useQuery, gql, ApolloProvider } from "@apollo/client";
+import { useQuery, gql, ApolloProvider, useApolloClient } from "@apollo/client";
+import { useApolloClientDevTools } from "@dev-plugins/apollo-client";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as Font from "expo-font";
 import * as Localization from "expo-localization";
@@ -42,6 +43,9 @@ const VALIDATE_USER_QUERY = gql`
 `;
 
 const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const client = useApolloClient();
+  useApolloClientDevTools(client);
+
   const { token } = useSelector((state: RootState) => state.appMeta);
 
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();

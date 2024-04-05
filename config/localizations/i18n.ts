@@ -9,6 +9,11 @@ const resources = {
       back: "Back",
       next: "Next",
       sign_in: "Sign In",
+      email: "Email",
+      password: "Password",
+      sign_in_options: {
+        with_email: "Sign in with Email",
+      },
       sign_up: "Sign Up",
       sign_out: "Sign Out",
       dont_have_account: "Don't have an account?",
@@ -126,6 +131,9 @@ const resources = {
       back: "返回",
       next: "下一步",
       sign_in: "登录",
+      sign_in_options: {
+        with_email: "使用邮箱登录",
+      },
       sign_up: "注册",
       sign_out: "退出登录",
       dont_have_account: "还没有账号？",

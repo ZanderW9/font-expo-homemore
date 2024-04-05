@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useApolloClient } from "@apollo/client";
 import ListingCard from "@components/ListingCard";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { debounce } from "lodash";
@@ -37,6 +37,8 @@ const allListingsQuery = gql`
 `;
 
 function ListingCardsContainer() {
+  const client = useApolloClient();
+
   const { loading, data, refetch, fetchMore } = useQuery(allListingsQuery, {
     variables: { first: 12, after: null, sortOrder: "desc", published: true },
     errorPolicy: "all",
@@ -47,6 +49,10 @@ function ListingCardsContainer() {
   const numPerRow = width < 450 ? 1 : width < 900 ? 2 : 3;
 
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const after =
+    data?.allListings?.length > 0
+      ? data.allListings[data.allListings.length - 1].id
+      : null;
 
   const fetchMoreNew = debounce(() => {
     if (!isFetchingMore && data && data.allListings) {
@@ -54,13 +60,31 @@ function ListingCardsContainer() {
       fetchMore({
         variables: {
           first: 12,
-          after:
-            data.allListings.length > 0
-              ? data.allListings[data.allListings.length - 1].id
-              : null,
+          after,
           sortOrder: "desc",
+          published: true,
         },
-      }).then(() => {
+      }).then((res) => {
+        const incoming = res?.data.allListings;
+        const existing = data.allListings;
+        const cached_data = client.readQuery({
+          query: allListingsQuery,
+        });
+        /*
+          ! cached_data: 按理来说是 apollo 缓存的数据，但是点进 detail 之后，这个缓存会变成 undefined
+          ! incoming: 从服务器获取的数据，existing: 已经存在的数据
+          ! 如果缓存不存在，且 incoming 有数据，就将 incoming 数据和 existing 数据合并
+          ! 并且手动写入缓存
+         */
+        if (!cached_data && incoming && incoming.length > 0) {
+          client.writeQuery({
+            query: allListingsQuery,
+            data: {
+              allListings: [...existing, ...incoming],
+            },
+          });
+        }
+
         setIsFetchingMore(false);
       });
     }
@@ -73,7 +97,8 @@ function ListingCardsContainer() {
   return (
     <MasonryList
       style={{ marginLeft: 10, marginVertical: 10 }}
-      data={data ? data.allListings : []}
+      keyExtractor={(item) => item.id}
+      data={data ? data?.allListings : []}
       numColumns={numPerRow}
       renderItem={({ item }) => <ListingCard data={item} />}
       onEndReached={fetchMoreNew}
