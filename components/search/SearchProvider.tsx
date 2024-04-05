@@ -27,9 +27,9 @@ const initialState: SearchState = {
   price: { gte: 0, lte: 1500 },
   boundary: {},
   // priceBy: "week",
-  rentType: "aRoom",
-  placeType: "apartment",
-  serviceType: "rent",
+  rentType: "",
+  placeType: "",
+  serviceType: "",
   devices: [],
 };
 

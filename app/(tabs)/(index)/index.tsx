@@ -5,18 +5,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { FAB } from "@rneui/themed";
 import { router } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 
-import i18n from "@/config/localizations/i18n";
-
 function TabExploreScreen() {
+  const { t } = useTranslation();
   return (
     <View style={styles.container} theme={{ background: "back2" }}>
       <SearchEntry text="" />
       <ListingCardsContainer />
       <FAB
         size="small"
-        title={i18n.t("explore.map_button")}
+        title={t("explore.map_button")}
         placement="center"
         icon={
           <Ionicons

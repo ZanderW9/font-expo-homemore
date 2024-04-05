@@ -1,5 +1,5 @@
 import "intl-pluralrules";
-
+import "@/config/localizations/i18n";
 import { useSubscription, useApolloClient } from "@apollo/client";
 import SearchProvider from "@components/search/SearchProvider";
 import {
