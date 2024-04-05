@@ -1,80 +1,118 @@
 import { View, Text } from "@components/Themed";
 import { Button } from "@rneui/themed";
 import { router } from "expo-router";
-import { StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
+
+import { useThemedColors } from "@/constants/theme";
 
 export const signInHandler = async () => {
-  router.navigate("/signin");
+  router.navigate("/user/sign-in");
 };
 
 export const signUpHandler = async () => {
-  router.navigate("/signup");
+  router.navigate("/user/sign-up");
 };
 
-function NotLogIn(data: any) {
+function NotLogIn(props: { icon: any; title: string; description: string }) {
+  const { t } = useTranslation();
+  const colors = useThemedColors();
   return (
-    <View style={styles.container} theme={{ background: "back2" }}>
-      <Text style={styles.title}>{data.title}</Text>
-      <Text style={styles.subtitle}>{data.subtitle}</Text>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        paddingHorizontal: 20,
+      }}
+      theme={{ background: "back1" }}
+    >
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-around",
-          width: "80%",
+          flex: 1,
+          justifyContent: "center",
         }}
-        theme={{ background: "back2" }}
       >
-        <Button
-          title="Sign In"
-          onPress={signInHandler}
-          buttonStyle={{
-            backgroundColor: "rgb(236, 76, 96)",
-            height: 50,
-            width: 100,
-            borderRadius: 7,
-            marginVertical: 40,
+        <View
+          style={{
+            borderRadius: 10,
+            borderWidth: 1,
+            padding: 20,
+            width: "100%",
+            alignItems: "center",
           }}
-        />
-        <Button
-          title="Sign Up"
-          type="outline"
-          onPress={signUpHandler}
-          buttonStyle={{
-            borderColor: "rgb(236, 76, 96)",
-            height: 50,
-            width: 100,
-            borderRadius: 7,
-            marginVertical: 40,
-          }}
-          titleStyle={{
-            color: "rgb(236, 76, 96)",
-            alignSelf: "center",
-            justifyContent: "center",
-          }}
-        />
+        >
+          {props.icon}
+
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: 500,
+              marginBottom: 8,
+              width: "100%",
+            }}
+          >
+            {t(props.title)}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 16,
+              color: colors.textSub1,
+              marginBottom: 20,
+            }}
+          >
+            {t(props.description)}
+          </Text>
+
+          <Button
+            containerStyle={{
+              width: "100%",
+              marginBottom: 6,
+            }}
+            buttonStyle={{
+              backgroundColor: "#ec4c60",
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+            }}
+            titleStyle={{
+              flexGrow: 1,
+              width: "100%",
+            }}
+            title={t("sign_in")}
+            onPress={() => router.navigate("/user/sign-in")}
+          />
+
+          <View
+            style={{
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                color: colors.textSub1,
+              }}
+            >
+              {t("dont_have_account")}
+            </Text>
+            <Button
+              type="clear"
+              titleStyle={{
+                fontSize: 16,
+                color: "#ec4c60",
+              }}
+              title={t("sign_up")}
+              onPress={signUpHandler}
+            />
+          </View>
+        </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 0.6,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "50%",
-  },
-  title: {
-    fontSize: 25,
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 14,
-  },
-});
 
 export default NotLogIn;

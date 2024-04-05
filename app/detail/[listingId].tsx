@@ -110,7 +110,7 @@ function ListingDetailScreen() {
 
   const toggleCheckboxHandler = () => {
     if (!token) {
-      router.navigate("/signin");
+      router.navigate("/user/sign-in");
     } else {
       bottomSheetAddModalRef.current?.present();
     }
@@ -349,7 +349,7 @@ function ListingDetailScreen() {
               }}
               onPress={() => {
                 if (!token) {
-                  router.navigate("/signin");
+                  router.navigate("/user/sign-in");
                 } else {
                   const chatId = [data?.listingById?.owner.id, user?.id]
                     .sort()

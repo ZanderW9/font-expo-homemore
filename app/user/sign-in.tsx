@@ -72,7 +72,7 @@ function LoginScreen() {
   };
 
   const gotoSignupHandler = () => {
-    router.navigate("/signup");
+    router.navigate("/user/sign-up");
   };
 
   const togglePasswordVisibility = () => {

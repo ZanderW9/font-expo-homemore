@@ -50,7 +50,7 @@ function MyBooking() {
 
   const confirmHandler = () => {
     if (!token) {
-      router.navigate("/signin");
+      router.navigate("/user/sign-in");
     } else {
       if (selectedDates.length === 0) {
         showMessage({

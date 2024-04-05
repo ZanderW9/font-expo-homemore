@@ -8,6 +8,10 @@ const resources = {
     translation: {
       back: "Back",
       next: "Next",
+      sign_in: "Sign In",
+      sign_up: "Sign Up",
+      sign_out: "Sign Out",
+      dont_have_account: "Don't have an account?",
       create_listing: {
         save_and_exit: "Save & Exit",
         step_1_button: "Step 1",
@@ -60,14 +64,38 @@ const resources = {
         profile: "Profile",
       },
       post: {
+        not_sign_in: {
+          title: "It's time for you to post a listing!",
+          description:
+            "Any kind of property, house or apartment, short or long term......click below to get started~",
+        },
         post_listing: {
           button: "Post Your Listing",
           title: "It's time for you to post a listing!",
           description:
-            "Any kind of property, house or apartment, short or long term......click below to get started!",
+            "Any kind of property, house or apartment, short or long term......click below to get started~",
+        },
+      },
+      wishlist: {
+        not_sign_in: {
+          title: "Save your favorite listings!",
+          description:
+            "Click the heart button to add your favorite listings to your wishlist for easy access~",
+        },
+      },
+      inbox: {
+        not_sign_in: {
+          title: "Sign in to view your messages!",
+          description:
+            "View and respond to messages from guests and hosts. Sign in to get started~",
         },
       },
       profile: {
+        not_sign_in: {
+          title: "Find your home from here!",
+          description:
+            "Sign in to publish or order a listing, or view your profile~",
+        },
         member_since: "Joined on",
         create_listing_button: "Create Listing",
         manage_listing_button: "Manage Listing",
@@ -97,6 +125,10 @@ const resources = {
     translation: {
       back: "返回",
       next: "下一步",
+      sign_in: "登录",
+      sign_up: "注册",
+      sign_out: "退出登录",
+      dont_have_account: "还没有账号？",
       create_listing: {
         save_and_exit: "保存并退出",
         step_1_button: "第一步",
@@ -145,14 +177,35 @@ const resources = {
         profile: "我的",
       },
       post: {
+        not_sign_in: {
+          title: "是时候发布你的房源了！",
+          description:
+            "任何类型的房产，房屋或公寓，短期或长期......点击下方开始～",
+        },
         post_listing: {
           button: "发布你的房源",
           title: "是时候发布你的房源了！",
           description:
-            "任何类型的房产，房屋或公寓，短期或长期......点击下方开始！",
+            "任何类型的房产，房屋或公寓，短期或长期......点击下方开始～",
+        },
+      },
+      wishlist: {
+        not_sign_in: {
+          title: "收藏你喜欢的房源！",
+          description: "点击收藏按钮，将你喜欢的房源添加到收藏夹，方便查看～",
+        },
+      },
+      inbox: {
+        not_sign_in: {
+          title: "登录查看消息！",
+          description: "查看并回复来自客人和房东的消息。点击下方开始～",
         },
       },
       profile: {
+        not_sign_in: {
+          title: "从这里找到你的家！",
+          description: "登录以发布或预定房源，或是查看您的个人资料～",
+        },
         member_since: "加入于",
         create_listing_button: "创建房源",
         manage_listing_button: "管理房源",

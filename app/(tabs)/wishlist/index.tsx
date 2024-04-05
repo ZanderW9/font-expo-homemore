@@ -4,7 +4,7 @@ import { View } from "@components/Themed";
 import CreateModal from "@components/wishlist/CreateModal";
 import FavoriteCardContainer from "@components/wishlist/FavoriteCardsContainer";
 import { useThemedColors } from "@constants/theme";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
 import React, { useRef } from "react";
@@ -46,10 +46,10 @@ function TabWishlistScreen() {
       style={{
         flex: 1,
       }}
-      theme={{ background: "back2" }}
     >
       <Stack.Screen
         options={{
+          headerShown: !!token,
           title: "Wishlist",
           headerTitleAlign: "center",
           headerTitleStyle: {
@@ -76,17 +76,35 @@ function TabWishlistScreen() {
         }}
       />
       {token ? (
-        <FavoriteCardContainer data={data?.myFavorites} />
+        <View
+          style={{
+            flex: 1,
+          }}
+          theme={{ background: "back2" }}
+        >
+          <FavoriteCardContainer data={data?.myFavorites} />
+
+          <CreateModal
+            bottomSheetModalRef={bottomSheetModalRef}
+            inputRef={inputRef}
+          />
+        </View>
       ) : (
         <NotLogIn
-          title="Sign in and view your wishlist"
-          subtitle="You can create, view, and edit your wishlist here"
+          icon={
+            <AntDesign
+              name="hearto"
+              size={40}
+              color="#ec4c60"
+              style={{
+                marginVertical: 20,
+              }}
+            />
+          }
+          title="wishlist.not_sign_in.title"
+          description="wishlist.not_sign_in.description"
         />
       )}
-      <CreateModal
-        bottomSheetModalRef={bottomSheetModalRef}
-        inputRef={inputRef}
-      />
     </View>
   );
 }

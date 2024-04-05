@@ -1,4 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
+import { AntDesign } from "@expo/vector-icons";
 import { ListItem, Avatar } from "@rneui/themed";
 import { router } from "expo-router";
 import React from "react";
@@ -8,9 +9,9 @@ import NotLogIn from "@/components/NotLogIn";
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   Pressable,
+  SafeAreaView,
 } from "@/components/Themed";
 import { LinkPreview } from "@/components/inbox/LinkPreview";
 import i18n from "@/config/localizations/i18n";
@@ -56,146 +57,173 @@ function TabProfileScreen() {
   };
 
   return (
-    <View style={styles.container} theme={{ background: "back2" }}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{ flex: 1 }}
-        theme={{ background: "back2" }}
-      >
-        {!token && (
-          <SafeAreaView style={{ flex: 1 }} theme={{ background: "back2" }}>
-            <NotLogIn
-              title="Find your next home from here!"
-              subtitle="Sign in to publish or order a listing"
-            />
-          </SafeAreaView>
-        )}
+    <View style={{ flex: 1 }}>
+      {token ? (
+        <View style={styles.container} theme={{ background: "back2" }}>
+          <SafeAreaView edges={["top"]} />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ flex: 1 }}
+            theme={{ background: "back2" }}
+          >
+            <View theme={{ background: "back2" }}>
+              <Pressable
+                style={styles.userInfo}
+                onPress={() => {
+                  router.navigate("/user/user-info");
+                }}
+              >
+                {data?.me?.avatar ? (
+                  <Avatar
+                    size={64}
+                    rounded
+                    source={{ uri: data?.me?.avatar }}
+                    containerStyle={styles.avatar}
+                  >
+                    <Avatar.Accessory size={20} />
+                  </Avatar>
+                ) : (
+                  <Avatar
+                    size={64}
+                    rounded
+                    title={data?.me?.userName?.slice(0, 2) ?? ""}
+                    containerStyle={styles.avatar}
+                  >
+                    <Avatar.Accessory size={20} />
+                  </Avatar>
+                )}
 
-        {token && (
-          <View theme={{ background: "back2" }}>
-            <Pressable
-              style={styles.userInfo}
-              onPress={() => {
-                router.navigate("/user/user-info");
+                <View style={styles.usernameWrapper}>
+                  <Text style={styles.username}>{data?.me?.userName}</Text>
+                  <Text style={{ color: "gray", fontSize: 12 }}>
+                    {i18n.t("profile.member_since")}
+                    {data?.me?.createdAt?.slice(0, 10)}
+                  </Text>
+                </View>
+              </Pressable>
+
+              <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                  marginTop: 10,
+                }}
+                onPress={() => {
+                  router.navigate("/listing/step-1");
+                }}
+              >
+                <ListItem.Content>
+                  <ListItem.Title>
+                    <Text>{i18n.t("profile.create_listing_button")}</Text>
+                  </ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+
+              <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                  marginTop: 10,
+                }}
+                onPress={myPostHandler}
+              >
+                <ListItem.Content>
+                  <ListItem.Title>
+                    <Text>{i18n.t("profile.manage_listing_button")}</Text>
+                  </ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+
+              <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                  marginTop: 1,
+                }}
+                onPress={myOrderHandler}
+              >
+                <ListItem.Content>
+                  <ListItem.Title>
+                    <Text>{i18n.t("profile.my_order_button")}</Text>
+                  </ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+
+              <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                  marginTop: 10,
+                }}
+                onPress={() => {
+                  router.navigate("/profile/settings");
+                }}
+              >
+                <ListItem.Content>
+                  <ListItem.Title>
+                    <Text>{i18n.t("profile.settings_button")}</Text>
+                  </ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+
+              <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                  marginTop: 1,
+                }}
+                onPress={AccountHandler}
+              >
+                <ListItem.Content>
+                  <ListItem.Title>
+                    <Text>{i18n.t("profile.account_security_button")}</Text>
+                  </ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+
+              <ListItem
+                containerStyle={{
+                  backgroundColor: colors.back1,
+                  marginTop: 10,
+                }}
+                onPress={logOutHandler}
+              >
+                <ListItem.Content>
+                  <ListItem.Title>
+                    <Text>{i18n.t("profile.sign_out_button")}</Text>
+                  </ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+            </View>
+
+            <View
+              style={{
+                margin: 10,
+                marginBottom: 0,
+                backgroundColor: "transparent",
               }}
             >
-              {data?.me?.avatar ? (
-                <Avatar
-                  size={64}
-                  rounded
-                  source={{ uri: data?.me?.avatar }}
-                  containerStyle={styles.avatar}
-                >
-                  <Avatar.Accessory size={20} />
-                </Avatar>
-              ) : (
-                <Avatar
-                  size={64}
-                  rounded
-                  title={data?.me?.userName?.slice(0, 2) ?? ""}
-                  containerStyle={styles.avatar}
-                >
-                  <Avatar.Accessory size={20} />
-                </Avatar>
-              )}
-
-              <View style={styles.usernameWrapper}>
-                <Text style={styles.username}>{data?.me?.userName}</Text>
-                <Text style={{ color: "gray", fontSize: 12 }}>
-                  {i18n.t("profile.member_since")}
-                  {data?.me?.createdAt?.slice(0, 10)}
-                </Text>
-              </View>
-            </Pressable>
-
-            <ListItem
-              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
-              onPress={() => {
-                router.navigate("/listing/step-1");
-              }}
-            >
-              <ListItem.Content>
-                <ListItem.Title>
-                  <Text>{i18n.t("profile.create_listing_button")}</Text>
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-
-            <ListItem
-              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
-              onPress={myPostHandler}
-            >
-              <ListItem.Content>
-                <ListItem.Title>
-                  <Text>{i18n.t("profile.manage_listing_button")}</Text>
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-
-            <ListItem
-              containerStyle={{ backgroundColor: colors.back1, marginTop: 1 }}
-              onPress={myOrderHandler}
-            >
-              <ListItem.Content>
-                <ListItem.Title>
-                  <Text>{i18n.t("profile.my_order_button")}</Text>
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-
-            <ListItem
-              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
-              onPress={() => {
-                router.navigate("/profile/settings");
-              }}
-            >
-              <ListItem.Content>
-                <ListItem.Title>
-                  <Text>{i18n.t("profile.settings_button")}</Text>
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-
-            <ListItem
-              containerStyle={{ backgroundColor: colors.back1, marginTop: 1 }}
-              onPress={AccountHandler}
-            >
-              <ListItem.Content>
-                <ListItem.Title>
-                  <Text>{i18n.t("profile.account_security_button")}</Text>
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-
-            <ListItem
-              containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
-              onPress={logOutHandler}
-            >
-              <ListItem.Content>
-                <ListItem.Title>
-                  <Text>{i18n.t("profile.sign_out_button")}</Text>
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-          </View>
-        )}
-
-        <View
-          style={{
-            margin: 10,
-            marginBottom: 0,
-            backgroundColor: "transparent",
-          }}
-        >
-          <LinkPreview text="https//homemore.com.au" />
+              <LinkPreview text="https//homemore.com.au" />
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
+      ) : (
+        <NotLogIn
+          icon={
+            <AntDesign
+              name="user"
+              size={40}
+              color="#ec4c60"
+              style={{
+                marginVertical: 20,
+              }}
+            />
+          }
+          title="profile.not_sign_in.title"
+          description="profile.not_sign_in.description"
+        />
+      )}
     </View>
   );
 }

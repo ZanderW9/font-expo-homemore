@@ -4,11 +4,17 @@ import { useCreateListingContext } from "@components/listing/create/CreateProvid
 import MyStepIndicator from "@components/listing/create/MyStepIndicator";
 import { useThemedColors } from "@constants/theme";
 import { Button } from "@rneui/themed";
-import { router, Stack, useLocalSearchParams } from "expo-router";
-import React, { useEffect } from "react";
+import {
+  router,
+  Stack,
+  useLocalSearchParams,
+  useFocusEffect,
+} from "expo-router";
+import React, { useEffect, useCallback } from "react";
 import { StyleSheet, ActivityIndicator } from "react-native";
 
 import i18n from "@/config/localizations/i18n";
+import { RootState, useSelector } from "@/config/state/store";
 
 const createListingMutation = gql`
   mutation Mutation {
@@ -43,6 +49,16 @@ const listingByIdQuery = gql`
 `;
 
 function Step1() {
+  const { token } = useSelector((state: RootState) => state.appMeta);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!token) {
+        router.replace("/user/sign-in");
+      }
+    }, [token]),
+  );
+
   const colors = useThemedColors();
   const { listingId } = useLocalSearchParams();
   const { listingData, dispatchListingData } = useCreateListingContext();

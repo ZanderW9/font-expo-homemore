@@ -51,7 +51,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   const toggleCheckboxHandler = () => {
     if (!token) {
-      router.navigate("/signin");
+      router.navigate("/user/sign-in");
     } else {
       bottomSheetModalRef.current?.present();
     }

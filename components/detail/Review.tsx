@@ -14,7 +14,7 @@ function Review(props: { openBottomSheet: Function; reviews: any[] }) {
   const { token } = useSelector((state: RootState) => state.appMeta);
   const openModalHandler = () => {
     if (!token) {
-      router.navigate("/signin");
+      router.navigate("/user/sign-in");
     } else {
       props.openBottomSheet();
     }

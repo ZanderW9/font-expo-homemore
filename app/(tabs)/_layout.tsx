@@ -1,4 +1,4 @@
-import { SafeAreaView, View } from "@components/Themed";
+import { View } from "@components/Themed";
 import { useThemedColors } from "@constants/theme";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
@@ -106,9 +106,7 @@ export default function () {
         options={{
           title: t("mainTab.profile"),
           headerTitleAlign: "center",
-          header: () => {
-            return <SafeAreaView edges={["top"]} />;
-          },
+          headerShown: false,
           // headerShown: false,
           tabBarIcon: ({ color }) => (
             <AntDesign name="user" color={color} size={26} />
