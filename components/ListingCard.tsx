@@ -65,6 +65,8 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 
   const imageData = data?.images[0];
 
+  const { width } = useSelector((state: RootState) => state.appMeta);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -78,7 +80,10 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           }}
         >
           <Image
-            style={{ ...styles.image, aspectRatio: 1.68 }}
+            style={{
+              ...styles.image,
+              aspectRatio: width >= 450 ? imageData?.ratio : 1.68,
+            }}
             placeholder={{ thumbhash: imageData?.thumbhash }}
             source={{ uri: imageData?.smallUrl }}
           />
@@ -179,24 +184,27 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 10,
+    marginRight: 10,
     borderRadius: 9,
     borderWidth: 0,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    maxWidth: 450,
   },
   cardContainer: {
     margin: 0,
     padding: 0,
     borderRadius: 8,
     borderWidth: 0,
+    maxWidth: 450,
   },
   image: {
     width: "100%",
     borderTopLeftRadius: 7,
     borderTopRightRadius: 7,
-    maxHeight: 240,
+    maxHeight: 350,
   },
   cardContent: {
     paddingHorizontal: 10,

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import React from "react";
+import { Dimensions } from "react-native";
 
 // 这是一个全局的状态管理，用于存储一些全局的状态，比如用户信息，页面宽度等
 
@@ -18,7 +19,7 @@ interface AppMetaState {
 }
 
 const initialState: AppMetaState = {
-  width: 450,
+  width: Dimensions.get("window").width,
   token: null,
   user: null,
   locale: "en",

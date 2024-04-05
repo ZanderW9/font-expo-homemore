@@ -130,11 +130,10 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
       //   1000 * 60 * 10 // 10分钟检查一次更新
       // );
 
-      const { token, user, locale, width } = await getLocalItems([
+      const { token, user, locale } = await getLocalItems([
         "token",
         "user",
         "locale",
-        "width",
       ]);
 
       let appLocale = locale;
@@ -146,7 +145,7 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
         await storeLocalItem("locale", appLocale);
       }
 
-      dispatch(updateAppMeta({ token, user, locale: appLocale, width }));
+      dispatch(updateAppMeta({ token, user, locale: appLocale }));
 
       /* 加载字体 */
       await Font.loadAsync({
@@ -168,6 +167,9 @@ const AppLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   return <View style={{ flex: 1 }}>{children}</View>;
 };
 
+/*
+ *初始化 ApolloClient
+ */
 const ApolloLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { token } = useSelector((state: RootState) => state.appMeta);
   const [client, setClient] = useState(createApolloClient(token));

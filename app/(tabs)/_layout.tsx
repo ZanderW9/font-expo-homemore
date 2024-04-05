@@ -4,10 +4,12 @@ import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function () {
   const { t } = useTranslation();
   const colors = useThemedColors();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -16,7 +18,9 @@ export default function () {
         tabBarStyle: {
           backgroundColor: colors.back1,
           borderTopColor: colors.border1,
+          paddingBottom: insets.bottom === 0 ? 3 : insets.bottom,
         },
+        tabBarAllowFontScaling: false,
       }}
     >
       <Tabs.Screen
@@ -25,12 +29,7 @@ export default function () {
           headerShadowVisible: false,
           title: t("mainTab.explore"),
           tabBarIcon: ({ color }) => (
-            <AntDesign
-              name="home"
-              color={color}
-              size={28}
-              style={{ marginBottom: -3 }}
-            />
+            <AntDesign name="home" color={color} size={26} />
           ),
           headerShown: false,
         }}
@@ -42,12 +41,7 @@ export default function () {
           title: t("mainTab.wishlist"),
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <AntDesign
-              name="hearto"
-              color={color}
-              size={28}
-              style={{ marginBottom: -3 }}
-            />
+            <AntDesign name="hearto" color={color} size={25} />
           ),
         }}
       />
@@ -61,8 +55,7 @@ export default function () {
             <Ionicons
               name="apps-outline"
               color={color}
-              size={30}
-              style={{ marginBottom: -3 }}
+              size={26}
             />
           ),
         }}
@@ -73,16 +66,25 @@ export default function () {
         options={{
           title: "",
           headerShown: false,
+          tabBarItemStyle: {
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 3,
+          },
+          tabBarLabel: () => null,
           tabBarIcon: ({ color }) => (
             <View
               style={{
-                marginBottom: -18,
-                padding: 7,
+                aspectRatio: 1,
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#ec4c60",
                 borderRadius: 8,
-                backgroundColor: colors.tint,
+                marginBottom: -(insets.bottom / 10),
               }}
             >
-              <Ionicons name="add" color={colors.textReverse} size={30} />
+              <Ionicons name="add" color="#f5f5f5" size={30} />
             </View>
           ),
         }}
@@ -94,12 +96,7 @@ export default function () {
           title: t("mainTab.inbox"),
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <AntDesign
-              name="message1"
-              color={color}
-              size={28}
-              style={{ marginBottom: -3 }}
-            />
+            <AntDesign name="message1" color={color} size={25} />
           ),
         }}
       />
@@ -114,12 +111,7 @@ export default function () {
           },
           // headerShown: false,
           tabBarIcon: ({ color }) => (
-            <AntDesign
-              name="user"
-              color={color}
-              size={28}
-              style={{ marginBottom: -3 }}
-            />
+            <AntDesign name="user" color={color} size={26} />
           ),
         }}
       />

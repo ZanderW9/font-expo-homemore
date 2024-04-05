@@ -4,6 +4,8 @@ import MasonryList from "@react-native-seoul/masonry-list";
 import { debounce } from "lodash";
 import React, { useState } from "react";
 
+import { RootState, useSelector } from "@/config/state/store";
+
 const allListingsQuery = gql`
   query Query(
     $after: String
@@ -40,6 +42,10 @@ function ListingCardsContainer() {
     errorPolicy: "all",
   });
 
+  const { width } = useSelector((state: RootState) => state.appMeta);
+
+  const numPerRow = width < 450 ? 1 : width < 900 ? 2 : 3;
+
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   const fetchMoreNew = debounce(() => {
@@ -66,9 +72,9 @@ function ListingCardsContainer() {
 
   return (
     <MasonryList
-      style={{ margin: 10 }}
+      style={{ marginLeft: 10, marginVertical: 10 }}
       data={data ? data.allListings : []}
-      numColumns={1}
+      numColumns={numPerRow}
       renderItem={({ item }) => <ListingCard data={item} />}
       onEndReached={fetchMoreNew}
       refreshing={loading}

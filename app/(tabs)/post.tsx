@@ -61,9 +61,18 @@ export default function () {
           </Text>
 
           <Button
+            containerStyle={{
+              width: "100%",
+            }}
             buttonStyle={{
               backgroundColor: colors.tint,
               borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+            }}
+            titleStyle={{
+              flexGrow: 1,
               width: "100%",
             }}
             title={i18n.t("post.post_listing.button")}
