@@ -6,7 +6,7 @@ import { useThemedColors } from "@constants/theme";
 import { Avatar } from "@rneui/themed";
 import { useLocalSearchParams, Stack, router } from "expo-router";
 import React, { useState, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import PagerView from "react-native-pager-view";
 
 const meQuery = gql`
@@ -32,6 +32,8 @@ const meQuery = gql`
         price
         favorited
         address
+        serviceType
+        discount
       }
       favorites(userId: $userId) {
         private
@@ -83,7 +85,8 @@ const CustomHeaderTitle = (data: any) => {
           titleStyle={{
             justifyContent: "center",
             alignSelf: "center",
-            fontSize: 24,
+            paddingTop: Platform.OS === "ios" ? 5 : 0,
+            fontSize: 20,
           }}
         />
       )}

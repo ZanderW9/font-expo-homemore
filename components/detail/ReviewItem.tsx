@@ -205,29 +205,21 @@ const RenderReviw = (props: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    marginTop: 10,
-    marginHorizontal: 10,
-  },
   separator: {
     marginVertical: 10,
     height: 1,
     width: "85%",
   },
   reviewContent: {
-    width: "100%",
     height: "auto",
-    borderRadius: 10,
+    width: "88%",
   },
   senderName: {
     fontSize: 14,
   },
   reviewText: {
     fontSize: 14,
+    paddingVertical: 5,
   },
   reviewEndWrapper: {
     display: "flex",
@@ -244,20 +236,17 @@ const styles = StyleSheet.create({
     marginTop: -4,
   },
   subReviewWrapper: {
-    borderRadius: 10,
     marginTop: 5,
   },
   reviewWrapper: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
   },
   Avatar: {
     marginRight: 10,
-    marginTop: 5,
-    justifyContent: "flex-start",
-    alignContent: "flex-start",
+    justifyContent: "center",
+    alignContent: "center",
     backgroundColor: "#F3EED9",
   },
 });

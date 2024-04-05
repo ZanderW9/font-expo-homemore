@@ -119,7 +119,7 @@ function UploadDescription() {
               { borderColor: colors.border1 },
             ]}
             inputStyle={{
-              height: 100,
+              height: 400,
               alignContent: "flex-start",
               justifyContent: "flex-start",
               color: colors.text,
@@ -132,7 +132,7 @@ function UploadDescription() {
             }}
             multiline
             textAlignVertical="top"
-            numberOfLines={4}
+            numberOfLines={15}
             value={listingData.description}
             onChangeText={(text) => {
               dispatchListingData({ ...listingData, description: text });

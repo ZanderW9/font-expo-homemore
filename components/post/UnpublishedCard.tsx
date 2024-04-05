@@ -25,6 +25,11 @@ type CardsComponentsProps = {
       city: string;
       street: string;
     };
+    serviceType: string;
+    discount: {
+      discountType: string;
+      discountValue: number;
+    }[];
   };
 };
 
@@ -176,9 +181,9 @@ const UnpublishedCard: React.FunctionComponent<CardsComponentsProps> = ({
                   justifyContent: "flex-start",
                 }}
               >
-                <FontAwesome name="dollar" size={13} color={colors.mainColor} />
+                <FontAwesome name="dollar" size={13} color={colors.text} />
                 <Card.Title style={styles.price}>
-                  <Text style={{ color: colors.mainColor }}>{data.price}</Text>
+                  <Text style={{ color: colors.text }}>{data.price}</Text>
                 </Card.Title>
               </View>
             ) : (

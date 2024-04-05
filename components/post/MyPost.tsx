@@ -24,6 +24,8 @@ const meQuery = gql`
         price
         favorited
         address
+        serviceType
+        discount
       }
       myUnPublishedListings {
         id
@@ -36,6 +38,8 @@ const meQuery = gql`
         }
         price
         address
+        serviceType
+        discount
       }
     }
   }

@@ -27,6 +27,8 @@ const favoriteListingsQuery = gql`
           price
           favorited
           address
+          serviceType
+          discount
         }
       }
     }
@@ -94,7 +96,7 @@ function MyFavoritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 1,
+    padding: 5,
   },
 });
 
