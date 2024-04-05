@@ -161,7 +161,7 @@ function TabProfileScreen() {
             </ListItem>
 
             <ListItem
-              containerStyle={{ backgroundColor: colors.back1 }}
+              containerStyle={{ backgroundColor: colors.back1, marginTop: 1 }}
               onPress={AccountHandler}
             >
               <ListItem.Content>

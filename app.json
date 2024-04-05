@@ -141,7 +141,7 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 60000,
-      "checkAutomatically": "ON_LOAD",
+      "checkAutomatically": "ON_ERROR_RECOVERY",
       "url": "https://u.expo.dev/2a824d39-c1fd-47dc-b9db-b908bfc28eae"
     }
   }

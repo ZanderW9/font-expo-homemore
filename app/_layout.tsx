@@ -16,6 +16,7 @@ import {
   // useNavigationContainerRef,
   Stack,
 } from "expo-router";
+import * as Updates from "expo-updates";
 import React, { useState } from "react";
 import { Platform } from "react-native";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
@@ -38,6 +39,9 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  if (Updates.runtimeVersion) {
+    Updates.checkForUpdateAsync();
+  }
   /* dev tools */
   // const navigationRef = useNavigationContainerRef();
   // useReactNavigationDevTools(navigationRef);
