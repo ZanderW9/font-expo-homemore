@@ -82,6 +82,7 @@ const ListingCard: React.FunctionComponent<CardsComponentsProps> = ({
           <View
             style={{
               maxHeight: 368,
+              overflow: "hidden",
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
             }}
