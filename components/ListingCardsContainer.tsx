@@ -1,6 +1,7 @@
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import ListingCard from "@components/ListingCard";
 import MasonryList from "@react-native-seoul/masonry-list";
+import { Skeleton } from "@rneui/themed";
 import { debounce } from "lodash";
 import React, { useState } from "react";
 
@@ -35,6 +36,26 @@ const allListingsQuery = gql`
     }
   }
 `;
+
+function LoadingView({ numPerRow }: { numPerRow: number }) {
+  return (
+    <MasonryList
+      style={{ marginLeft: 10, marginRight: 10 }}
+      keyExtractor={(item) => item}
+      data={[1, 2]}
+      numColumns={numPerRow}
+      renderItem={({ item }) => (
+        <Skeleton
+          animation="pulse"
+          height={300}
+          width="100%"
+          style={{ marginRight: 10, borderRadius: 10, marginBottom: 10 }}
+        />
+      )}
+      showsVerticalScrollIndicator={false}
+    />
+  );
+}
 
 function ListingCardsContainer() {
   const client = useApolloClient();
@@ -96,7 +117,7 @@ function ListingCardsContainer() {
 
   return (
     <MasonryList
-      style={{ marginLeft: 10, marginVertical: 10 }}
+      style={{ marginLeft: 10, marginTop: 10 }}
       keyExtractor={(item) => item.id}
       data={data ? data?.allListings : []}
       numColumns={numPerRow}
@@ -104,8 +125,10 @@ function ListingCardsContainer() {
       onEndReached={fetchMoreNew}
       refreshing={loading}
       onRefresh={handleRefresh}
+      loading={isFetchingMore || loading}
       onEndReachedThreshold={0.2}
       showsVerticalScrollIndicator={false}
+      LoadingView={<LoadingView numPerRow={numPerRow} />}
     />
   );
 }
