@@ -181,19 +181,17 @@ function LoginScreen() {
   };
 
   return (
-    <View style={styles.container} theme={{ background: "back2" }}>
+    <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: "Sign Up",
+          title: "",
           animation: "slide_from_right",
           headerTitleAlign: "center",
           headerBackTitleVisible: false,
           headerBackButtonMenuEnabled: false,
+          headerShadowVisible: false,
           headerStyle: {
             backgroundColor: colors.back1,
-          },
-          headerTitleStyle: {
-            color: colors.text,
           },
         }}
       />
@@ -201,12 +199,19 @@ function LoginScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 30}
-        theme={{ background: "back2" }}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          theme={{ background: "back2" }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingBottom: "50%",
+          }}
         >
+          <Text style={{ fontSize: 20, marginBottom: 30 }}>
+            Sign Up with Email
+          </Text>
           <Input
             label="User Name"
             labelStyle={{ color: "gray", fontSize: 16, fontWeight: "normal" }}
@@ -306,7 +311,6 @@ function LoginScreen() {
                     borderColor: colors.border1,
                     padding: 10,
                     width: 80,
-                    backgroundColor: colors.back2,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -330,13 +334,11 @@ function LoginScreen() {
               flexDirection: "row",
               justifyContent: "center",
             }}
-            theme={{ background: "back2" }}
           >
             <Button
               buttonStyle={{
                 backgroundColor: "rgb(236, 76, 96)",
-                height: 50,
-                width: 100,
+                width: "100%",
                 borderRadius: 7,
                 marginVertical: 10,
               }}
@@ -365,21 +367,13 @@ function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
-    paddingBottom: 20,
     paddingHorizontal: 30,
-    paddingVertical: 20,
   },
   title: {
     fontSize: 15,
     color: Colors.light.tint,
     marginTop: 20,
     marginLeft: 10,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
   },
   verfication: {
     fontSize: 12,
