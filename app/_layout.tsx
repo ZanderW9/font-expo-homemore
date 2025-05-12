@@ -27,10 +27,17 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Asset } from "expo-asset";
 import Constants from "expo-constants";
+import * as Device from "expo-device";
 import * as Font from "expo-font";
-import { useNavigationContainerRef, SplashScreen, Stack } from "expo-router";
+import * as Notifications from "expo-notifications";
+import {
+  useNavigationContainerRef,
+  SplashScreen,
+  Stack,
+  router,
+} from "expo-router";
 import { createClient } from "graphql-ws";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Platform, View, StyleSheet } from "react-native";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import FlashMessage from "react-native-flash-message";
@@ -44,6 +51,14 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 // import { requestLocationPermissions } from "@config/backgroundTasks";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: true,
+  }),
+});
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -144,6 +159,7 @@ export const GlobalContext = React.createContext({
   httpLinkUrl: "",
   client: null,
   setApolloClient: () => {},
+  expoPushToken: "",
 });
 
 export default function RootLayout() {
@@ -151,6 +167,35 @@ export default function RootLayout() {
   useReactNavigationDevTools(navigationRef);
   useAsyncStorageDevTools();
   const colors = useThemedColors();
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  console.log("notification setting", expoPushToken, notification);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token),
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current,
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   const [appIsReady, setAppIsReady] = useState(false);
   const [token, setToken] = useState(null);
@@ -221,6 +266,7 @@ export default function RootLayout() {
         setIsLoggedIn,
         client,
         setApolloClient,
+        expoPushToken,
       }}
     >
       <ApolloProvider client={client}>
@@ -294,6 +340,7 @@ export const ChatProvider = ({ children }) => {
 };
 
 function RootLayoutNav() {
+  useNotificationObserver();
   useLocation();
   const client = useApolloClient();
   useApolloClientDevTools(client);
@@ -375,4 +422,85 @@ function RootLayoutNav() {
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
+}
+
+// 获取 push notification 权限和token
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas.projectId,
+      })
+    ).data;
+    console.log("push token:", token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  return token;
+}
+
+export async function schedulePushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "You've got new message", // homemore: user name
+      body: "Here is the notification body", // msg
+      data: { url: "detail/27ba3e14-47a7-44c6-87a8-61096b47be28" }, // redirect url, (chat channel, detail page)
+    },
+    trigger: null,
+  });
+}
+
+function useNotificationObserver() {
+  useEffect(() => {
+    let isMounted = true;
+
+    function redirect(notification: Notifications.Notification) {
+      const url = notification.request.content.data?.url;
+      if (url) {
+        console.log("redirecting to", url);
+        router.push(url);
+      }
+    }
+
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (!isMounted || !response?.notification) {
+        return;
+      }
+      redirect(response?.notification);
+    });
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        redirect(response.notification);
+      },
+    );
+
+    return () => {
+      isMounted = false;
+      subscription.remove();
+    };
+  }, []);
 }

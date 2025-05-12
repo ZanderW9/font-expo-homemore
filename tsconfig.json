@@ -9,7 +9,8 @@
       "@app/*": ["./app/*"],
       "@assets/*": ["./assets/*"],
       "@test/*": ["./test/*"],
-      "@config/*": ["./config/*"]
+      "@config/*": ["./config/*"],
+      "@/*": ["./*"]
     }
   },
   "include": [
@@ -19,5 +20,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "declarations.d.ts"
-  ]
+  ],
 }

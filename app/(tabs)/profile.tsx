@@ -1,20 +1,30 @@
-import { gql } from "@apollo/client";
-import { GlobalContext } from "@app/_layout";
-import NotLogIn from "@components/NotLogIn";
+import { gql, useMutation } from "@apollo/client";
+import { ListItem, Avatar } from "@rneui/themed";
+import * as Clipboard from "expo-clipboard";
+import { router, usePathname } from "expo-router";
+import React, { useEffect, useContext } from "react";
+import { StyleSheet } from "react-native";
+
+import { GlobalContext } from "@/app/_layout";
+import NotLogIn from "@/components/NotLogIn";
 import {
   View,
   Text,
   SafeAreaView,
   ScrollView,
   Pressable,
-} from "@components/Themed";
-import { clearLocalItems, getLocalItem } from "@config/storageManager";
-import useCachedQuery from "@config/useCachedQuery";
-import { useThemedColors } from "@constants/theme";
-import { ListItem, Avatar } from "@rneui/themed";
-import { router, usePathname } from "expo-router";
-import React, { useEffect, useContext } from "react";
-import { StyleSheet } from "react-native";
+} from "@/components/Themed";
+import { clearLocalItems, getLocalItem } from "@/config/storageManager";
+import useCachedQuery from "@/config/useCachedQuery";
+import { useThemedColors } from "@/constants/theme";
+
+const createListingMutation = gql`
+  mutation Mutation {
+    createListing {
+      id
+    }
+  }
+`;
 
 const meQuery = gql`
   query Query {
@@ -29,8 +39,15 @@ const meQuery = gql`
 
 function TabProfileScreen() {
   const colors = useThemedColors();
-  const { setIsLoggedIn, isLoggedIn, setToken, httpLinkUrl, setApolloClient } =
-    useContext(GlobalContext);
+  const {
+    setIsLoggedIn,
+    isLoggedIn,
+    setToken,
+    httpLinkUrl,
+    setApolloClient,
+    expoPushToken,
+  } = useContext(GlobalContext);
+  const [createListingFunction, { data }] = useMutation(createListingMutation);
 
   const { data: gqlData } = useCachedQuery(meQuery, usePathname());
 
@@ -182,6 +199,19 @@ function TabProfileScreen() {
             </ListItem>
           </View>
         )}
+        <ListItem
+          containerStyle={{ backgroundColor: colors.back1, marginTop: 10 }}
+          onLongPress={async () =>
+            await Clipboard.setStringAsync(expoPushToken || "")
+          }
+        >
+          <ListItem.Content>
+            <ListItem.Title>
+              <Text>{`push notification: ${expoPushToken}`}</Text>
+            </ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron />
+        </ListItem>
       </ScrollView>
     </View>
   );

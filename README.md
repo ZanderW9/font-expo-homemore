@@ -65,6 +65,14 @@ export ANDROID_HOME=~/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 ```
 
+## hot fix
+eas update
+
+运行的时候 .env.local会覆盖本地设置！！，所以要把 .env.local注释掉. 只有commit 的部分会更新，更新前确保commit
+
+## submit
+提交 apple app store时，需要增加bundlenumber
+
 # 代码规范
 
 ## 样式设置
@@ -108,4 +116,8 @@ import { AntDesign } from '@expo/vector-icons';
 <AntDesign name="arrowleft" size={24} color="white" />
 ```
 具体有哪些，可以查 expo-icons 库：https://icons.expo.fyi/Index
+<<<<<<< HEAD
 >>>>>>> 76e01c6 (setup expo)
+=======
+
+>>>>>>> da00f33 (get push token, now server can send msg to device (#146))

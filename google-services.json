@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "264387722395",
+    "project_id": "elevated-surge-415001",
+    "storage_bucket": "elevated-surge-415001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264387722395:android:3201976aeeb4f50e019a3e",
+        "android_client_info": {
+          "package_name": "au.com.homemore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMwIBWO2DMc1mrprKDSpSZ5BsYXLWuCgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
