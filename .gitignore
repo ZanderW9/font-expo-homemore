@@ -44,3 +44,10 @@ expo-env.d.ts
 # @end expo-cli
 
 build-*
+
+# 排除所有 JSON 密钥文件
+*.json
+
+# 但允许非敏感 JSON（如果有）
+!package.json
+!config.json
