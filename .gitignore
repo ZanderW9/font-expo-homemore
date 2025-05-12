@@ -50,4 +50,4 @@ build-*
 
 # 但允许非敏感 JSON（如果有）
 !package.json
-!config.json
+!config.jsonelevated-surge-415001-f31efbcb478a.json
